@@ -14,8 +14,27 @@ World::World(){
     root = new Entity("root", this->model);
     
 }
+void World::render(){
+    this->root->render();
+}
+
+void World::update(float elapsed_time){
+
+    /*if (Input::isKeyPressed(SDL_SCANCODE_F)) {
+        if (this->free_cam == false){
+            this->free_cam = true;
+        }
+        if (this->free_cam == true){
+            this->free_cam = false;
+        }
+        
+    }
+    */
+
+    this->root->update(elapsed_time);
+}
 /*
- bool WOrld::checkLineOfSight(const Matrix44& obs, const Matrix44& target)
+ bool World::checkLineOfSight(const Matrix44& obs, const Matrix44& target)
     Vecror3 front = normalize (obs.frontVector())
     Vector3 toTarget = normalize(target.getTranslation() - obs.getTranslation())
  

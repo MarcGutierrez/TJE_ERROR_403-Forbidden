@@ -6,27 +6,27 @@
 //  Copyright © 2023 manu. All rights reserved.
 //
 
-#ifndef world_h
-#define world_h
+//#ifndef world_h
+//#define world_h
 
 #include "entity.h"
 #include "camera.h"
 
 
-#endif /* world_h */
+//#endif /* world_h */
 
 //Entity* root;
 class Camera;
 
 class World{
-    static World* instance;
+    static World* world;
 
 public:
     static World* get_instance(){
-        if (instance != nullptr)
-            return instance;
-        instance = new World();
-        return instance;
+        if (world != nullptr)
+            return world;
+        world = new World();
+        return world;
     }
     
     World();
@@ -35,6 +35,7 @@ public:
     Entity* player = nullptr;
     bool free_cam = false;
     Camera* camera;
+    //void checkLineOfSight(const Matrix44& obs, const Matrix44& target)
     void render();
     void update(float elapsed_time);
     

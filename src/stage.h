@@ -6,9 +6,85 @@
 //  Copyright © 2023 manu. All rights reserved.
 //
 
-#ifndef stage_h
-#define stage_h
+//#ifndef stage_h
+//#define stage_h
 
+#include "world.h"
+#include "input.h"
+
+enum stageId { TITLE, GAME, MENU, ENDING};
+
+class Stage{
+public:
+    
+    float t = 0.0f;
+    
+    Stage();
+    
+    virtual void render();
+    virtual void update(float elapsed_time);
+    
+};
+
+class TitleStage : public Stage {
+    
+    int width;
+    int height;
+    
+    TitleStage();
+    
+    void render();
+    void update(float elapsed_time);
+    
+};
+
+class PlayStage : public Stage {
+    
+    World world;
+    
+    PlayStage();
+    
+    stageId getId();
+    
+    void render();
+    void update(float elapsed_time);
+    
+    void onKeyDown( SDL_KeyboardEvent event );
+    void onMouseWheel(SDL_MouseWheelEvent event);
+    void onResize(int width, int height);
+    
+};
+
+class MenuStage : public Stage {
+    
+    MenuStage();
+    
+    stageId getId();
+    
+    void render();
+    void update(float elapsed_time);
+    
+};
+
+class EndStage : public Stage {
+    
+    EndStage();
+    
+    stageId getId();
+    
+    void render();
+    void update(float elapsed_time);
+};
+
+/*class StageManager : public Stage {
+    
+    static StageManager* instance;
+    
+public:
+    
+
+};
+ */
 /**
  MenuStage
         width = game::instance->window_width;
@@ -56,4 +132,4 @@ background = newENtityGUIelement(
  
  */
 
-#endif /* stage_h */
+//#endif /* stage_h */

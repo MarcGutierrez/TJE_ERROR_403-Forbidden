@@ -7,6 +7,7 @@
 #include "input.h"
 #include "animation.h"
 #include "entity.h"
+#include "world.h"
 
 #include <cmath>
 
@@ -21,7 +22,11 @@ FBO* fbo = NULL;
 
 Game* Game::instance = NULL;
 
-Entity* root = nullptr;
+//Entity* root = nullptr;
+//World* World::world = NULL;
+
+World* world = new World();
+
 Matrix44 model;
 Vector4 color = Vector4(1,1,1,1);
 
@@ -59,13 +64,14 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	// example of shader loading using the shaders manager
 	shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
     
-    //TESTEST
-    root = new Entity("root", model);
+    //TESTEST/////////////
+    
+    //root = new Entity("root", model);
     EntityMesh* entityCaja = new EntityMesh("caja", model, mesh, texture, shader, color);
     EntityPlayer* player = new EntityPlayer("player", model, mesh, texture, shader, color, camera);
-    root->addChild(entityCaja);
-    root->addChild(player);
-
+    world->root->addChild(entityCaja);
+    world->root->addChild(player);
+    
     
 	//hide the cursor
 	SDL_ShowCursor(!mouse_locked); //hide or show the mouse
@@ -106,7 +112,10 @@ void Game::render(void)
 
 		//do the draw call
 		//mesh->render( GL_TRIANGLES );
-        root->render();
+        
+        //world
+        //root->render();
+        world->render();
         
 
 		//disable shader
@@ -143,7 +152,11 @@ void Game::update(double seconds_elapsed)
     //to navigate with the mouse fixed in the middle
     if (mouse_locked)
         Input::centerMouse();
-    root->update(seconds_elapsed);
+    
+    
+    //root->update(seconds_elapsed);
+    world->update(seconds_elapsed);
+    
 	//example
 	//angle += (float)seconds_elapsed * 10.0f;
 

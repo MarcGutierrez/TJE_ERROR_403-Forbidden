@@ -67,15 +67,46 @@ void EntityMesh::render(){
 
 }
 
+void EntityMesh::update(float elapsed_time){
+    
+}
+
+
+InstancedEntityMesh::InstancedEntityMesh(std::string name, Matrix44 model, Mesh* mesh, Texture* texture, Shader* shader, Vector4 color):EntityMesh(name, model, mesh, texture, shader, color){
+    this->mesh =  mesh;
+    this->texture = texture;
+    this->shader = shader;
+    this->color = color;
+}
+
+void InstancedEntityMesh::render(){
+    // Get the last camera that was activated
+    Camera* camera = Camera::current;
+
+    // Enable shader and pass uniforms
+    shader->enable();
+    shader->setUniform("u_model", model);
+    shader->setUniform("u_viewproj", camera->viewprojection_matrix);
+    shader->setTexture("u_texture", texture, 0);
+
+
+    // Render the mesh using the shader
+    mesh->render( GL_TRIANGLES );
+
+    // Disable shader after finishing rendering
+    shader->disable();
+
+}
+
+void InstancedEntityMesh::update(float elapsed_time){
+    
+}
+
 EntityPlayer::EntityPlayer(std::string name, Matrix44 model, Mesh* mesh, Texture* texture, Shader* shader, Vector4 color, Camera* camera):EntityMesh(name, model, mesh, texture, shader, color){
-    ground = true;
     this->camera = camera;
     
 }
 
-void EntityMesh::update(float elapsed_time){
-    
-}
 
 void EntityPlayer::render(){
     // Get the last camera that was activated
@@ -114,4 +145,6 @@ void EntityPlayer::update(float elapsed_time){
         camera->lookAt(camera->eye, camera->center, camera->up);
     }
 }
+
+
 

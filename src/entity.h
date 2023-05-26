@@ -61,6 +61,19 @@ public:
     void update(float elapsed_time);
 };
 
+class InstancedEntityMesh : public EntityMesh {
+    public:
+    Mesh* mesh = nullptr;
+    Texture* texture = nullptr;
+    Shader* shader = nullptr;
+    Vector4 color;
+    InstancedEntityMesh(std::string name, Matrix44 model, Mesh* mesh, Texture* texture, Shader* shader, Vector4 color);
+
+    // Methods overwritten from base class
+    void render();
+    void update(float elapsed_time);
+};
+
 class EntityPlayer : public EntityMesh{
     public:
         // Attributes of the derived class
@@ -72,7 +85,7 @@ class EntityPlayer : public EntityMesh{
         void update(float elapsed_time);
 };
 
-class EntityCollider : public EntityMesh {
+/*class EntityCollider : public EntityMesh {
 
     public:
 
@@ -81,7 +94,7 @@ class EntityCollider : public EntityMesh {
 
         // New methods
         bool testCollision(...);
-};
+};*/
 
 
 /*class EntityEnemy : public EntityMesh{
@@ -94,16 +107,7 @@ class EntityCollider : public EntityMesh {
         void update(float elapsed_time);
 };*/
 
-/*class EntityCollider :public EntityMesh {
-
- p*ublic:
-
-
-bool isDynamic = false;
-
-// New methods
-bool testCollision(...);
-};
+/*
 
 //CREAR ENTITY PLAYER TAMBIEN
  entity colider
