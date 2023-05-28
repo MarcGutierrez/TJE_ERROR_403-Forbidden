@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include "stage.h"
+#include "game.h"
 
 Stage::Stage(){
     
@@ -22,7 +23,8 @@ void Stage::update(float elapsed_time){
 }
 
 TitleStage::TitleStage(){
-    
+    this->width = Game::instance->window_width;
+    this->height = Game::instance->window_height;
 }
 
 void TitleStage::render(){
@@ -38,11 +40,11 @@ PlayStage::PlayStage(){
 }
 
 void PlayStage::render(){
-    
+    this->world.render();
 }
 
 void PlayStage::update(float elapsed_time){
-    
+    //this->world.update(float elapsed_time);
 }
 
 MenuStage::MenuStage(){
