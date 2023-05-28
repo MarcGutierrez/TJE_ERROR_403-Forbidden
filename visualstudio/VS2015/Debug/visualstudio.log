@@ -1,0 +1,21 @@
+﻿  entity.cpp
+E:\GitHub\TJE_ERROR_403-Forbidden\src\framework.h(375,105): warning C4244: 'return': conversión de 'double' a 'float'; posible pérdida de datos
+E:\GitHub\TJE_ERROR_403-Forbidden\src\entity.cpp(30,22): warning C4018: '<': no coinciden signed/unsigned
+E:\GitHub\TJE_ERROR_403-Forbidden\src\entity.cpp(34,22): warning C4018: '<': no coinciden signed/unsigned
+  game.cpp
+E:\GitHub\TJE_ERROR_403-Forbidden\src\framework.h(375,105): warning C4244: 'return': conversión de 'double' a 'float'; posible pérdida de datos
+E:\GitHub\TJE_ERROR_403-Forbidden\src\game.cpp(138,14): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+E:\GitHub\TJE_ERROR_403-Forbidden\src\game.cpp(159,19): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos
+E:\GitHub\TJE_ERROR_403-Forbidden\src\game.cpp(205,25): warning C4244: '*=': conversión de 'double' a 'float'; posible pérdida de datos
+  loadScene.cpp
+E:\GitHub\TJE_ERROR_403-Forbidden\src\framework.h(375,105): warning C4244: 'return': conversión de 'double' a 'float'; posible pérdida de datos
+E:\GitHub\TJE_ERROR_403-Forbidden\src\loadScene.cpp(42,21): warning C4018: '<': no coinciden signed/unsigned
+  stage.cpp
+E:\GitHub\TJE_ERROR_403-Forbidden\src\framework.h(375,105): warning C4244: 'return': conversión de 'double' a 'float'; posible pérdida de datos
+  world.cpp
+E:\GitHub\TJE_ERROR_403-Forbidden\src\framework.h(375,105): warning C4244: 'return': conversión de 'double' a 'float'; posible pérdida de datos
+  Generando código...
+animation.obj : warning LNK4075: se omite '/EDITANDCONTINUE' debido a la especificación '/INCREMENTAL:NO'
+LINK : warning LNK4098: la biblioteca predeterminada'LIBCMT' entra en conflicto con otras bibliotecas; use la biblioteca /NODEFAULTLIB:biblioteca
+glew32s.lib(glew.obj) : warning LNK4099: no se encontró PDB 'vc120.pdb' con 'glew32s.lib(glew.obj)' o en 'E:\GitHub\TJE_ERROR_403-Forbidden\vc120.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
+  visualstudio.vcxproj -> E:\GitHub\TJE_ERROR_403-Forbidden\game_debug.exe

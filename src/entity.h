@@ -55,6 +55,8 @@ public:
     Shader* shader = nullptr;
     Vector4 color;
     EntityMesh(std::string name, Matrix44 model, Mesh* mesh, Texture* texture, Shader* shader, Vector4 color);
+    EntityMesh(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture);
+    EntityMesh(std::string name, Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture);
 
     // Methods overwritten from base class
     void render();
@@ -67,7 +69,10 @@ class InstancedEntityMesh : public EntityMesh {
     Texture* texture = nullptr;
     Shader* shader = nullptr;
     Vector4 color;
+    std::vector<Matrix44> models;
+
     InstancedEntityMesh(std::string name, Matrix44 model, Mesh* mesh, Texture* texture, Shader* shader, Vector4 color);
+    InstancedEntityMesh(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture);
 
     // Methods overwritten from base class
     void render();

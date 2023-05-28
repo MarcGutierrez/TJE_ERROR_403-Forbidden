@@ -48,6 +48,20 @@ EntityMesh::EntityMesh(std::string name, Matrix44 model, Mesh* mesh, Texture* te
     this->color = color;
 }
 
+EntityMesh::EntityMesh(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture) : Entity("Default", model)
+{
+    this->mesh = mesh;
+    this->texture = texture;
+    this->shader = shader;
+}
+
+EntityMesh::EntityMesh(std::string name, Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture) : Entity(name, Matrix44())
+{
+    this->mesh = mesh;
+    this->texture = texture;
+    this->shader = shader;
+}
+
 void EntityMesh::render(){
     // Get the last camera that was activated
     Camera* camera = Camera::current;
@@ -77,6 +91,12 @@ InstancedEntityMesh::InstancedEntityMesh(std::string name, Matrix44 model, Mesh*
     this->texture = texture;
     this->shader = shader;
     this->color = color;
+    models = std::vector<Matrix44>();
+}
+
+InstancedEntityMesh::InstancedEntityMesh(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture):EntityMesh("World", model, mesh, shader, texture)
+{
+    models = std::vector<Matrix44>();
 }
 
 void InstancedEntityMesh::render(){

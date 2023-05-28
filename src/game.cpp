@@ -8,6 +8,7 @@
 #include "animation.h"
 #include "entity.h"
 #include "world.h"
+#include "loadScene.h"
 
 #include <cmath>
 
@@ -69,9 +70,9 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
     //root = new Entity("root", model);
     EntityMesh* entityCaja = new EntityMesh("caja", model, mesh, texture, shader, color);
     EntityPlayer* player = new EntityPlayer("player", model, mesh, texture, shader, color, camera);
-    world->root->addChild(entityCaja);
-    world->root->addChild(player);
-    
+    //world->root->addChild(entityCaja);
+    //world->root->addChild(player);
+	parseScene("data/scenes/warehouse.scene", model, world->root, 0);
     
 	//hide the cursor
 	SDL_ShowCursor(!mouse_locked); //hide or show the mouse
