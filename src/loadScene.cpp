@@ -53,7 +53,7 @@ bool parseScene(const char* filename, Matrix44 model, Entity* root, int mapId)
 	Texture* texture;
 	if (!mapId)
 	{
-		shader = Shader::Get("data/shaders/basic.vs", "data/shaders/flat.fs");
+		shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
 		texture = Texture::Get("data/texture.tga");
 	}
 
@@ -71,7 +71,7 @@ bool parseScene(const char* filename, Matrix44 model, Entity* root, int mapId)
 
 		// Create instanced entity
 		if (render_data.models.size() > 1) {
-			InstancedEntityMesh* new_entity = new InstancedEntityMesh(model, Mesh::Get(mesh_name.c_str()), render_data.shader, render_data.texture);
+            InstancedEntityMesh* new_entity = new InstancedEntityMesh(model, Mesh::Get(mesh_name.c_str()), render_data.shader, render_data.texture);
 			// Add all instances
 			new_entity->models = render_data.models;
 			// Add entity to scene root

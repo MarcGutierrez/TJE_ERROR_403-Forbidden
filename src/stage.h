@@ -1,16 +1,10 @@
-//
-//  stage.h
-//  TJE_XCODE
-//
-//  Created by manu on 24/5/23.
-//  Copyright © 2023 manu. All rights reserved.
-//
+#pragma once
 
-//#ifndef stage_h
-//#define stage_h
-
-#include "world.h"
 #include "input.h"
+#include "world.h"
+#include "mesh.h"
+#include "texture.h"
+#include "shader.h"
 
 enum stageId { TITLE, GAME, MENU, ENDING};
 
@@ -18,20 +12,28 @@ class Stage{
 public:
     
     float t = 0.0f;
+    bool fin;
     
     Stage();
-    
+    //Stage* current_stage;
     virtual void render();
     virtual void update(float elapsed_time);
+        
+    //void onEnter(Stage* new_stage);
+    //void onLeave(Stage* next_stage);
     
 };
 
 class TitleStage : public Stage {
     
+public:
+    
     int width;
     int height;
     
     TitleStage();
+    
+    stageId getId();
     
     void render();
     void update(float elapsed_time);
@@ -39,12 +41,18 @@ class TitleStage : public Stage {
 };
 
 class PlayStage : public Stage {
-    
-    World world;
-    
+public:
+        
+    Matrix44 model;
+    Camera* camera;
+    Mesh* mesh;
+    Texture* texture;
+    Shader* shader;
+
     PlayStage();
     
     stageId getId();
+
     
     void render();
     void update(float elapsed_time);
@@ -56,6 +64,7 @@ class PlayStage : public Stage {
 };
 
 class MenuStage : public Stage {
+public:
     
     MenuStage();
     
@@ -67,24 +76,25 @@ class MenuStage : public Stage {
 };
 
 class EndStage : public Stage {
+public:
     
     EndStage();
     
     stageId getId();
     
     void render();
-    void update(float elapsed_time);
+    void update(float seconds_elapsed);
 };
 
-/*class StageManager : public Stage {
+class StageManager : public Stage {
     
     static StageManager* instance;
     
 public:
     
+    void changeStage(Stage* new_stage);
 
 };
- */
 /**
  MenuStage
         width = game::instance->window_width;
@@ -132,4 +142,3 @@ background = newENtityGUIelement(
  
  */
 
-//#endif /* stage_h */

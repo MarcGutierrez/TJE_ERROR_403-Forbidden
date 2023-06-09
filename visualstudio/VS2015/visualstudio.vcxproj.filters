@@ -61,21 +61,6 @@
     <ClCompile Include="..\..\src\animation.cpp">
       <Filter>gfx</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\extra\jpgd.cpp">
-      <Filter>extra</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\entity.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\world.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\stage.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\loadScene.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\camera.h" />
@@ -133,33 +118,6 @@
     </ClInclude>
     <ClInclude Include="..\..\src\animation.h">
       <Filter>gfx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\extra\jpgd.h">
-      <Filter>extra</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\extra\jpgd_idct.h">
-      <Filter>extra</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\extra\stb_easy_font.h">
-      <Filter>extra</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\extra\stb_image.h">
-      <Filter>extra</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\audio.h">
-      <Filter>gfx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\entity.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\world.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\stage.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\loadScene.h">
-      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

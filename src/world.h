@@ -9,6 +9,7 @@
 //#ifndef world_h
 //#define world_h
 
+#pragma once
 #include "entity.h"
 #include "camera.h"
 
@@ -19,6 +20,7 @@
 class Camera;
 
 class World{
+public:
     static World* world;
 
 public:
@@ -34,7 +36,7 @@ public:
     Entity* root = nullptr;
     Entity* player = nullptr;
     bool free_cam = false;
-    Camera* camera;
+    //Camera* camera;
     //void checkLineOfSight(const Matrix44& obs, const Matrix44& target)
     void render();
     void update(float elapsed_time);

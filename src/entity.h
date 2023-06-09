@@ -40,6 +40,7 @@ public:
     
     void addChild(Entity* child);
     void removeChild(Entity* child);
+    void debugChildren();
 
     // Some useful methods
     Matrix44 getGlobalMatrix();
@@ -54,9 +55,9 @@ public:
     Texture* texture = nullptr;
     Shader* shader = nullptr;
     Vector4 color;
-    EntityMesh(std::string name, Matrix44 model, Mesh* mesh, Texture* texture, Shader* shader, Vector4 color);
+    //EntityMesh(std::string name, Matrix44 model, Mesh* mesh, Texture* texture, Shader* shader, Vector4 color);
     EntityMesh(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture);
-    EntityMesh(std::string name, Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture);
+    //EntityMesh(std::string name, Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture);
 
     // Methods overwritten from base class
     void render();
@@ -71,7 +72,7 @@ class InstancedEntityMesh : public EntityMesh {
     Vector4 color;
     std::vector<Matrix44> models;
 
-    InstancedEntityMesh(std::string name, Matrix44 model, Mesh* mesh, Texture* texture, Shader* shader, Vector4 color);
+    //InstancedEntityMesh(std::string name, Matrix44 model, Mesh* mesh, Texture* texture, Shader* shader, Vector4 color);
     InstancedEntityMesh(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture);
 
     // Methods overwritten from base class
@@ -84,22 +85,38 @@ class EntityPlayer : public EntityMesh{
         // Attributes of the derived class
         float speed = 1.0f;
         Camera* camera = nullptr;
-        EntityPlayer(std::string name, Matrix44 model, Mesh* mesh, Texture* texture, Shader* shader, Vector4 color, Camera* camera);
+        //EntityPlayer(std::string name, Matrix44 model, Mesh* mesh, Texture* texture, Shader* shader, Vector4 color, Camera* camera);
+        EntityPlayer(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, Camera* camera);
         // Methods overwritten from base class
         void render();
         void update(float elapsed_time);
 };
 
-/*class EntityCollider : public EntityMesh {
+/*// Container to store EACH collision
+struct sCollisionData {
+    Vector3 colPoint;
+    Vector3 colNormal;
+};
+
+std::vector<sCollisionData> collisions;
+
+class EntityCollider : public EntityMesh {
 
     public:
 
-
         bool isDynamic = false;
-
+        Mesh* mesh = nullptr;
+        Texture* texture = nullptr;
+        Shader* shader = nullptr;
+        Vector4 color;
+     
+        EntityCollider(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture);
+        
         // New methods
-        bool testCollision(...);
-};*/
+        //bool checkPlayerCollisions(Vector3 position, Vector3 &colisions);
+        void render();
+        void update(float elapsed_time);
+};
 
 
 /*class EntityEnemy : public EntityMesh{

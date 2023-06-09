@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "21FFB19A-45FA-4A88-8B81-C658B7F5D9D5"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "764CB99F-4625-47DD-938B-D4EB236F847D"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../src/game.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "119"
+            endingLineNumber = "119"
+            landmarkName = "Game::render()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "764CB99F-4625-47DD-938B-D4EB236F847D - 4c100d7ef8db784d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Game::render()"
+                  moduleName = "TJE_XCODE"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/manu/Desktop/TJE_Framework-master/src/game.cpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "119"
+                  endingLineNumber = "119"
+                  offsetFromSymbolStart = "104">
+               </Location>
+               <Location
+                  uuid = "764CB99F-4625-47DD-938B-D4EB236F847D - 4c100d7ef8db7725"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Game::render()"
+                  moduleName = "TJE_XCODE"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/manu/Desktop/TJE_Framework-master/src/game.cpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "143"
+                  endingLineNumber = "143"
+                  offsetFromSymbolStart = "24">
+               </Location>
+               <Location
+                  uuid = "764CB99F-4625-47DD-938B-D4EB236F847D - 4c100d7ef8db77ca"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Game::render()"
+                  moduleName = "TJE_XCODE"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/manu/Desktop/TJE_Framework-master/src/game.cpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "146"
+                  endingLineNumber = "146"
+                  offsetFromSymbolStart = "28">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

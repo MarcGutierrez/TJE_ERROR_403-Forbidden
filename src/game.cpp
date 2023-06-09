@@ -7,8 +7,8 @@
 #include "input.h"
 #include "animation.h"
 #include "entity.h"
-#include "world.h"
-#include "loadScene.h"
+#include "stage.h"
+
 
 #include <cmath>
 
@@ -22,13 +22,10 @@ float mouse_speed = 100.0f;
 FBO* fbo = NULL;
 
 Game* Game::instance = NULL;
-
-//Entity* root = nullptr;
 //World* World::world = NULL;
 
-World* world = new World();
-
 Matrix44 model;
+
 Vector4 color = Vector4(1,1,1,1);
 
 
@@ -45,15 +42,19 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	time = 0.0f;
 	elapsed_time = 0.0f;
 	mouse_locked = false;
+    
+    camera = new Camera();
+    camera->lookAt(Vector3(0.f,1000.f, 1000.f),Vector3(0.f,0.f,0.f), Vector3(0.f,1.f,0.f)); //position the camera and point to 0,0,0
+    camera->setPerspective(70.f,window_width/(float)window_height,0.1f,10000.f); //set the projection, we want to be perspective
+    
+    current_stage = new PlayStage();
 
-	//OpenGL flags
+	/*//OpenGL flags
 	glEnable( GL_CULL_FACE ); //render both sides of every triangle
 	glEnable( GL_DEPTH_TEST ); //check the occlusions using the Z buffer
 
 	//create our camera
-	camera = new Camera();
-	camera->lookAt(Vector3(0.f,100.f, 100.f),Vector3(0.f,0.f,0.f), Vector3(0.f,1.f,0.f)); //position the camera and point to 0,0,0
-	camera->setPerspective(70.f,window_width/(float)window_height,0.1f,10000.f); //set the projection, we want to be perspective
+	
 
 	//load one texture without using the Texture Manager (Texture::Get would use the manager)
 	texture = new Texture();
@@ -61,18 +62,34 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 
 	// example of loading Mesh from Mesh Manager
 	mesh = Mesh::Get("data/box.ASE");
+    Mesh* test;
+    test = Mesh::Get("data/test_scene.obj");
+    Mesh* plane = new Mesh();
+    plane->createSubdividedPlane(1000.0f);
 
 	// example of shader loading using the shaders manager
 	shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
     
+    
     //TESTEST/////////////
     
     //root = new Entity("root", model);
-    EntityMesh* entityCaja = new EntityMesh("caja", model, mesh, texture, shader, color);
-    EntityPlayer* player = new EntityPlayer("player", model, mesh, texture, shader, color, camera);
-    //world->root->addChild(entityCaja);
-    //world->root->addChild(player);
-	parseScene("data/scenes/warehouse.scene", model, world->root, 0);
+    //EntityMesh* entityCaja = new EntityMesh("caja", model, mesh, texture, shader, color);
+    //EntityPlayer* player = new EntityPlayer("player", model, mesh, texture, shader, color, camera);
+
+    EntityPlayer* player = new EntityPlayer(model, mesh, shader, texture, camera);
+    
+    EntityMesh* test_scene = new EntityMesh(model, test, shader, texture);
+    
+    EntityMesh* test_plane = new EntityMesh(model, plane, shader, texture);
+    
+    player->model.translate(0.0f, 100.0f, 0.0f);
+    
+    world->root->addChild(player);
+    //world->root->addChild(test_scene);
+    world->root->addChild(test_plane);
+    
+	//parseScene("data/scenes/test_scene.scene", model, world->root, NULL);*/
     
 	//hide the cursor
 	SDL_ShowCursor(!mouse_locked); //hide or show the mouse
@@ -81,7 +98,7 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 //what to do when the image has to be draw
 void Game::render(void)
 {
-	//set the clear color (the background color)
+	/*//set the clear color (the background color)
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 
 	// Clear the window and the depth buffer
@@ -114,16 +131,16 @@ void Game::render(void)
 		//do the draw call
 		//mesh->render( GL_TRIANGLES );
         
-        //world
-        //root->render();
-        world->render();
+        //render stage here
+        current_stage->render();
         
 
 		//disable shader
 		shader->disable();
-	}
+	}*/
 
 	//Draw the floor grid
+    current_stage->render();
 	drawGrid();
 
 	//render the FPS, Draw Calls, etc
@@ -131,6 +148,7 @@ void Game::render(void)
 
 	//swap between front buffer and back buffer
 	SDL_GL_SwapWindow(this->window);
+
 }
 
 void Game::update(double seconds_elapsed)
@@ -156,7 +174,7 @@ void Game::update(double seconds_elapsed)
     
     
     //root->update(seconds_elapsed);
-    world->update(seconds_elapsed);
+    current_stage->update(seconds_elapsed);
     
 	//example
 	//angle += (float)seconds_elapsed * 10.0f;

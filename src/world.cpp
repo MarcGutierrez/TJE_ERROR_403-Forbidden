@@ -10,12 +10,14 @@
 #include "world.h"
 #include "entity.h"
 
+World* World::world;
+
 World::World(){
     root = new Entity("root", this->model);
     
 }
 void World::render(){
-    this->root->render();
+    root->render();
 }
 
 void World::update(float elapsed_time){
@@ -31,7 +33,7 @@ void World::update(float elapsed_time){
     }
     */
 
-    this->root->update(elapsed_time);
+    root->update(elapsed_time);
 }
 /*
  bool World::checkLineOfSight(const Matrix44& obs, const Matrix44& target)

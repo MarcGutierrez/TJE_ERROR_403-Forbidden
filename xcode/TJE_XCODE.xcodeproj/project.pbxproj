@@ -38,6 +38,11 @@
 		12BE84F21981D8F20090DDBD /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12BE84F11981D8F20090DDBD /* SDL2.framework */; };
 		12D3D2D419903A8200779234 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12D3D2D319903A8200779234 /* GLUT.framework */; };
 		12D3D2D619903A9A00779234 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12D3D2D519903A9A00779234 /* OpenGL.framework */; };
+		322117C72A23BD61000506CC /* loadScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 322117C62A23BD61000506CC /* loadScene.cpp */; };
+		326FB5B92A1FE917003F60D3 /* entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 326FB5B82A1FE917003F60D3 /* entity.cpp */; };
+		328C0BD62A1D403800AF891C /* world.h in Sources */ = {isa = PBXBuildFile; fileRef = 32A824BD2A14DCCD008898A2 /* world.h */; };
+		328C0BD72A1D7D4700AF891C /* world.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32A824C02A14E12E008898A2 /* world.cpp */; };
+		32C627372A216060002CAFC9 /* stage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32C627362A216060002CAFC9 /* stage.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -87,7 +92,17 @@
 		12BE84F11981D8F20090DDBD /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
 		12D3D2D319903A8200779234 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		12D3D2D519903A9A00779234 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
-		32E048E32A0D2DBD003F3DC2 /* entity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = entity.h; sourceTree = "<group>"; };
+		322117C52A23BD61000506CC /* loadScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = loadScene.h; path = ../../src/loadScene.h; sourceTree = "<group>"; };
+		322117C62A23BD61000506CC /* loadScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = loadScene.cpp; path = ../../src/loadScene.cpp; sourceTree = "<group>"; };
+		326FB5B82A1FE917003F60D3 /* entity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = entity.cpp; path = ../../src/entity.cpp; sourceTree = "<group>"; };
+		328C0BD82A1E217500AF891C /* interface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = interface.h; path = ../../src/interface.h; sourceTree = "<group>"; };
+		328C0BD92A1E2CAF00AF891C /* stage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = stage.h; path = ../../src/stage.h; sourceTree = "<group>"; };
+		328C0BDA2A1E358300AF891C /* audio.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = audio.h; path = ../../src/audio.h; sourceTree = "<group>"; };
+		328C0BDB2A1E7CD500AF891C /* input.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = input.h; path = ../../src/input.h; sourceTree = "<group>"; };
+		32A824BD2A14DCCD008898A2 /* world.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = world.h; path = ../../src/world.h; sourceTree = "<group>"; };
+		32A824C02A14E12E008898A2 /* world.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = world.cpp; path = ../../src/world.cpp; sourceTree = "<group>"; };
+		32C627362A216060002CAFC9 /* stage.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = stage.cpp; path = ../../src/stage.cpp; sourceTree = "<group>"; };
+		32E048E32A0D2DBD003F3DC2 /* entity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = entity.h; path = ../../src/entity.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,15 +189,25 @@
 				128DBA1F1AD69163002B8C0C /* mesh.h */,
 				128DBA201AD69163002B8C0C /* rendertotexture.cpp */,
 				128DBA211AD69163002B8C0C /* rendertotexture.h */,
+				32C627362A216060002CAFC9 /* stage.cpp */,
+				328C0BD92A1E2CAF00AF891C /* stage.h */,
 				128DBA221AD69163002B8C0C /* shader.cpp */,
+				322117C62A23BD61000506CC /* loadScene.cpp */,
+				322117C52A23BD61000506CC /* loadScene.h */,
 				128DBA231AD69163002B8C0C /* shader.h */,
 				128DBA241AD69163002B8C0C /* texture.cpp */,
 				128DBA251AD69163002B8C0C /* texture.h */,
 				128DBA261AD69163002B8C0C /* utils.cpp */,
 				128DBA271AD69163002B8C0C /* utils.h */,
+				328C0BDB2A1E7CD500AF891C /* input.h */,
+				32A824C02A14E12E008898A2 /* world.cpp */,
+				32A824BD2A14DCCD008898A2 /* world.h */,
+				326FB5B82A1FE917003F60D3 /* entity.cpp */,
+				32E048E32A0D2DBD003F3DC2 /* entity.h */,
+				328C0BD82A1E217500AF891C /* interface.h */,
+				328C0BDA2A1E358300AF891C /* audio.h */,
 				12BE84D51981D8180090DDBD /* Images.xcassets */,
 				12BE84C41981D8180090DDBD /* Supporting Files */,
-				32E048E32A0D2DBD003F3DC2 /* entity.h */,
 			);
 			name = TJE_XCODE;
 			path = SDL_OSX_TEST;
@@ -283,12 +308,17 @@
 				128DBA2F1AD69163002B8C0C /* shader.cpp in Sources */,
 				128DBA2A1AD69163002B8C0C /* framework.cpp in Sources */,
 				128DBA281AD69163002B8C0C /* camera.cpp in Sources */,
+				328C0BD62A1D403800AF891C /* world.h in Sources */,
 				128DBA2C1AD69163002B8C0C /* main.cpp in Sources */,
 				128DBA2D1AD69163002B8C0C /* mesh.cpp in Sources */,
+				32C627372A216060002CAFC9 /* stage.cpp in Sources */,
 				128DBA301AD69163002B8C0C /* texture.cpp in Sources */,
 				128DBA311AD69163002B8C0C /* utils.cpp in Sources */,
 				128DBA2E1AD69163002B8C0C /* rendertotexture.cpp in Sources */,
+				326FB5B92A1FE917003F60D3 /* entity.cpp in Sources */,
 				128DBA2B1AD69163002B8C0C /* game.cpp in Sources */,
+				328C0BD72A1D7D4700AF891C /* world.cpp in Sources */,
+				322117C72A23BD61000506CC /* loadScene.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
