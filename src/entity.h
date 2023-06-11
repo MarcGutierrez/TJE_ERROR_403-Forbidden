@@ -92,28 +92,17 @@ class EntityPlayer : public EntityMesh{
         void update(float elapsed_time);
 };
 
-/*// Container to store EACH collision
-struct sCollisionData {
-    Vector3 colPoint;
-    Vector3 colNormal;
-};
 
-std::vector<sCollisionData> collisions;
-
-class EntityCollider : public EntityMesh {
+class EntityCollider : public EntityMesh{
 
     public:
 
         bool isDynamic = false;
-        Mesh* mesh = nullptr;
-        Texture* texture = nullptr;
-        Shader* shader = nullptr;
-        Vector4 color;
      
         EntityCollider(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture);
         
         // New methods
-        //bool checkPlayerCollisions(Vector3 position, Vector3 &colisions);
+        bool checkPlayerCollisions(Vector3 position, Vector3 &colisions);
         void render();
         void update(float elapsed_time);
 };

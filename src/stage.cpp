@@ -31,7 +31,7 @@ void Stage::render(){
 
 void Stage::update(float elapsed_time){
     if (Input::isKeyPressed(SDL_SCANCODE_SPACE)) {
-        fin = true;
+        this->fin = true;
     }
 }
 
@@ -42,10 +42,16 @@ TitleStage::TitleStage(){
 
 void TitleStage::render(){
     
+    glEnable( GL_CULL_FACE ); //render both sides of every triangle
+    glEnable( GL_DEPTH_TEST ); //check the occlusions using the Z buffer
+
+    drawText(150, height/2-50, "Error 403: Forbidden", Vector3(1,1,1),5);
 }
 
 void TitleStage::update(float elapsed_time){
-
+    if (Input::isKeyPressed(SDL_SCANCODE_SPACE)) {
+        fin = true;
+    }
 }
 
 stageId TitleStage::getId()

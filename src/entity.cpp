@@ -181,13 +181,40 @@ void EntityPlayer::update(float elapsed_time){
 }
 
 
-/*EntityCollider::EntityCollider(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture):EntityMesh(model, mesh, shader, texture){
+EntityCollider::EntityCollider(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture):EntityMesh(model,mesh,shader,texture){
 }
 
+void EntityCollider::render(){
+    // Get the last camera that was activated
+    Camera* camera = Camera::current;
 
+    // Enable shader and pass uniforms
+    shader->enable();
+    shader->setUniform("u_model", model);
+    shader->setUniform("u_viewproj", camera->viewprojection_matrix);
+    shader->setTexture("u_texture", texture, 0);
+
+
+    // Render the mesh using the shader
+    mesh->render( GL_TRIANGLES );
+
+    // Disable shader after finishing rendering
+    shader->disable();
+
+}
+
+void EntityCollider::update(float elapsed_time){
+}
+// Container to store EACH collision
+struct sCollisionData {
+    Vector3 colPoint;
+    Vector3 colNormal;
+};
+
+std::vector<sCollisionData> collisions;
 // Check if collides with wall using sphere (radius = 2)
 
-/*bool checkPlayerCollisions(const Vector3& target_pos,
+bool checkPlayerCollisions(const Vector3& target_pos,
 std::vector<sCollisionData>& collisions) {
     Vector3 center = target_pos + Vector3(0.f, 1.25f, 0.f);
     float sphereRadius = 0.75f;
@@ -207,19 +234,19 @@ std::vector<sCollisionData>& collisions) {
         // End loop
     }
     return !collisions.empty();
-}*/
+}
 
 
 /*if (checkPlayerCollisions(position + player->velocity * seconds_elapsed, &collisions)
 
-       for (const sCollisionsDara& collisions: collisions)
-           //if normal is pointing upwards it means we are on the floor
-           float up_factor = collision.colNormal.dot(Vector(0,1,0))
-           if (up_factor > 0.8)
-               isOnFloor = true
-           else
-               //move along wall when colliding
-               Vector3 newDir = player->velocity.dot(collision.colNormal) * collision.colNormal;
-               player->velocity.x -= newDir.x;
-               player->velocity.z -= newdir.z*/
+   for (const sCollisionsDara& collisions: collisions)
+       //if normal is pointing upwards it means we are on the floor
+       float up_factor = collision.colNormal.dot(Vector(0,1,0))
+       if (up_factor > 0.8)
+           isOnFloor = true
+       else
+           //move along wall when colliding
+           Vector3 newDir = player->velocity.dot(collision.colNormal) * collision.colNormal;
+           player->velocity.x -= newDir.x;
+           player->velocity.z -= newdir.z*/
 

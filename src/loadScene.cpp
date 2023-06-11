@@ -79,7 +79,7 @@ bool parseScene(const char* filename, Matrix44 model, Entity* root, int mapId)
 		}
 		// Create normal entity
 		else {
-			EntityMesh* new_entity = new EntityMesh(model, Mesh::Get(mesh_name.c_str()), render_data.shader, render_data.texture);
+			EntityCollider* new_entity = new EntityCollider(model, Mesh::Get(mesh_name.c_str()), render_data.shader, render_data.texture);
 			new_entity->model = render_data.models[0];
 			// Add entity to scene root
 			root->addChild(new_entity);

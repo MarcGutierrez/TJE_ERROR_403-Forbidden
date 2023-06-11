@@ -14,6 +14,12 @@ public:
     float t = 0.0f;
     bool fin;
     
+    Matrix44 model;
+    Camera* camera;
+    Mesh* mesh;
+    Texture* texture;
+    Shader* shader;
+    
     Stage();
     //Stage* current_stage;
     virtual void render();
@@ -43,11 +49,6 @@ public:
 class PlayStage : public Stage {
 public:
         
-    Matrix44 model;
-    Camera* camera;
-    Mesh* mesh;
-    Texture* texture;
-    Shader* shader;
 
     PlayStage();
     

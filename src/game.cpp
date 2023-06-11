@@ -28,7 +28,6 @@ Matrix44 model;
 
 Vector4 color = Vector4(1,1,1,1);
 
-
 Game::Game(int window_width, int window_height, SDL_Window* window)
 {
 	this->window_width = window_width;
@@ -46,8 +45,18 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
     camera = new Camera();
     camera->lookAt(Vector3(0.f,1000.f, 1000.f),Vector3(0.f,0.f,0.f), Vector3(0.f,1.f,0.f)); //position the camera and point to 0,0,0
     camera->setPerspective(70.f,window_width/(float)window_height,0.1f,10000.f); //set the projection, we want to be perspective
+    //std::vector<Stage*> stages;
+    //PlayStage* play_stage = new PlayStage();
+    TitleStage* title_stage = new TitleStage();
+
     
-    current_stage = new PlayStage();
+    /*stages.push_back(play_stage);
+    stages.push_back(title_stage);
+     
+    
+    current_stage = stages[0];*/
+    current_stage = title_stage;
+    
 
 	/*//OpenGL flags
 	glEnable( GL_CULL_FACE ); //render both sides of every triangle
@@ -141,10 +150,10 @@ void Game::render(void)
 
 	//Draw the floor grid
     current_stage->render();
-	drawGrid();
+	//drawGrid();
 
 	//render the FPS, Draw Calls, etc
-	drawText(2, 2, getGPUStats(), Vector3(1, 1, 1), 2);
+	//drawText(2, 2, getGPUStats(), Vector3(1, 1, 1), 2);
 
 	//swap between front buffer and back buffer
 	SDL_GL_SwapWindow(this->window);
@@ -175,7 +184,9 @@ void Game::update(double seconds_elapsed)
     
     //root->update(seconds_elapsed);
     current_stage->update(seconds_elapsed);
-    
+    if (current_stage->fin == true){
+        current_stage = new PlayStage();
+    }
 	//example
 	//angle += (float)seconds_elapsed * 10.0f;
 
