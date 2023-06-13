@@ -23,6 +23,11 @@
 
 Stage::Stage(){
     fin = false;
+    camera = Game::instance->camera;
+    
+    //camera = new Camera();
+    camera->lookAt(Vector3(0.f,1000.f, 1000.f),Vector3(0.f,0.f,0.f), Vector3(0.f,1.f,0.f)); //position the camera and point to 0,0,0
+    camera->setPerspective(70.f,Game::instance->window_width/(float)Game::instance->window_height,0.1f,10000.f); //set the projection, we want to be perspective
 }
 
 void Stage::render(){
@@ -38,6 +43,15 @@ void Stage::update(float elapsed_time){
 TitleStage::TitleStage(){
     this->width = Game::instance->window_width;
     this->height = Game::instance->window_height;
+    
+    texture = new Texture();
+    texture->load("data/texture.tga");
+
+    // example of loading Mesh from Mesh Manager
+    mesh = Mesh::Get("data/box.ASE");
+
+    // example of shader loading using the shaders manager
+    shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
 }
 
 void TitleStage::render(){
@@ -45,6 +59,7 @@ void TitleStage::render(){
     glEnable( GL_CULL_FACE ); //render both sides of every triangle
     glEnable( GL_DEPTH_TEST ); //check the occlusions using the Z buffer
 
+    World::get_instance()->render();
     drawText(150, height/2-50, "Error 403: Forbidden", Vector3(1,1,1),5);
 }
 
@@ -64,44 +79,21 @@ PlayStage::PlayStage(){
     glEnable( GL_CULL_FACE ); //render both sides of every triangle
     glEnable( GL_DEPTH_TEST ); //check the occlusions using the Z buffer
     
-    camera = Game::instance->camera;
-    
-    //camera = new Camera();
-    camera->lookAt(Vector3(0.f,1000.f, 1000.f),Vector3(0.f,0.f,0.f), Vector3(0.f,1.f,0.f)); //position the camera and point to 0,0,0
-    camera->setPerspective(70.f,Game::instance->window_width/(float)Game::instance->window_height,0.1f,10000.f); //set the projection, we want to be perspective
-    
     texture = new Texture();
     texture->load("data/texture.tga");
 
     // example of loading Mesh from Mesh Manager
     mesh = Mesh::Get("data/box.ASE");
 
-    //Mesh* plane = new Mesh();
-    //plane->createSubdividedPlane(1000.0f);
-
     // example of shader loading using the shaders manager
     shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
-
-    // example of loading Mesh from Mesh Manager
-    
-    //Mesh* test;
-    //test = Mesh::Get("data/test_scene.obj");
-
-    // example of shader loading using the shaders manager
     
     EntityPlayer* player = new EntityPlayer(model, mesh, shader, texture, camera);
     
-    //EntityMesh* test_scene = new EntityMesh(model, test, shader, texture);
-    
-    //EntityMesh* test_plane = new EntityMesh(model, plane, shader, texture);
-    
     player->model.translate(0.0f, 51.0f, 0.0f);
     
-    World::get_instance()->root->addChild(player);
-    //world->root->addChild(test_scene);
-    //World::get_instance()->root->addChild(test_plane);
-    //world->root->addChild(testentity);
-    
+    //World::get_instance()->root->addChild(player);
+    World::get_instance()->player = player;
     
     parseScene("data/scenes/myscene.scene", model, World::get_instance()->root, NULL);
 }

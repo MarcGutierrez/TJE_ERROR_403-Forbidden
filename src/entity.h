@@ -83,7 +83,9 @@ class InstancedEntityMesh : public EntityMesh {
 class EntityPlayer : public EntityMesh{
     public:
         // Attributes of the derived class
-        float speed = 1.0f;
+        float speed = 1000.0f;
+        Vector3 velocity = Vector3(0,0,0);
+        Vector3 move_dir;
         Camera* camera = nullptr;
         //EntityPlayer(std::string name, Matrix44 model, Mesh* mesh, Texture* texture, Shader* shader, Vector4 color, Camera* camera);
         EntityPlayer(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, Camera* camera);
@@ -102,7 +104,7 @@ class EntityCollider : public EntityMesh{
         EntityCollider(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture);
         
         // New methods
-        bool checkPlayerCollisions(Vector3 position, Vector3 &colisions);
+        //bool checkPlayerCollisions(Vector3 position, Vector3 &colisions);
         void render();
         void update(float elapsed_time);
 };

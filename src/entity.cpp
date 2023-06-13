@@ -162,20 +162,33 @@ void EntityPlayer::render(){
 }
 
 void EntityPlayer::update(float elapsed_time){
+    float move_speed = speed * elapsed_time;
     if (Input::isKeyPressed(SDL_SCANCODE_W)) {
-        model.translate(0.0f, 0.0f, -1.0f * speed);
+        //model.translate(0.0f, 0.0f, -1.0f * move_speed);
+        move_dir = Vector3(0.0f, 0.0f, -1.0f);
+        velocity = move_dir + move_speed;
+        model.translate(velocity.x, velocity.y, velocity.z);
         camera->lookAt(camera->eye, camera->center, camera->up);
     }
     if (Input::isKeyPressed(SDL_SCANCODE_S)) {
-        model.translate(0.0f, 0.0f, 1.0f * speed);
+        //model.translate(0.0f, 0.0f, 1.0f * move_speed);
+        move_dir = Vector3(0.0f, 0.0f, 1.0f);
+        velocity = move_dir + move_speed;
+        model.translate(velocity.x, velocity.y, velocity.z);
         camera->lookAt(camera->eye, camera->center, camera->up);
     }
     if (Input::isKeyPressed(SDL_SCANCODE_A)) {
-        model.translate(-1.0f * speed, 0.0f, 0.0f);
+        //model.translate(-1.0f * move_speed, 0.0f, 0.0f);
+        move_dir = Vector3(-1.0f, 0.0f, 0.0f);
+        velocity = move_dir + move_speed;
+        model.translate(velocity.x, velocity.y, velocity.z);
         camera->lookAt(camera->eye, camera->center, camera->up);
     }
     if (Input::isKeyPressed(SDL_SCANCODE_D)) {
-        model.translate(1.0f * speed, 0.0f, 0.0f);
+        //model.translate(1.0f * move_speed, 0.0f, 0.0f);
+        move_dir = Vector3(1.0f, 0.0f, 0.0f);
+        velocity = move_dir + move_speed;
+        model.translate(velocity.x, velocity.y, velocity.z);
         camera->lookAt(camera->eye, camera->center, camera->up);
     }
 }
@@ -204,36 +217,6 @@ void EntityCollider::render(){
 }
 
 void EntityCollider::update(float elapsed_time){
-}
-// Container to store EACH collision
-struct sCollisionData {
-    Vector3 colPoint;
-    Vector3 colNormal;
-};
-
-std::vector<sCollisionData> collisions;
-// Check if collides with wall using sphere (radius = 2)
-
-bool checkPlayerCollisions(const Vector3& target_pos,
-std::vector<sCollisionData>& collisions) {
-    Vector3 center = target_pos + Vector3(0.f, 1.25f, 0.f);
-    float sphereRadius = 0.75f;
-    Vector3 colPoint, colNormal;
-
-    // For each collider entity “e” in root:
-    for(auto e:World::world->root->children){
-        if (EntityCollider* e = dynamic_cast<EntityCollider*>(e)){
-            Mesh* mesh = e->mesh;
-            
-            if (mesh->testSphereCollision(e->model, center,
-                                          sphereRadius, colPoint, colNormal)) {
-                collisions.push_back({ colPoint,
-                    colNormal.normalize() });
-            }
-        }
-        // End loop
-    }
-    return !collisions.empty();
 }
 
 
