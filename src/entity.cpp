@@ -10,6 +10,13 @@
 #include "input.h"
 #include "world.h"
 
+// Container to store EACH collision
+struct sCollisionData {
+    Vector3 colPoint;
+    Vector3 colNormal;
+};
+
+std::vector<sCollisionData> collisions;
 
 Entity::Entity(std::string name, Matrix44 model){
     this->name = name;
@@ -161,36 +168,62 @@ void EntityPlayer::render(){
 
 }
 
+bool checkCollisions(const Vector3& target_pos,
+    std::vector<sCollisionData>& collisions) {
+    Vector3 center = target_pos + Vector3(0.f, .0f, 0.f);
+    float sphereRadius = .75f;
+    Vector3 colPoint, colNormal;
+
+    // For each collider entity “e” in root:
+    //for(auto e:World::world->get_instance()->root->children){
+    for (int i = 0; i < World::world->get_instance()->root->children.size(); i++) {
+        if (EntityCollider* e = dynamic_cast<EntityCollider*>(World::world->get_instance()->root->children[i])) {
+            Mesh* mesh = e->mesh;
+
+            if (mesh->testSphereCollision(e->model, center,
+                sphereRadius, colPoint, colNormal)) {
+                collisions.push_back({ colPoint,
+                    colNormal.normalize() });
+            }
+        }
+        // End loop
+    }
+    return !collisions.empty();
+}
+
 void EntityPlayer::update(float elapsed_time){
     float move_speed = speed * elapsed_time;
+    move_dir = Vector3(0.f, 0.f, 0.f);
     if (Input::isKeyPressed(SDL_SCANCODE_W)) {
         //model.translate(0.0f, 0.0f, -1.0f * move_speed);
-        move_dir = Vector3(0.0f, 0.0f, -1.0f);
-        velocity = move_dir + move_speed;
-        model.translate(velocity.x, velocity.y, velocity.z);
-        camera->lookAt(camera->eye, camera->center, camera->up);
+        move_dir = Vector3(0.0f + move_dir.x, 0.0f + move_dir.y, -1.0f + move_dir.z);
     }
     if (Input::isKeyPressed(SDL_SCANCODE_S)) {
         //model.translate(0.0f, 0.0f, 1.0f * move_speed);
-        move_dir = Vector3(0.0f, 0.0f, 1.0f);
-        velocity = move_dir + move_speed;
-        model.translate(velocity.x, velocity.y, velocity.z);
-        camera->lookAt(camera->eye, camera->center, camera->up);
+        move_dir = Vector3(0.0f + move_dir.x, 0.0f + move_dir.y, 1.0f + move_dir.z);
     }
     if (Input::isKeyPressed(SDL_SCANCODE_A)) {
         //model.translate(-1.0f * move_speed, 0.0f, 0.0f);
-        move_dir = Vector3(-1.0f, 0.0f, 0.0f);
-        velocity = move_dir + move_speed;
-        model.translate(velocity.x, velocity.y, velocity.z);
-        camera->lookAt(camera->eye, camera->center, camera->up);
+
+        move_dir = Vector3(-1.0f + move_dir.x, 0.0f + move_dir.y, 0.0f + +move_dir.z);
     }
     if (Input::isKeyPressed(SDL_SCANCODE_D)) {
         //model.translate(1.0f * move_speed, 0.0f, 0.0f);
-        move_dir = Vector3(1.0f, 0.0f, 0.0f);
-        velocity = move_dir + move_speed;
-        model.translate(velocity.x, velocity.y, velocity.z);
-        camera->lookAt(camera->eye, camera->center, camera->up);
+        move_dir = Vector3(1.0f + move_dir.x, 0.0f + move_dir.y, 0.0f + +move_dir.z);
     }
+    velocity = move_dir * move_speed;
+    EntityPlayer* player = World::get_instance()->player;
+    if (checkCollisions(player->model.getTranslation() + player->velocity, collisions)) {
+
+        for (const sCollisionData& collisions : collisions) {
+
+            Vector3 newDir = player->velocity.dot(collisions.colNormal) * collisions.colNormal;
+            player->velocity.x -= newDir.x;
+            player->velocity.z -= newDir.z;
+        }
+    }
+    model.translate(velocity.x, velocity.y, velocity.z);
+    camera->lookAt(camera->eye, camera->center, camera->up);
 }
 
 

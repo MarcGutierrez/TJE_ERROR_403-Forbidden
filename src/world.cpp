@@ -13,41 +13,9 @@
 
 World* World::world;
 
-// Container to store EACH collision
-struct sCollisionData {
-    Vector3 colPoint;
-    Vector3 colNormal;
-};
-
-std::vector<sCollisionData> collisions;
-
 World::World(){
     root = new Entity("root", this->model);
     
-}
-
-
-bool checkCollisions(const Vector3& target_pos,
-std::vector<sCollisionData>& collisions) {
-    Vector3 center = target_pos + Vector3(0.f, 1.25f, 0.f);
-    float sphereRadius = 0.75f;
-    Vector3 colPoint, colNormal;
-
-    // For each collider entity “e” in root:
-    //for(auto e:World::world->get_instance()->root->children){
-    for(int i = 0; i<World::world->get_instance()->root->children.size(); i++){
-        if (EntityCollider* e = dynamic_cast<EntityCollider*>(World::world->get_instance()->root->children[i])){
-            Mesh* mesh = e->mesh;
-            
-            if (mesh->testSphereCollision(e->model, center,
-                                          sphereRadius, colPoint, colNormal)) {
-                collisions.push_back({ colPoint,
-                    colNormal.normalize() });
-            }
-        }
-        // End loop
-    }
-    return !collisions.empty();
 }
 
 void World::render(){
@@ -62,15 +30,6 @@ void World::update(float elapsed_time){
     
     player->update(elapsed_time);
     root->update(elapsed_time);
-    if (checkCollisions(player->model.getTranslation() + player->velocity, collisions)){
-        
-        for (const sCollisionData& collisions: collisions){
-
-            Vector3 newDir = player->velocity.dot(collisions.colNormal) * collisions.colNormal;
-            player->velocity.x -= newDir.x;
-            player->velocity.z -= newDir.z;
-        }
-    }
 }
 
 

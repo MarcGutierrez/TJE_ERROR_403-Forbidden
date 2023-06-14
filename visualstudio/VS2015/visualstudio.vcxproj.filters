@@ -3,7 +3,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\camera.cpp" />
     <ClCompile Include="..\..\src\game.cpp" />
-    <ClCompile Include="..\..\src\main.cpp" />
     <ClCompile Include="..\..\src\extra\textparser.cpp">
       <Filter>extra</Filter>
     </ClCompile>
@@ -60,6 +59,19 @@
     </ClCompile>
     <ClCompile Include="..\..\src\animation.cpp">
       <Filter>gfx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\main.cpp" />
+    <ClCompile Include="..\..\src\stage.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\entity.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\world.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\loadScene.cpp">
+      <Filter>utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -118,6 +130,18 @@
     </ClInclude>
     <ClInclude Include="..\..\src\animation.h">
       <Filter>gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\stage.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\entity.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\world.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\loadScene.h">
+      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
