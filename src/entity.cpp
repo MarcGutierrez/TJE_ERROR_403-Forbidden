@@ -9,6 +9,7 @@
 #include "entity.h"
 #include "input.h"
 #include "world.h"
+#include "game.h"
 
 // Container to store EACH collision
 struct sCollisionData {
@@ -193,26 +194,41 @@ bool checkCollisions(const Vector3& target_pos,
 
 void EntityPlayer::update(float elapsed_time){
     delta_yaw = Input::mouse_delta.x * elapsed_time * 10.0f;
-    float move_speed = speed * elapsed_time;
+    
+    //float move_speed = speed * elapsed_time;
+    
     move_dir = Vector3(0.f, 0.f, 0.f);
+    
     if (Input::isKeyPressed(SDL_SCANCODE_W)) {
         //model.translate(0.0f, 0.0f, -1.0f * move_speed);
         move_dir = Vector3(0.0f + move_dir.x, 0.0f + move_dir.y, -1.0f + move_dir.z);
+        velocity = move_dir * speed;
+        position = position + velocity * elapsed_time;
+        model.setTranslation(position.x, 51.0f, position.z);
     }
     if (Input::isKeyPressed(SDL_SCANCODE_S)) {
         //model.translate(0.0f, 0.0f, 1.0f * move_speed);
         move_dir = Vector3(0.0f + move_dir.x, 0.0f + move_dir.y, 1.0f + move_dir.z);
+        velocity = move_dir * speed;
+        position = position + velocity * elapsed_time;
+        model.setTranslation(position.x, 51.0f, position.z); //el 51 es hardcodeado por la mesh del cubo (se
     }
     if (Input::isKeyPressed(SDL_SCANCODE_A)) {
         //model.translate(-1.0f * move_speed, 0.0f, 0.0f);
-
-        move_dir = Vector3(-1.0f + move_dir.x, 0.0f + move_dir.y, 0.0f + +move_dir.z);
+        move_dir = Vector3(-1.0f + move_dir.x, 0.0f + move_dir.y, 0.0f + move_dir.z);
+        velocity = move_dir * speed;
+        position = position + velocity * elapsed_time;
+        model.setTranslation(position.x, 51.0f, position.z); //el 51 es hardcodeado por la mesh del cubo (se
     }
     if (Input::isKeyPressed(SDL_SCANCODE_D)) {
         //model.translate(1.0f * move_speed, 0.0f, 0.0f);
-        move_dir = Vector3(1.0f + move_dir.x, 0.0f + move_dir.y, 0.0f + +move_dir.z);
+        move_dir = Vector3(1.0f + move_dir.x, 0.0f + move_dir.y, 0.0f + move_dir.z);
+        velocity = move_dir * speed;
+        position = position + velocity * elapsed_time;
+        model.setTranslation(position.x, 51.0f, position.z); //el 51 es hardcodeado por la mesh del cubo (se
     }
-    velocity = move_dir * move_speed;
+    //velocity = move_dir * speed;
+    //position = position + velocity * elapsed_time;
     //EntityPlayer* player = World::get_instance()->player;
     if (checkCollisions(model.getTranslation() + velocity, collisions)) {
 
@@ -223,10 +239,17 @@ void EntityPlayer::update(float elapsed_time){
             velocity.z -= newDir.z;
         }
     }
-    model.rotate(delta_yaw, Vector3(0.0f, 1.0f, 0.0f));
-    model.translate(velocity.x, velocity.y, velocity.z);
 
-    camera->lookAt(camera->eye, camera->center, camera->up);
+    //model.setTranslation(position.x, 51.0f, position.z); //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
+    if (Input::mouse_position.y < Game::instance->window_height/2){
+        model.rotate(delta_yaw, Vector3(0.0f, -1.0f, 0.0f));
+    }
+    if (Input::mouse_position.y >= Game::instance->window_height/2){
+        model.rotate(delta_yaw, Vector3(0.0f, 1.0f, 0.0f));
+    }
+    //model.rotate(delta_yaw, Vector3(0.0f, -1.0f, 0.0f));
+
+    //camera->lookAt(camera->eye, camera->center, camera->up);
 }
 
 
