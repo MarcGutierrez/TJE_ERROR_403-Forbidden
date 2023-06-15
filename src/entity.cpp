@@ -192,6 +192,7 @@ bool checkCollisions(const Vector3& target_pos,
 }
 
 void EntityPlayer::update(float elapsed_time){
+    delta_yaw = Input::mouse_delta.x * elapsed_time * 10.0f;
     float move_speed = speed * elapsed_time;
     move_dir = Vector3(0.f, 0.f, 0.f);
     if (Input::isKeyPressed(SDL_SCANCODE_W)) {
@@ -212,17 +213,19 @@ void EntityPlayer::update(float elapsed_time){
         move_dir = Vector3(1.0f + move_dir.x, 0.0f + move_dir.y, 0.0f + +move_dir.z);
     }
     velocity = move_dir * move_speed;
-    EntityPlayer* player = World::get_instance()->player;
-    if (checkCollisions(player->model.getTranslation() + player->velocity, collisions)) {
+    //EntityPlayer* player = World::get_instance()->player;
+    if (checkCollisions(model.getTranslation() + velocity, collisions)) {
 
         for (const sCollisionData& collisions : collisions) {
 
-            Vector3 newDir = player->velocity.dot(collisions.colNormal) * collisions.colNormal;
-            player->velocity.x -= newDir.x;
-            player->velocity.z -= newDir.z;
+            Vector3 newDir = velocity.dot(collisions.colNormal) * collisions.colNormal;
+            velocity.x -= newDir.x;
+            velocity.z -= newDir.z;
         }
     }
+    model.rotate(delta_yaw, Vector3(0.0f, 1.0f, 0.0f));
     model.translate(velocity.x, velocity.y, velocity.z);
+
     camera->lookAt(camera->eye, camera->center, camera->up);
 }
 

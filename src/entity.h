@@ -86,6 +86,8 @@ class EntityPlayer : public EntityMesh{
         float speed = 1000.0f;
         Vector3 velocity = Vector3(0,0,0);
         Vector3 move_dir;
+        Vector3 position;
+        float delta_yaw;
         Camera* camera = nullptr;
         //EntityPlayer(std::string name, Matrix44 model, Mesh* mesh, Texture* texture, Shader* shader, Vector4 color, Camera* camera);
         EntityPlayer(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, Camera* camera);
