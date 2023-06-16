@@ -149,6 +149,27 @@ EntityPlayer::EntityPlayer(Matrix44 model, Mesh* mesh, Shader* shader, Texture* 
     this->camera = camera;
 }
 
+void shoot(Matrix44 model, float speed){
+    Mesh* mesh;
+    Shader* shader;
+    Texture* texture;
+    
+    texture = new Texture();
+    texture->load("data/texture.tga");
+
+    // example of loading Mesh from Mesh Manager
+    mesh = Mesh::Get("data/sphere.obj");
+
+    // example of shader loading using the shaders manager
+    shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+    
+    float dmg = 0.0f;
+    Vector3 dir = model.frontVector();
+    model.translate(0.f, 0.0f, 0.f);
+    
+    EntityProjectile* bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, dir);
+    World::world->get_instance()->root->addChild(bullet);
+}
 
 void EntityPlayer::render(){
     // Get the last camera that was activated
@@ -171,7 +192,7 @@ void EntityPlayer::render(){
 
 bool checkCollisions(const Vector3& target_pos,
     std::vector<sCollisionData>& collisions) {
-    Vector3 center = target_pos + Vector3(0.f, .0f, 0.f);
+    Vector3 center = target_pos + Vector3(0.f, 1.25f, 0.f);
     float sphereRadius = .75f;
     Vector3 colPoint, colNormal;
 
@@ -193,63 +214,77 @@ bool checkCollisions(const Vector3& target_pos,
 }
 
 void EntityPlayer::update(float elapsed_time){
-    delta_yaw = Input::mouse_delta.x * elapsed_time * 10.0f;
-    
-    //float move_speed = speed * elapsed_time;
+    yaw += Input::mouse_delta.x * elapsed_time * 15.0f;
     
     move_dir = Vector3(0.f, 0.f, 0.f);
     
     if (Input::isKeyPressed(SDL_SCANCODE_W)) {
         //model.translate(0.0f, 0.0f, -1.0f * move_speed);
-        move_dir = Vector3(0.0f + move_dir.x, 0.0f + move_dir.y, -1.0f + move_dir.z);
-        velocity = move_dir * speed;
-        position = position + velocity * elapsed_time;
-        model.setTranslation(position.x, 51.0f, position.z);
+        move_dir = Vector3(0.0f + move_dir.x, 0.0f, -1.0f + move_dir.z);
+        
+        //velocity = move_dir * speed;
+        //position = position + velocity * elapsed_time;
+        //model.setTranslation(position.x, 51.0f, position.z);
     }
     if (Input::isKeyPressed(SDL_SCANCODE_S)) {
         //model.translate(0.0f, 0.0f, 1.0f * move_speed);
-        move_dir = Vector3(0.0f + move_dir.x, 0.0f + move_dir.y, 1.0f + move_dir.z);
-        velocity = move_dir * speed;
-        position = position + velocity * elapsed_time;
-        model.setTranslation(position.x, 51.0f, position.z); //el 51 es hardcodeado por la mesh del cubo (se
+        move_dir = Vector3(0.0f + move_dir.x, 0.0f, 1.0f + move_dir.z);
+        //velocity = move_dir * speed;
+        //position = position + velocity * elapsed_time;
+        //model.setTranslation(position.x, 51.0f, position.z); //el 51 es hardcodeado por la mesh del cubo (se
     }
     if (Input::isKeyPressed(SDL_SCANCODE_A)) {
         //model.translate(-1.0f * move_speed, 0.0f, 0.0f);
-        move_dir = Vector3(-1.0f + move_dir.x, 0.0f + move_dir.y, 0.0f + move_dir.z);
-        velocity = move_dir * speed;
-        position = position + velocity * elapsed_time;
-        model.setTranslation(position.x, 51.0f, position.z); //el 51 es hardcodeado por la mesh del cubo (se
+        move_dir = Vector3(-1.0f + move_dir.x, 0.0f, 0.0f + move_dir.z);
+        //velocity = move_dir * speed;
+        //position = position + velocity * elapsed_time;
+        //model.setTranslation(position.x, 51.0f, position.z); //el 51 es hardcodeado por la mesh del cubo (se
     }
     if (Input::isKeyPressed(SDL_SCANCODE_D)) {
         //model.translate(1.0f * move_speed, 0.0f, 0.0f);
-        move_dir = Vector3(1.0f + move_dir.x, 0.0f + move_dir.y, 0.0f + move_dir.z);
-        velocity = move_dir * speed;
-        position = position + velocity * elapsed_time;
-        model.setTranslation(position.x, 51.0f, position.z); //el 51 es hardcodeado por la mesh del cubo (se
+        move_dir = Vector3(1.0f + move_dir.x, 0.0f, 0.0f + move_dir.z);
+        //velocity = move_dir * speed;
+        //position = position + velocity * elapsed_time;
+        //model.setTranslation(position.x, 51.0f, position.z); //el 51 es hardcodeado por la mesh del cubo (se
     }
-    //velocity = move_dir * speed;
-    //position = position + velocity * elapsed_time;
-    //EntityPlayer* player = World::get_instance()->player;
-    if (checkCollisions(model.getTranslation() + velocity, collisions)) {
 
+    
+    move_dir.normalize();
+    velocity = velocity + move_dir * speed;
+    position.y = 51.0;
+    if (checkCollisions(position + velocity * elapsed_time, collisions)) {
+        //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
         for (const sCollisionData& collisions : collisions) {
-
+            
+            //Vector3& velocity = velocity;
             Vector3 newDir = velocity.dot(collisions.colNormal) * collisions.colNormal;
             velocity.x -= newDir.x;
             velocity.z -= newDir.z;
+            
+            
         }
+    } else {
+        
     }
+    
 
-    //model.setTranslation(position.x, 51.0f, position.z); //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
+    std::cout << velocity.x << " " << velocity.y << " " << velocity.z << std::endl;
+    position = position + velocity * elapsed_time;
+    velocity = velocity - velocity * elapsed_time * 50;
+    
+    model.setTranslation(position.x, 51.0f, position.z); //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
     if (Input::mouse_position.y < Game::instance->window_height/2){
-        model.rotate(delta_yaw, Vector3(0.0f, -1.0f, 0.0f));
+        model.rotate(yaw, Vector3(0.0f, -1.0f, 0.0f));
     }
     if (Input::mouse_position.y >= Game::instance->window_height/2){
-        model.rotate(delta_yaw, Vector3(0.0f, 1.0f, 0.0f));
+        model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
     }
-    //model.rotate(delta_yaw, Vector3(0.0f, -1.0f, 0.0f));
+    //model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
 
     //camera->lookAt(camera->eye, camera->center, camera->up);
+    if  (Input::isKeyPressed(SDL_SCANCODE_SPACE)) {
+        shoot(model, 1000.0f);
+    }
 }
 
 
@@ -272,10 +307,41 @@ void EntityCollider::render(){
 
     // Disable shader after finishing rendering
     shader->disable();
-
 }
 
 void EntityCollider::update(float elapsed_time){
+}
+
+EntityProjectile::EntityProjectile(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, float speed, float dmg, Vector3 dir):EntityCollider(model, mesh, shader, texture){
+    this->speed = speed;
+    this->dmg = dmg;
+    this->dir = dir;
+}
+
+void EntityProjectile::render(){
+    
+    // Get the last camera that was activated
+    Camera* camera = Camera::current;
+
+    // Enable shader and pass uniforms
+    shader->enable();
+    shader->setUniform("u_model", model);
+    shader->setUniform("u_viewproj", camera->viewprojection_matrix);
+    shader->setTexture("u_texture", texture, 0);
+
+
+    // Render the mesh using the shader
+    mesh->render( GL_TRIANGLES );
+
+    // Disable shader after finishing rendering
+    shader->disable();
+}
+
+void EntityProjectile::update(float elapsed_time){
+    Vector3 velocity = dir * speed;
+    Vector3 new_position = model.getTranslation() + velocity * elapsed_time;
+    model.setTranslation(new_position.x, new_position.y, new_position.z);
+    
 }
 
 

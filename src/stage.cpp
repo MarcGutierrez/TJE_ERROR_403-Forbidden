@@ -90,7 +90,7 @@ PlayStage::PlayStage(){
     
     EntityPlayer* player = new EntityPlayer(model, mesh, shader, texture, camera);
     
-    player->model.translate(0.0f, 51.0f, 0.0f);
+    player->model.translate(0.0f, 61.0f, 0.0f);
     
     //World::get_instance()->root->addChild(player);
     World::get_instance()->player = player;

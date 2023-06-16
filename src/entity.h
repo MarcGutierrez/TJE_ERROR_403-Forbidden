@@ -83,15 +83,17 @@ class InstancedEntityMesh : public EntityMesh {
 class EntityPlayer : public EntityMesh{
     public:
         // Attributes of the derived class
-        float speed = 1000.0f;
-        Vector3 velocity = Vector3(0,0,0);
-        Vector3 move_dir;
+        float speed = 50.0f;
+        Vector3 velocity = Vector3(0.0f,0.0f,0.0f);
+        Vector3 move_dir = Vector3(0.0f,0.0f,0.0f);
         Vector3 position;
-        float delta_yaw;
+   
+        float yaw;
         Camera* camera = nullptr;
         //EntityPlayer(std::string name, Matrix44 model, Mesh* mesh, Texture* texture, Shader* shader, Vector4 color, Camera* camera);
         EntityPlayer(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, Camera* camera);
         // Methods overwritten from base class
+        //void shoot(Vector3 dir, float speed);
         void render();
         void update(float elapsed_time);
 };
@@ -111,6 +113,20 @@ class EntityCollider : public EntityMesh{
         void update(float elapsed_time);
 };
 
+class EntityProjectile : public EntityCollider{
+    
+    public:
+        
+        float speed;
+        float dmg;
+        Vector3 dir;
+        Vector3 position;
+        
+        EntityProjectile(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, float speed, float dmg, Vector3 dir);
+        
+        void render();
+        void update(float elapsed_time);
+};
 
 /*class EntityEnemy : public EntityMesh{
     public:

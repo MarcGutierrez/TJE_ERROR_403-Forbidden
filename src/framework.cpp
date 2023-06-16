@@ -82,7 +82,7 @@ double Vector3::length() const
 Vector3& Vector3::normalize()
 {
 	double len = length();
-	assert(len > 0.00000000001 && "Cannot normalize a vector with module 0");
+    if (len <= 0.00000000001) return *this;
 	x = (float)(x / len);
 	y = (float)(y / len);
 	z = (float)(z / len);
