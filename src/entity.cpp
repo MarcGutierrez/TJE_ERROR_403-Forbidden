@@ -17,8 +17,6 @@ struct sCollisionData {
     Vector3 colNormal;
 };
 
-std::vector<sCollisionData> collisions;
-
 Entity::Entity(std::string name, Matrix44 model){
     this->name = name;
     this->model = model;
@@ -247,11 +245,12 @@ void EntityPlayer::update(float elapsed_time){
         //position = position + velocity * elapsed_time;
         //model.setTranslation(position.x, 51.0f, position.z); //el 51 es hardcodeado por la mesh del cubo (se
     }
-
+    Vector3 position = model.getTranslation();
     
     move_dir.normalize();
     velocity = velocity + move_dir * speed;
     position.y = 51.0;
+    std::vector <sCollisionData> collisions;
     if (checkCollisions(position + velocity * elapsed_time, collisions)) {
         //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
         for (const sCollisionData& collisions : collisions) {
@@ -260,8 +259,6 @@ void EntityPlayer::update(float elapsed_time){
             Vector3 newDir = velocity.dot(collisions.colNormal) * collisions.colNormal;
             velocity.x -= newDir.x;
             velocity.z -= newDir.z;
-            
-            
         }
     } else {
         

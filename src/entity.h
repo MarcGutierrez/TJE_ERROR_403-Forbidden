@@ -86,7 +86,6 @@ class EntityPlayer : public EntityMesh{
         float speed = 50.0f;
         Vector3 velocity = Vector3(0.0f,0.0f,0.0f);
         Vector3 move_dir = Vector3(0.0f,0.0f,0.0f);
-        Vector3 position;
    
         float yaw;
         Camera* camera = nullptr;
