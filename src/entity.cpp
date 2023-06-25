@@ -145,6 +145,8 @@ void InstancedEntityMesh::update(float elapsed_time){
 
 EntityPlayer::EntityPlayer(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, Camera* camera):EntityMesh(model, mesh, shader, texture){
     this->camera = camera;
+    this->hp = 750;
+    this->yaw = 0.f;
 }
 
 void shoot(Matrix44 model, float speed){
@@ -212,9 +214,10 @@ bool checkCollisions(const Vector3& target_pos,
 }
 
 void EntityPlayer::update(float elapsed_time){
+    Vector3 position = model.getTranslation();
+    std::vector <sCollisionData> collisions;
+
     yaw += Input::mouse_delta.x * elapsed_time * 15.0f;
-    
-    move_dir = Vector3(0.f, 0.f, 0.f);
     
     if (Input::isKeyPressed(SDL_SCANCODE_W)) {
         //model.translate(0.0f, 0.0f, -1.0f * move_speed);
@@ -245,31 +248,24 @@ void EntityPlayer::update(float elapsed_time){
         //position = position + velocity * elapsed_time;
         //model.setTranslation(position.x, 51.0f, position.z); //el 51 es hardcodeado por la mesh del cubo (se
     }
-    Vector3 position = model.getTranslation();
     
     move_dir.normalize();
     velocity = velocity + move_dir * speed;
-    position.y = 51.0;
-    std::vector <sCollisionData> collisions;
+    position.y = 51.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
     if (checkCollisions(position + velocity * elapsed_time, collisions)) {
         //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
         for (const sCollisionData& collisions : collisions) {
-            
             //Vector3& velocity = velocity;
             Vector3 newDir = velocity.dot(collisions.colNormal) * collisions.colNormal;
             velocity.x -= newDir.x;
             velocity.z -= newDir.z;
         }
-    } else {
-        
     }
     
-
-    std::cout << velocity.x << " " << velocity.y << " " << velocity.z << std::endl;
     position = position + velocity * elapsed_time;
     velocity = velocity - velocity * elapsed_time * 50;
     
-    model.setTranslation(position.x, 51.0f, position.z); //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
+    model.setTranslation(position.x, position.y, position.z); // position.y = 51 harcoceado
     if (Input::mouse_position.y < Game::instance->window_height/2){
         model.rotate(yaw, Vector3(0.0f, -1.0f, 0.0f));
     }
@@ -284,6 +280,76 @@ void EntityPlayer::update(float elapsed_time){
     }
 }
 
+EntityAI::EntityAI(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture) :EntityMesh(model, mesh, shader, texture) {
+    this->hp = 200;
+    this->maxhp = 200;
+    this->currentBehaviour = NOTHING;
+    this->yaw = 0.f;
+}
+
+void EntityAI::render()
+{
+    // Get the last camera that was activated
+    Camera* camera = Camera::current;
+
+    // Enable shader and pass uniforms
+    shader->enable();
+    shader->setUniform("u_model", model);
+    shader->setUniform("u_viewproj", camera->viewprojection_matrix);
+    shader->setTexture("u_texture", texture, 0);
+
+
+    // Render the mesh using the shader
+    mesh->render(GL_TRIANGLES);
+
+    // Disable shader after finishing rendering
+    shader->disable();
+}
+
+boolean EntityAI::canSeePlayer()
+{
+    return true; // Hay que cambiar para que pueda detectar si el jugador esta a la vista
+}
+
+void EntityAI::behaviourUpdate()
+{
+    // Si esta bajo de vida intenta huir, si no comprueba si ve al jugador, si le ve entra en ataque si no simplemente se mueve por el mapa
+    currentBehaviour = (this->hp / this->maxhp < 0.1) ? RETREAT : ((canSeePlayer()) ? ATTACK : WANDER);
+}
+
+void EntityAI::update(float elapsed_time)
+{
+    wanderChange += elapsed_time;
+    Vector3 position = model.getTranslation();
+    std::vector <sCollisionData> collisions;
+
+    // yaw = degree between player and enemy; acos or asin? but that's inneficient
+    behaviourUpdate();
+    if (currentBehaviour == ATTACK)
+        move_dir = World::get_instance()->player->model.getTranslation() - this->model.getTranslation();
+    else if (currentBehaviour == RETREAT)
+        move_dir = this->model.getTranslation() - World::get_instance()->player->model.getTranslation();
+    else
+        move_dir = (wanderChange > 5.f) ? Vector3() : move_dir;
+
+    move_dir.normalize();
+    velocity = velocity + move_dir * speed;
+    position.y = 51.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
+    if (checkCollisions(position + velocity * elapsed_time, collisions)) {
+        //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+        for (const sCollisionData& collisions : collisions) {
+            //Vector3& velocity = velocity;
+            Vector3 newDir = velocity.dot(collisions.colNormal) * collisions.colNormal;
+            velocity.x -= newDir.x;
+            velocity.z -= newDir.z;
+        }
+    }
+
+    position = position + velocity * elapsed_time;
+    velocity = velocity - velocity * elapsed_time * 50;
+
+    model.setTranslation(position.x, position.y, position.z); // position.y = 51 harcoceado
+}
 
 EntityCollider::EntityCollider(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture):EntityMesh(model,mesh,shader,texture){
 }
