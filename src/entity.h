@@ -119,7 +119,8 @@ class EntityProjectile : public EntityCollider{
         float speed;
         float dmg;
         Vector3 dir;
-        Vector3 position;
+        //Vector3 position;
+        Vector3 velocity = Vector3(0.0f,0.0f,0.0f);
         
         EntityProjectile(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, float speed, float dmg, Vector3 dir);
         

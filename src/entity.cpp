@@ -156,7 +156,7 @@ void shoot(Matrix44 model, float speed){
     texture->load("data/texture.tga");
 
     // example of loading Mesh from Mesh Manager
-    mesh = Mesh::Get("data/sphere.obj");
+    mesh = Mesh::Get("data/projectile.obj");
 
     // example of shader loading using the shaders manager
     shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
@@ -279,8 +279,8 @@ void EntityPlayer::update(float elapsed_time){
     //model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
 
     //camera->lookAt(camera->eye, camera->center, camera->up);
-    if  (Input::isKeyPressed(SDL_SCANCODE_SPACE)) {
-        shoot(model, 1000.0f);
+    if  (Input::wasKeyPressed(SDL_SCANCODE_SPACE)) {
+        shoot(model, 50.0f);
     }
 }
 
@@ -334,12 +334,83 @@ void EntityProjectile::render(){
     shader->disable();
 }
 
+struct sImpactData {
+    Vector3 impPoint;
+    Vector3 impNormal;
+};
+
+bool checkImpacts(const Vector3& target_pos,
+    std::vector<sImpactData>& impacts) {
+    Vector3 center = target_pos + Vector3(0.f, 1.25f, 0.f);
+    float sphereRadius = .75f;
+    Vector3 impPoint, impNormal;
+
+    // For each collider entity “e” in root:
+    //for(auto e:World::world->get_instance()->root->children){
+    for (int i = 0; i < World::world->get_instance()->root->children.size(); i++) {
+        if (EntityCollider* e = dynamic_cast<EntityCollider*>(World::world->get_instance()->root->children[i])) {
+            Mesh* mesh = e->mesh;
+
+            if (mesh->testSphereCollision(e->model, center,
+                sphereRadius, impPoint, impNormal)) {
+                impacts.push_back({ impPoint,
+                    impNormal.normalize() });
+            }
+        }
+        // End loop
+    }
+    return !impacts.empty();
+}
+
 void EntityProjectile::update(float elapsed_time){
+    
+    Vector3 position = model.getTranslation();
+    
+    dir.normalize();
+    velocity = velocity + dir * speed;
+    
+    
+    position = position + velocity * elapsed_time;
+    //Vector3 new_position = model.getTranslation() + velocity * elapsed_time;
+    //model.setTranslation(position.x, position.y, position.z);
+    //model.setTranslation(new_position.x, new_position.y, new_position.z);
+    //velocity = velocity + dir * speed;
+    float height = model.getTranslation().y;
+    
+    position.y = height;
+    
+    std::vector<sImpactData> impacts;
+    if (checkImpacts(position, impacts)) {
+        World::world->get_instance()->root->removeChild(this);
+        
+    } else {
+        
+    }
+    //position = position + velocity * elapsed_time;
+    /*
+     Vector3 position = model.getTranslation();
+     
+     move_dir.normalize();
+     velocity = velocity + move_dir * speed;
+     
+     position = position + velocity * elapsed_time;
+     velocity = velocity - velocity * elapsed_time * 50;
+     
+     model.setTranslation(position.x, 51.0f, position.z); //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
+     */
+    
+    
+    //Vector3 new_position = model.getTranslation() + velocity * elapsed_time;
+    model.setTranslation(position.x, position.y, position.z);
+    
+}
+
+/*void EntityProjectile::update(float elapsed_time){
     Vector3 velocity = dir * speed;
     Vector3 new_position = model.getTranslation() + velocity * elapsed_time;
     model.setTranslation(new_position.x, new_position.y, new_position.z);
     
-}
+}*/
 
 
 /*if (checkPlayerCollisions(position + player->velocity * seconds_elapsed, &collisions)
