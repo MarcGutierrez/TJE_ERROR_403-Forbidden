@@ -310,7 +310,13 @@ void EntityAI::render()
 
 bool EntityAI::canSeePlayer()
 {
-    return true; // Hay que cambiar para que pueda detectar si el jugador esta a la vista
+    Vector3 target = World::get_instance()->player->model.getTranslation();
+    Vector3 eye = this->model.frontVector();
+    
+    if (eye.dot(target) > 0.5f){
+        return true;
+    }
+    return false; // Hay que cambiar para que pueda detectar si el jugador esta a la vista
 }
 
 void EntityAI::behaviourUpdate()
