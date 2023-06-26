@@ -203,6 +203,8 @@ bool checkCollisions(const Vector3& target_pos,
     // For each collider entity “e” in root:
     //for(auto e:World::world->get_instance()->root->children){
     for (int i = 0; i < World::world->get_instance()->root->children.size(); i++) {
+        if (EntityProjectile* e = dynamic_cast<EntityProjectile*>(World::world->get_instance()->root->children[i]))
+            center = center;
         if (EntityCollider* e = dynamic_cast<EntityCollider*>(World::world->get_instance()->root->children[i])) {
             Mesh* mesh = e->mesh;
 
@@ -366,7 +368,7 @@ void EntityAI::update(float elapsed_time)
         shotCdTime += elapsed_time;
         if (shotCdTime > cdShot)
         {
-            //shoot(model, 50.f, dispersion);
+            shoot(model, 50.f, dispersion);
             shotCdTime = 0.f;
         }
         setYaw(move_dir, elapsed_time);
