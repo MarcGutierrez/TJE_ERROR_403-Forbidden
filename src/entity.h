@@ -119,6 +119,7 @@ public:
     void behaviourUpdate();
     bool canSeePlayer();
     void update(float elapsed_time);
+    void setYaw(Vector3 moveDir, float elapsed_time);
 };
 
 

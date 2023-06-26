@@ -332,8 +332,7 @@ void EntityAI::behaviourUpdate()
     }
     else if (canSeePlayer())
         currentBehaviour = ATTACK;
-    else WANDER;
-    wanderChange = 0.f;
+    else currentBehaviour = WANDER;
 }
 
 int get_random_dir()
@@ -343,13 +342,21 @@ int get_random_dir()
     return dis(e);
 }
 
+void EntityAI::setYaw(Vector3 moveDir, float elapsed_time)
+{
+    Vector3 toTarget;
+    float angle;
+
+    toTarget = normalize(moveDir);
+    angle = atan2(toTarget.z, toTarget.x);
+    yaw += (angle - yaw) * elapsed_time * 50;
+}
+
 void EntityAI::update(float elapsed_time)
 {
     wanderChange += elapsed_time;
     Vector3 position = model.getTranslation();
     std::vector <sCollisionData> collisions;
-    Vector3 toTarget;
-    float angle;
     // yaw = degree between player and enemy; acos or asin? but that's inneficient
     behaviourUpdate();
     switch (currentBehaviour)
@@ -362,20 +369,23 @@ void EntityAI::update(float elapsed_time)
             //shoot(model, 50.f, dispersion);
             shotCdTime = 0.f;
         }
+        setYaw(move_dir, elapsed_time);
         if (move_dir.length() < 1000.f)
         {
             move_dir = Vector3(0.f, 0.f, 0.f);
         }
-        toTarget = normalize(move_dir);
-        angle = atan2(toTarget.z, toTarget.x);
-        yaw += (angle - yaw) * elapsed_time * 50;
         break;
     case RETREAT:
         move_dir = this->model.getTranslation() - World::get_instance()->player->model.getTranslation();
+        setYaw(move_dir, elapsed_time);
         break;
     case WANDER:
-        move_dir = (wanderChange > 5.f) ? Vector3(get_random_dir(), 0.f, get_random_dir()) : move_dir;
-        wanderChange = .0f;
+        if (wanderChange > 5.f)
+        {
+            move_dir = Vector3(get_random_dir(), 0.f, get_random_dir());
+            wanderChange = .0f;
+        }
+        setYaw(move_dir, elapsed_time);
         break;
     default:
         break;
