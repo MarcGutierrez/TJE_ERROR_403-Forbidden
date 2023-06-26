@@ -326,7 +326,14 @@ bool EntityAI::canSeePlayer()
 void EntityAI::behaviourUpdate()
 {
     // Si esta bajo de vida intenta huir, si no comprueba si ve al jugador, si le ve entra en ataque si no simplemente se mueve por el mapa
-    currentBehaviour = (this->hp / this->maxhp < 0.1) ? RETREAT : ((canSeePlayer()) ? ATTACK : WANDER);
+    if (this->hp / this->maxhp < 0.1){
+        currentBehaviour = RETREAT;
+        return;
+    }
+    else if (canSeePlayer())
+        currentBehaviour = ATTACK;
+    else WANDER;
+    wanderChange = 0.f;
 }
 
 int get_random_dir()
@@ -341,11 +348,13 @@ void EntityAI::update(float elapsed_time)
     wanderChange += elapsed_time;
     Vector3 position = model.getTranslation();
     std::vector <sCollisionData> collisions;
-    
+    Vector3 toTarget;
+    float angle;
     // yaw = degree between player and enemy; acos or asin? but that's inneficient
     behaviourUpdate();
-    if (currentBehaviour == ATTACK)
+    switch (currentBehaviour)
     {
+    case ATTACK:
         move_dir = World::get_instance()->player->model.getTranslation() - this->model.getTranslation();
         shotCdTime += elapsed_time;
         if (shotCdTime > cdShot)
@@ -353,16 +362,23 @@ void EntityAI::update(float elapsed_time)
             //shoot(model, 50.f, dispersion);
             shotCdTime = 0.f;
         }
-        Vector3 toTarget = normalize(World::get_instance()->player->model.getTranslation() - this->model.getTranslation());
-        float angle = atan2(toTarget.z, toTarget.x);
+        if (move_dir.length() < 1000.f)
+        {
+            move_dir = Vector3(0.f, 0.f, 0.f);
+        }
+        toTarget = normalize(move_dir);
+        angle = atan2(toTarget.z, toTarget.x);
         yaw += (angle - yaw) * elapsed_time * 50;
-    }
-    else if (currentBehaviour == RETREAT)
+        break;
+    case RETREAT:
         move_dir = this->model.getTranslation() - World::get_instance()->player->model.getTranslation();
-    else
-    {
-        move_dir = (wanderChange > 20.f) ? Vector3(get_random_dir(), 0.f, get_random_dir()) : move_dir;
+        break;
+    case WANDER:
+        move_dir = (wanderChange > 5.f) ? Vector3(get_random_dir(), 0.f, get_random_dir()) : move_dir;
         wanderChange = .0f;
+        break;
+    default:
+        break;
     }
 
     move_dir.normalize();

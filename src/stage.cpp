@@ -156,7 +156,7 @@ void PlayStage::loadNewLvl()
 
         hp = 1;
         entityMesh = mesh;
-        spd = get_random_float(20, 60);
+        spd = get_random_float(20, 50);
         model.setTranslation(get_random_dist()*get_random_sign(), 51.f, get_random_dist()*get_random_sign());
         cdShot = get_random_float(0.3, 3);
         dispersion = get_random_float(-1, 1);
