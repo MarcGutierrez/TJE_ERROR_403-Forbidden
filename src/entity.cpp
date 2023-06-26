@@ -370,22 +370,23 @@ void EntityProjectile::update(float elapsed_time){
     velocity = velocity + dir * speed;
     
     
-    position = position + velocity * elapsed_time;
+
     //Vector3 new_position = model.getTranslation() + velocity * elapsed_time;
     //model.setTranslation(position.x, position.y, position.z);
     //model.setTranslation(new_position.x, new_position.y, new_position.z);
     //velocity = velocity + dir * speed;
     float height = model.getTranslation().y;
-    
     position.y = height;
     
     std::vector<sImpactData> impacts;
-    if (checkImpacts(position, impacts)) {
+    if (checkImpacts(position + velocity * elapsed_time, impacts)) {
+        
         World::world->get_instance()->root->removeChild(this);
         
     } else {
         
     }
+    position = position + velocity * elapsed_time;
     //position = position + velocity * elapsed_time;
     /*
      Vector3 position = model.getTranslation();
