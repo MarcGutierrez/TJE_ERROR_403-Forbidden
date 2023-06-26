@@ -218,6 +218,7 @@ void EntityPlayer::update(float elapsed_time){
     std::vector <sCollisionData> collisions;
 
     yaw += Input::mouse_delta.x * elapsed_time * 15.0f;
+    Vector3 move_dir = Vector3(0.0f, 0.0f, 0.0f);
     
     if (Input::isKeyPressed(SDL_SCANCODE_W)) {
         //model.translate(0.0f, 0.0f, -1.0f * move_speed);
@@ -280,9 +281,10 @@ void EntityPlayer::update(float elapsed_time){
     }
 }
 
-EntityAI::EntityAI(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture) :EntityMesh(model, mesh, shader, texture) {
-    this->hp = 200;
-    this->maxhp = 200;
+EntityAI::EntityAI(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, int hp, float speed) :EntityMesh(model, mesh, shader, texture) {
+    this->hp = hp;
+    this->maxhp = hp;
+    this->speed = speed;
     this->currentBehaviour = NOTHING;
     this->yaw = 0.f;
 }
@@ -322,6 +324,7 @@ void EntityAI::update(float elapsed_time)
     wanderChange += elapsed_time;
     Vector3 position = model.getTranslation();
     std::vector <sCollisionData> collisions;
+    Vector3 move_dir = Vector3(0.0f, 0.0f, 0.0f);
 
     // yaw = degree between player and enemy; acos or asin? but that's inneficient
     behaviourUpdate();

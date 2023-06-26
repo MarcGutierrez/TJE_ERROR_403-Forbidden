@@ -83,10 +83,9 @@ class InstancedEntityMesh : public EntityMesh {
 class EntityPlayer : public EntityMesh{
     public:
         // Attributes of the derived class
-        int hp;
+        int hp, maxHP;
         float speed = 50.0f;
         Vector3 velocity = Vector3(0.0f,0.0f,0.0f);
-        Vector3 move_dir = Vector3(0.0f,0.0f,0.0f);
    
         float yaw;
         Camera* camera = nullptr;
@@ -105,14 +104,13 @@ public:
     // Attributes of the derived class
     int hp, maxhp;
     behaviour currentBehaviour;
-    float speed = 50.0f;
+    float speed;
     Vector3 velocity = Vector3(0.0f, 0.0f, 0.0f);
-    Vector3 move_dir = Vector3(0.0f, 0.0f, 0.0f);
     float wanderChange;
 
     float yaw;
     //EntityAI(std::string name, Matrix44 model, Mesh* mesh, Texture* texture, Shader* shader, Vector4 color, Camera* camera);
-    EntityAI(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture);
+    EntityAI(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, int hp, float speed);
     // Methods overwritten from base class
     //void shoot(Vector3 dir, float speed);
     void render();

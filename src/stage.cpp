@@ -74,6 +74,43 @@ stageId TitleStage::getId()
     return stageId::TITLE;
 }
 
+void PlayStage::loadNewLvl()
+{
+    int enemyNum = currentDiff * 5;
+    // this code is for if we want to use it to change things via randomness or other factors like difficulty and position and to not destroy enemies on death
+    for (int i = 0; i < enemyNum; i++)
+    {
+        int hp;
+        float spd;
+        Matrix44 model;
+        Mesh* entityMesh;
+
+        Entity* root = World::world->get_instance()->root;
+
+        hp = 1;
+        entityMesh = mesh;
+        spd = 40.f;
+        model.setTranslation(0.f, 51.f, 0.f);
+
+        if (enemies.size() <= i)
+        {
+            EntityAI* newEnemy = new EntityAI(model, entityMesh, shader, texture, hp, spd);
+            enemies.push_back(newEnemy);
+            root->addChild(newEnemy);
+        }
+        else
+        {
+            enemies.at(i)->hp = hp;
+            enemies.at(i)->maxhp = hp;
+            enemies.at(i)->mesh = entityMesh;
+            enemies.at(i)->speed = 40.f;
+            enemies.at(i)->model = model;
+        }
+    }
+
+    currentDiff++;
+}
+
 PlayStage::PlayStage(){
         
     glEnable( GL_CULL_FACE ); //render both sides of every triangle
@@ -90,12 +127,19 @@ PlayStage::PlayStage(){
     
     EntityPlayer* player = new EntityPlayer(model, mesh, shader, texture, camera);
     
-    player->model.translate(0.0f, 61.0f, 0.0f);
+    player->model.translate(0.0f, 51.0f, 0.0f);
     
     //World::get_instance()->root->addChild(player);
     World::get_instance()->player = player;
     
+    Matrix44 AImodel = Matrix44();
+
+    AImodel.setTranslation(400.f, 51.f, 400.f);
+
     parseScene("data/scenes/myscene.scene", model, World::get_instance()->root, NULL);
+
+    currentDiff = 1;
+    loadNewLvl();
 }
 
 void PlayStage::render(){

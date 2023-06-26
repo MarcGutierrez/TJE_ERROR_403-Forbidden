@@ -48,11 +48,14 @@ public:
 
 class PlayStage : public Stage {
 public:
-        
+    int currentDiff;
+    std::vector<EntityAI*> enemies;
 
     PlayStage();
     
     stageId getId();
+
+    void loadNewLvl();
 
     
     void render();
@@ -61,6 +64,7 @@ public:
     void onKeyDown( SDL_KeyboardEvent event );
     void onMouseWheel(SDL_MouseWheelEvent event);
     void onResize(int width, int height);
+    
     
 };
 
