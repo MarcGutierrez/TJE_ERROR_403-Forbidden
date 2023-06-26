@@ -11,6 +11,8 @@
 #include "world.h"
 #include "game.h"
 
+#include <random>
+
 // Container to store EACH collision
 struct sCollisionData {
     Vector3 colPoint;
@@ -149,7 +151,7 @@ EntityPlayer::EntityPlayer(Matrix44 model, Mesh* mesh, Shader* shader, Texture* 
     this->yaw = 0.f;
 }
 
-void shoot(Matrix44 model, float speed){
+void shoot(Matrix44 model, float speed, float dispersion){
     Mesh* mesh;
     Shader* shader;
     Texture* texture;
@@ -165,6 +167,8 @@ void shoot(Matrix44 model, float speed){
     
     float dmg = 0.0f;
     Vector3 dir = model.frontVector();
+    dir.x += dispersion;
+    dir.z += dispersion;
     model.translate(0.f, 0.0f, 0.f);
     
     EntityProjectile* bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, dir);
@@ -277,16 +281,20 @@ void EntityPlayer::update(float elapsed_time){
 
     //camera->lookAt(camera->eye, camera->center, camera->up);
     if  (Input::wasKeyPressed(SDL_SCANCODE_SPACE)) {
-        shoot(model, 50.0f);
+        shoot(model, 50.0f, 0);
     }
 }
 
-EntityAI::EntityAI(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, int hp, float speed) :EntityMesh(model, mesh, shader, texture) {
+EntityAI::EntityAI(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, int hp, float speed, float cdShot, float dispersion) :EntityMesh(model, mesh, shader, texture) {
     this->hp = hp;
     this->maxhp = hp;
     this->speed = speed;
     this->currentBehaviour = NOTHING;
+    this->cdShot = cdShot;
+    this->dispersion = dispersion;
     this->yaw = 0.f;
+    this->shotCdTime = 0.f;
+    this->wanderChange = 30.f;
 }
 
 void EntityAI::render()
@@ -310,7 +318,9 @@ void EntityAI::render()
 
 bool EntityAI::canSeePlayer()
 {
-    return true; // Hay que cambiar para que pueda detectar si el jugador esta a la vista
+    Vector3 target = World::get_instance()->player->model.getTranslation();
+    Vector3 eye = this->model.frontVector();
+    return (eye.dot(target) >= .5f) ? true : false;
 }
 
 void EntityAI::behaviourUpdate()
@@ -319,21 +329,38 @@ void EntityAI::behaviourUpdate()
     currentBehaviour = (this->hp / this->maxhp < 0.1) ? RETREAT : ((canSeePlayer()) ? ATTACK : WANDER);
 }
 
+int get_random_dir()
+{
+    static std::default_random_engine e;
+    static std::uniform_int_distribution<int> dis(-5, 5); // range [-5, 5]
+    return dis(e);
+}
+
 void EntityAI::update(float elapsed_time)
 {
     wanderChange += elapsed_time;
     Vector3 position = model.getTranslation();
     std::vector <sCollisionData> collisions;
-    Vector3 move_dir = Vector3(0.0f, 0.0f, 0.0f);
 
     // yaw = degree between player and enemy; acos or asin? but that's inneficient
     behaviourUpdate();
     if (currentBehaviour == ATTACK)
+    {
         move_dir = World::get_instance()->player->model.getTranslation() - this->model.getTranslation();
+        shotCdTime += elapsed_time;
+        if (shotCdTime > cdShot)
+        {
+            //shoot(model, 50.f, dispersion);
+            shotCdTime = 0.f;
+        }
+    }
     else if (currentBehaviour == RETREAT)
         move_dir = this->model.getTranslation() - World::get_instance()->player->model.getTranslation();
     else
-        move_dir = (wanderChange > 5.f) ? Vector3() : move_dir;
+    {
+        move_dir = (wanderChange > 20.f) ? Vector3(get_random_dir(), 0.f, get_random_dir()) : move_dir;
+        wanderChange = .0f;
+    }
 
     move_dir.normalize();
     velocity = velocity + move_dir * speed;
