@@ -341,7 +341,7 @@ void EntityAI::update(float elapsed_time)
     wanderChange += elapsed_time;
     Vector3 position = model.getTranslation();
     std::vector <sCollisionData> collisions;
-
+    
     // yaw = degree between player and enemy; acos or asin? but that's inneficient
     behaviourUpdate();
     if (currentBehaviour == ATTACK)
@@ -353,6 +353,9 @@ void EntityAI::update(float elapsed_time)
             //shoot(model, 50.f, dispersion);
             shotCdTime = 0.f;
         }
+        Vector3 toTarget = normalize(World::get_instance()->player->model.getTranslation() - this->model.getTranslation());
+        float angle = atan2(toTarget.z, toTarget.x);
+        yaw += (angle - yaw) * elapsed_time * 50;
     }
     else if (currentBehaviour == RETREAT)
         move_dir = this->model.getTranslation() - World::get_instance()->player->model.getTranslation();
@@ -374,11 +377,11 @@ void EntityAI::update(float elapsed_time)
             velocity.z -= newDir.z;
         }
     }
-
     position = position + velocity * elapsed_time;
     velocity = velocity - velocity * elapsed_time * 50;
 
     model.setTranslation(position.x, position.y, position.z); // position.y = 51 harcoceado
+    model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
 }
 
 EntityCollider::EntityCollider(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture):EntityMesh(model,mesh,shader,texture){
