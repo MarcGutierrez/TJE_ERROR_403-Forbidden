@@ -308,7 +308,7 @@ void EntityAI::render()
     shader->disable();
 }
 
-boolean EntityAI::canSeePlayer()
+bool EntityAI::canSeePlayer()
 {
     return true; // Hay que cambiar para que pueda detectar si el jugador esta a la vista
 }

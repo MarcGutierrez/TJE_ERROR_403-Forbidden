@@ -115,7 +115,7 @@ public:
     //void shoot(Vector3 dir, float speed);
     void render();
     void behaviourUpdate();
-    boolean canSeePlayer();
+    bool canSeePlayer();
     void update(float elapsed_time);
 };
 
