@@ -6,8 +6,12 @@
 //  Copyright © 2023 manu. All rights reserved.
 //
 
-#ifndef audio_h
-#define audio_h
+#pragma once
+
+#include "extra/bass.h"
+#include "framework.h"
+#include <map>
+#include <string>
 
 class Audio  {
 public:
@@ -37,8 +41,5 @@ Vector3 position); //se llama una vez solo, no en el update
     // Stop sounds
 static bool Stop( HCHANNEL channel );
 };
-
-
-#endif /* audio_h */
 
 

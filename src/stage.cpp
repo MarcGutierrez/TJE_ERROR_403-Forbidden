@@ -44,28 +44,67 @@ TitleStage::TitleStage(){
     this->width = Game::instance->window_width;
     this->height = Game::instance->window_height;
     
+    camera->lookAt(Vector3(0.f,2.f, 10.f),Vector3(0.f,2.f,0.f), Vector3(0.f,1.f,0.f));
+    
     texture = new Texture();
     texture->load("data/texture.tga");
 
     // example of loading Mesh from Mesh Manager
-    mesh = Mesh::Get("data/box.ASE");
+    mesh = Mesh::Get("data/background.obj");
 
     // example of shader loading using the shaders manager
     shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+    //model.setTranslation(10000.0, 0, 1000);
+    model.rotate(-PI/2, Vector3(0,1,0));
+    EntityMesh* background = new EntityMesh(model, mesh, shader, texture);
+    World::world->get_instance()->root->addChild(background);
 }
 
 void TitleStage::render(){
-    
-    glEnable( GL_CULL_FACE ); //render both sides of every triangle
-    glEnable( GL_DEPTH_TEST ); //check the occlusions using the Z buffer
+    //set the clear color (the background color)
+    glClearColor(0.0, 0.0, 0.0, 1.0);
 
-    World::get_instance()->render();
-    drawText(150, height/2-50, "Error 403: Forbidden", Vector3(1,1,1),5);
+    // Clear the window and the depth buffer
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    
+    //set flags
+    glDisable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+
+    Matrix44 m;
+
+    if(shader)
+    {
+        //enable shader
+        shader->enable();
+
+        //upload uniforms
+        shader->setUniform("u_color", Vector4(1,1,1,1));
+        shader->setUniform("u_viewprojection", camera->viewprojection_matrix );
+        shader->setUniform("u_texture", texture, 0);
+        shader->setUniform("u_model", m);
+        shader->setUniform("u_time", time);
+        
+        //render stage here
+        World::get_instance()->render();
+        
+
+        //disable shader
+        shader->disable();
+    }
+    drawText(150, height/2-150, "Error 403: Forbidden", Vector3(1,1,1),5);
 }
 
 void TitleStage::update(float elapsed_time){
+    camera->move(Vector3(0.0f, 0.0f, 1)*elapsed_time);
     if (Input::isKeyPressed(SDL_SCANCODE_SPACE)) {
         fin = true;
+        for (int i = 0; i < World::get_instance()->root->children.size(); i++) { //clean root
+            World::get_instance()->root->removeChild(World::get_instance()->root->children[i]);
+            
+        }
     }
 }
 
@@ -112,7 +151,6 @@ void PlayStage::loadNewLvl()
 }
 
 PlayStage::PlayStage(){
-        
     glEnable( GL_CULL_FACE ); //render both sides of every triangle
     glEnable( GL_DEPTH_TEST ); //check the occlusions using the Z buffer
     
@@ -129,7 +167,6 @@ PlayStage::PlayStage(){
     
     player->model.translate(0.0f, 51.0f, 0.0f);
     
-    //World::get_instance()->root->addChild(player);
     World::get_instance()->player = player;
     
     Matrix44 AImodel = Matrix44();
@@ -157,9 +194,7 @@ void PlayStage::render(){
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
    
-    //create model matrix for cube
     Matrix44 m;
-    //m.rotate(angle*DEG2RAD, Vector3(0, 1, 0));
 
     if(shader)
     {
