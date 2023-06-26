@@ -6,7 +6,7 @@
 //  Copyright © 2023 manu. All rights reserved.
 //
 
-#include <stdio.h>
+/*#include <stdio.h>
 #include "audio.h"
 #include <string>
 
@@ -83,3 +83,4 @@ bool Audio::Stop(HCHANNEL channel)
 {
     return BASS_ChannelStop(channel);
 }
+*/

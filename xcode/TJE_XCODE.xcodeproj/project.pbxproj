@@ -42,6 +42,7 @@
 		326FB5B92A1FE917003F60D3 /* entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 326FB5B82A1FE917003F60D3 /* entity.cpp */; };
 		328C0BD62A1D403800AF891C /* world.h in Sources */ = {isa = PBXBuildFile; fileRef = 32A824BD2A14DCCD008898A2 /* world.h */; };
 		328C0BD72A1D7D4700AF891C /* world.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32A824C02A14E12E008898A2 /* world.cpp */; };
+		32AE74B52A49BDFF0029FEC7 /* audio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32AE74B42A49BDFF0029FEC7 /* audio.cpp */; };
 		32C627372A216060002CAFC9 /* stage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32C627362A216060002CAFC9 /* stage.cpp */; };
 /* End PBXBuildFile section */
 
@@ -101,6 +102,7 @@
 		328C0BDB2A1E7CD500AF891C /* input.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = input.h; path = ../../src/input.h; sourceTree = "<group>"; };
 		32A824BD2A14DCCD008898A2 /* world.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = world.h; path = ../../src/world.h; sourceTree = "<group>"; };
 		32A824C02A14E12E008898A2 /* world.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = world.cpp; path = ../../src/world.cpp; sourceTree = "<group>"; };
+		32AE74B42A49BDFF0029FEC7 /* audio.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = audio.cpp; path = ../../src/audio.cpp; sourceTree = "<group>"; };
 		32C627362A216060002CAFC9 /* stage.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = stage.cpp; path = ../../src/stage.cpp; sourceTree = "<group>"; };
 		32E048E32A0D2DBD003F3DC2 /* entity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = entity.h; path = ../../src/entity.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -205,6 +207,7 @@
 				326FB5B82A1FE917003F60D3 /* entity.cpp */,
 				32E048E32A0D2DBD003F3DC2 /* entity.h */,
 				328C0BD82A1E217500AF891C /* interface.h */,
+				32AE74B42A49BDFF0029FEC7 /* audio.cpp */,
 				328C0BDA2A1E358300AF891C /* audio.h */,
 				12BE84D51981D8180090DDBD /* Images.xcassets */,
 				12BE84C41981D8180090DDBD /* Supporting Files */,
@@ -296,6 +299,7 @@
 				1208AC8C2433FCC500BB6E8A /* box_bld.cpp in Sources */,
 				1208AC8D2433FCC500BB6E8A /* coldet_bld.cpp in Sources */,
 				1208AC8E2433FCC500BB6E8A /* tritri.c in Sources */,
+				32AE74B52A49BDFF0029FEC7 /* audio.cpp in Sources */,
 				1208AC8F2433FCC500BB6E8A /* math3d.cpp in Sources */,
 				1208AC902433FCC500BB6E8A /* mytritri.cpp in Sources */,
 				1208AC912433FCC500BB6E8A /* box.cpp in Sources */,
