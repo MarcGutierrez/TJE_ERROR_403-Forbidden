@@ -197,6 +197,8 @@ void youDie(Entity* entity, EntityProjectile* p){
     else{
         std::cout << "enemy killed" << std::endl;
         World::get_instance()->root->removeChild(entity);
+        PlayStage* stage = ((PlayStage*)Game::instance->current_stage);
+        stage->enemyNum--;
     }
 }
 
