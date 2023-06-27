@@ -31,6 +31,11 @@ void World::update(float elapsed_time){
     player->update(elapsed_time);
     root->update(elapsed_time);
 }
+void World::cleanRoot(){
+    for (int i = 0; i < root->children.size(); i++) { //clean root
+        root->removeChild(root->children[i]);
+    }
+}
 
 
 /*if (checkPlayerCollisions(position + player->velocity * seconds_elapsed, &collisions)

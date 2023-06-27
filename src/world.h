@@ -38,6 +38,7 @@ public:
     bool free_cam = false;
     void render();
     void update(float elapsed_time);
+    void cleanRoot();
     
     
 };

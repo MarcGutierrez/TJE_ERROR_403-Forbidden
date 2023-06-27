@@ -164,9 +164,8 @@ void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
     Mesh* mesh;
     Shader* shader;
     Texture* texture;
-    
-    texture = new Texture();
-    texture->load("data/texture.tga");
+
+    texture = Texture::Get("data/texture.tga");
 
     // example of loading Mesh from Mesh Manager
     mesh = Mesh::Get("data/projectile.obj");

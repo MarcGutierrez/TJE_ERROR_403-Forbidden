@@ -153,7 +153,7 @@ void Game::render(void)
 	//drawGrid();
 
 	//render the FPS, Draw Calls, etc
-	drawText(2, 2, getGPUStats(), Vector3(1, 1, 1), 2);
+	//drawText(2, 2, getGPUStats(), Vector3(1, 1, 1), 2);
 
 	//swap between front buffer and back buffer
 	SDL_GL_SwapWindow(this->window);
@@ -184,7 +184,7 @@ void Game::update(double seconds_elapsed)
             Input::centerMouse();
     }
 
-    current_stage->update(seconds_elapsed);
+
     if(TitleStage* s = dynamic_cast<TitleStage*>(current_stage)){
         if (current_stage->fin == true){
             current_stage = new PlayStage();
@@ -195,6 +195,15 @@ void Game::update(double seconds_elapsed)
             current_stage = new EndStage();
         }
     }
+    if(EndStage* s = dynamic_cast<EndStage*>(current_stage)){
+        if(s->restart){
+            current_stage = new TitleStage();
+        }
+        if(s->retry){
+            current_stage = new PlayStage();
+        }
+    }
+    current_stage->update(seconds_elapsed);
 }
 
 //Keyboard event handler (sync input)

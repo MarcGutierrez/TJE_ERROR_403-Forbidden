@@ -87,6 +87,8 @@ public:
 class EndStage : public Stage {
 public:
     
+    bool restart;
+    bool retry;
     EndStage();
     
     stageId getId();

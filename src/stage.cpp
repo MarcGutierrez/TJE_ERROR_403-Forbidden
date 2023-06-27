@@ -33,9 +33,7 @@ void Stage::render(){
 }
 
 void Stage::update(float elapsed_time){
-    if (Input::isKeyPressed(SDL_SCANCODE_SPACE)) {
-        this->fin = true;
-    }
+
 }
 
 TitleStage::TitleStage(){
@@ -230,6 +228,7 @@ void PlayStage::render(){
         //mesh->render( GL_TRIANGLES );
         
         //render stage here
+        drawText(2, 2, getGPUStats(), Vector3(1, 1, 1), 2);
         World::get_instance()->render();
         
 
@@ -248,7 +247,17 @@ void PlayStage::update(float seconds_elapsed){
         this->free_cam = true;
     }
     if(World::get_instance()->player->isDead){
-        this->fin = true;
+        World::get_instance()->cleanRoot();
+        World::get_instance()->player = nullptr;
+        fin = true;
+    }
+    if (Input::isKeyPressed(SDL_SCANCODE_P)) { //debug
+        fin = true;
+        World::get_instance()->player = nullptr;
+        for (int i = 0; i < World::get_instance()->root->children.size(); i++) { //clean root
+            World::get_instance()->root->removeChild(World::get_instance()->root->children[i]);
+            
+        }
     }
 }
 
@@ -275,15 +284,34 @@ stageId MenuStage::getId()
 }
 
 EndStage::EndStage(){
-    
+    camera->lookAt(Vector3(0.f,2.f, 10.f),Vector3(0.f,2.f,0.f), Vector3(0.f,1.f,0.f));
+    restart = false;
 }
 
 void EndStage::render(){
+    glClearColor(0.0f, 0.0f, 0.0f, 1);
+
+    // Clear the window and the depth buffer
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     
+    //set flags
+    glDisable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+
+    Matrix44 m;
+    World::get_instance()->render();
+    drawText(Game::instance->window_width/2-130, Game::instance->window_height/2-100, "YOU DIED", Vector3(1,0,0),6);
+    drawText(175, Game::instance->window_height/2+200, "Press R to play again", Vector3(1,1,1),4);
+    drawText(90, Game::instance->window_height/2+250, "Or press SPACE to exit to title screen", Vector3(1,1,1),3);
 }
 
 void EndStage::update(float elapsed_time){
-    
+    if(Input::isKeyPressed(SDL_SCANCODE_R))
+        retry = true;
+    if(Input::isKeyPressed(SDL_SCANCODE_SPACE))
+        restart = true;
 }
 
 stageId EndStage::getId()
