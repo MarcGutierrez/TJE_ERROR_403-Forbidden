@@ -188,13 +188,22 @@ void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
 
 void youDie(Entity* entity, EntityProjectile* p){
     if (p->isEnemy){
-        if(EntityPlayer* e = dynamic_cast<EntityPlayer*>(entity))
+        if(EntityPlayer* e = dynamic_cast<EntityPlayer*>(entity)){
             std::cout << "u suck" << std::endl;
+            e->isDead = true;
+        }
     }
     else{
         std::cout << "enemy killed" << std::endl;
         World::get_instance()->root->removeChild(entity);
     }
+}
+
+Vector3 getMouseToWorld(Vector3 mouse_pos){
+    //get floor plane
+
+    Vector3 up = Vector3(0, 1, 0);
+    return up;
 }
 
 void EntityPlayer::render(){
@@ -251,7 +260,6 @@ void EntityPlayer::update(float elapsed_time){
     std::vector <sCollisionData> collisions;
 
     yaw += Input::mouse_delta.x * elapsed_time * 15.0f;
-    Vector2 mouse_pos = Input::mouse_position;
     
     Vector3 move_dir = Vector3(0.0f, 0.0f, 0.0f);
     
@@ -311,14 +319,12 @@ void EntityPlayer::update(float elapsed_time){
         model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
     }*/
     
-    model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
-    
+    Vector2 mouse_pos = Input::mouse_position;
     Vector3 world_pos = camera->unproject(Vector3(mouse_pos.x, mouse_pos.y, 0), Game::instance->window_width, Game::instance->window_height);
-    world_pos.y = 51.0;
-    //world_pos.z += 6000;
-    //std::cout << world_pos.x << " " << world_pos.y << " " << world_pos.z << std::endl;
+    
+    
+    model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
 
-    Vector3 up = Vector3(0, 1, 0);
     //camera->lookAt(camera->eye, camera->center, camera->up);
     if  (Input::wasKeyPressed(SDL_SCANCODE_SPACE)) {
         shoot(model, 2000.0f, 0, false);

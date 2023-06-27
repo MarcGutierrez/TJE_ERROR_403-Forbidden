@@ -284,6 +284,15 @@ Vector3 Matrix44::getTranslation()
 	return Vector3(m[12],m[13],m[14]);
 }
 
+float Matrix44::getYawRotationToAimTo(const Vector3& position)
+{
+    Vector3 dir = position - getTranslation();
+    float dx = frontVector().dot(dir);
+    float dy = -rightVector().dot(dir);
+    float angle = std::atan2f(dy, dx);
+    return angle;
+}
+
 //To create a rotation matrix
 void Matrix44::setRotation( float angle_in_rad, const Vector3& axis  )
 {

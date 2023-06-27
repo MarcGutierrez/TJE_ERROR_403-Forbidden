@@ -60,7 +60,7 @@ TitleStage::TitleStage(){
 
 void TitleStage::render(){
     //set the clear color (the background color)
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClearColor(0.5f, 0.125f, 0.94f, 1);
 
     // Clear the window and the depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

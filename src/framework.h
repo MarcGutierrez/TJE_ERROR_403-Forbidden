@@ -245,6 +245,7 @@ class Matrix44
 		void setScale(float x, float y, float z);
 
 		Vector3 getTranslation();
+        float getYawRotationToAimTo(const Vector3& position);
 
 		bool getXYZ(float* euler) const;
 
