@@ -111,48 +111,55 @@ stageId TitleStage::getId()
     return stageId::TITLE;
 }
 
-void PlayStage::loadNewLvl()
+void PlayStage::loadNewLvl(float seconds_elapsed)
 {
-    enemyNum = min(get_random_enemy_num(currentDiff), 1);
-    // this code is for if we want to use it to change things via randomness or other factors like difficulty and position and to not destroy enemies on death
-    for (int i = 0; i < enemyNum; i++)
+    if (spawnCd <= 0.f)
     {
-        int hp;
-        float spd, cdShot, dispersion;
-        Matrix44 model;
-        Mesh* entityMesh;
-
-        Entity* root = World::world->get_instance()->root;
-
-        hp = 1;
-        entityMesh = mesh;
-        spd = get_random_spd();
-
-        model.setTranslation(get_random_dist() * get_random_sign(), 51.f, get_random_dist() * get_random_sign());
-        cdShot = get_random_cdShot();
-        dispersion = get_random_disp();
-        if (enemies.size() <= i)
+        int rand = get_random_enemy_num(currentDiff);
+        enemyNum = (rand > 1) ? 1 : rand;
+        // this code is for if we want to use it to change things via randomness or other factors like difficulty and position and to not destroy enemies on death
+        for (int i = 0; i < enemyNum; i++)
         {
-            EntityAI* newEnemy = new EntityAI(model, entityMesh, shader, texture, hp, spd, cdShot, dispersion, 5.f);
-            enemies.push_back(newEnemy);
-            root->addChild(newEnemy);
-        }
-        else
-        {
-            enemies.at(i)->hp = hp;
-            enemies.at(i)->maxhp = hp;
-            enemies.at(i)->mesh = entityMesh;
-            enemies.at(i)->speed = spd;
-            enemies.at(i)->model = model;
-            enemies.at(i)->cdShot = cdShot;
-            enemies.at(i)->dispersion = dispersion;
-            enemies.at(i)->cdSpawn = 5.f;
+            int hp;
+            float spd, cdShot, dispersion;
+            Matrix44 model;
+            Mesh* entityMesh;
 
-            root->addChild(enemies.at(i));
+            Entity* root = World::world->get_instance()->root;
+
+            hp = 1;
+            entityMesh = mesh;
+            spd = get_random_spd();
+
+            model.setTranslation(get_random_dist() * get_random_sign(), 51.f, get_random_dist() * get_random_sign());
+            cdShot = get_random_cdShot();
+            dispersion = get_random_disp();
+            if (enemies.size() <= i)
+            {
+                EntityAI* newEnemy = new EntityAI(model, entityMesh, shader, texture, hp, spd, cdShot, dispersion);
+                enemies.push_back(newEnemy);
+                root->addChild(newEnemy);
+            }
+            else
+            {
+                enemies.at(i)->hp = hp;
+                enemies.at(i)->maxhp = hp;
+                enemies.at(i)->mesh = entityMesh;
+                enemies.at(i)->speed = spd;
+                enemies.at(i)->model = model;
+                enemies.at(i)->cdShot = cdShot;
+                enemies.at(i)->dispersion = dispersion;
+
+                root->addChild(enemies.at(i));
+            }
         }
+
+        currentDiff++;
+        spawnCd = 5.f;
     }
-
-    currentDiff++;
+    else if (!enemyNum){
+        spawnCd -= seconds_elapsed;
+    }
 }
 
 PlayStage::PlayStage(){
@@ -182,7 +189,9 @@ PlayStage::PlayStage(){
     mesh = Mesh::Get("data/enemy.obj");
     
     currentDiff = 1;
-    loadNewLvl();
+    spawnCd = 5.f;
+    enemyNum = 0;
+    loadNewLvl(0.f);
 }
 
 void PlayStage::render(){
@@ -228,8 +237,8 @@ void PlayStage::render(){
 }
 
 void PlayStage::update(float seconds_elapsed){
-    if (!enemyNum) {
-        loadNewLvl();
+    if (!enemyNum || spawnCd > 0.f) {
+        loadNewLvl(seconds_elapsed);
     }
     World::get_instance()->update(seconds_elapsed);
 }

@@ -255,14 +255,6 @@ bool checkCollisions(const Vector3& target_pos, std::vector<sCollisionData>& col
     return !collisions.empty();
 }
 
-void checkCollisionsRays(const Vector3& pos, const Vector3& dir, Vector3& collision, Vector3& norm, EntityMesh* entity, float distance) {
-    Vector3 center = pos + Vector3(0.f, 1.25f, 0.f);
-
-    // For each collider entity “e” in root:
-    //for(auto e:World::world->get_instance()->root->children){
-    entity->mesh->testRayCollision(entity->model, pos, dir, collision, norm, distance, false); 
-}
-
 void EntityPlayer::update(float elapsed_time){
     Vector3 position = model.getTranslation();
     std::vector <sCollisionData> collisions;
@@ -330,14 +322,6 @@ void EntityPlayer::update(float elapsed_time){
     Vector2 mouse_pos = Input::mouse_position;
     Vector3 world_pos = camera->unproject(Vector3(mouse_pos.x, mouse_pos.y, 0), Game::instance->window_width, Game::instance->window_height);
     
-    if (move_dir.length() != 0)
-    {
-        Vector3 col = Vector3(0.f, 0.f, 0.f);
-        Vector3 norm = Vector3(0.f, 0.f, 0.f);
-        checkCollisionsRays(position + Vector3(0.f, 2.f, 0.f) + move_dir*65, move_dir, col, norm, this, 1500.f);
-        std::cout << col.x << " " << col.y << " " << col.z << " " << std::endl;
-    }
-    
     model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
 
     //camera->lookAt(camera->eye, camera->center, camera->up);
@@ -346,7 +330,7 @@ void EntityPlayer::update(float elapsed_time){
     }
 }
 
-EntityAI::EntityAI(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, int hp, float speed, float cdShot, float dispersion, float cdSpawn)
+EntityAI::EntityAI(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, int hp, float speed, float cdShot, float dispersion)
     :EntityMesh(model, mesh, shader, texture) {
     this->hp = hp;
     this->maxhp = hp;
@@ -357,7 +341,6 @@ EntityAI::EntityAI(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture,
     this->yaw = 0.f;
     this->shotCdTime = 0.f;
     this->wanderChange = 30.f;
-    this->cdSpawn = cdSpawn;
 }
 
 void EntityAI::render()
@@ -406,64 +389,57 @@ void EntityAI::update(float elapsed_time)
     Vector3 position = model.getTranslation();
     std::vector <sCollisionData> collisions;
     // yaw = degree between player and enemy; acos or asin? but that's inneficient
-    if (cdSpawn <= 0.f)
+    behaviourUpdate();
+    switch (currentBehaviour)
     {
-        behaviourUpdate();
-        switch (currentBehaviour)
+    case ATTACK:
+        move_dir = World::get_instance()->player->model.getTranslation() - this->model.getTranslation();
+        shotCdTime += elapsed_time;
+        if (shotCdTime > cdShot)
         {
-        case ATTACK:
-            move_dir = World::get_instance()->player->model.getTranslation() - this->model.getTranslation();
-            shotCdTime += elapsed_time;
-            if (shotCdTime > cdShot)
-            {
-                shoot(model, 100.f * this->speed, dispersion, true);
-                shotCdTime = 0.f;
-            }
-            yaw += this->model.getYawRotationToAimTo(World::get_instance()->player->model.getTranslation());
-            if (move_dir.length() < 1000.f)
-            {
-                move_dir = Vector3(0.f, 0.f, 0.f);
-            }
-            break;
-        case RETREAT:
-            move_dir = this->model.getTranslation() - World::get_instance()->player->model.getTranslation();
-            yaw += this->model.getYawRotationToAimTo(position + move_dir);
-            break;
-        case WANDER:
-            if (wanderChange > 5.f)
-            {
-                move_dir = Vector3(get_random_dir(), 0.f, get_random_dir());
-                wanderChange = .0f;
-            }
-            yaw += this->model.getYawRotationToAimTo(position + move_dir);
-            break;
-        default:
-            break;
+            shoot(model, 100.f * this->speed, dispersion, true);
+            shotCdTime = 0.f;
         }
-
-        move_dir.normalize();
-        velocity = velocity + move_dir * speed;
-        position.y = 51.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
-        if (checkCollisions(position + velocity * elapsed_time, collisions, this)) {
-            //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
-            for (const sCollisionData& collisions : collisions) {
-                //Vector3& velocity = velocity;
-                Vector3 newDir = velocity.dot(collisions.colNormal) * collisions.colNormal;
-                velocity.x -= newDir.x;
-                velocity.z -= newDir.z;
-            }
+        yaw += this->model.getYawRotationToAimTo(World::get_instance()->player->model.getTranslation());
+        if (move_dir.length() < 1000.f)
+        {
+            move_dir = Vector3(0.f, 0.f, 0.f);
         }
-
-        position = position + velocity * elapsed_time;
-        velocity = velocity - velocity * elapsed_time * 50;
-
-        model.setTranslation(position.x, position.y, position.z); // position.y = 51 harcoceado
-        model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
+        break;
+    case RETREAT:
+        move_dir = this->model.getTranslation() - World::get_instance()->player->model.getTranslation();
+        yaw += this->model.getYawRotationToAimTo(position + move_dir);
+        break;
+    case WANDER:
+        if (wanderChange > 5.f)
+        {
+            move_dir = Vector3(get_random_dir(), 0.f, get_random_dir());
+            wanderChange = .0f;
+        }
+        yaw += this->model.getYawRotationToAimTo(position + move_dir);
+        break;
+    default:
+        break;
     }
-    else
-    {
-        cdSpawn -= elapsed_time;
+
+    move_dir.normalize();
+    velocity = velocity + move_dir * speed;
+    position.y = 51.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
+    if (checkCollisions(position + velocity * elapsed_time, collisions, this)) {
+        //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+        for (const sCollisionData& collisions : collisions) {
+            //Vector3& velocity = velocity;
+            Vector3 newDir = velocity.dot(collisions.colNormal) * collisions.colNormal;
+            velocity.x -= newDir.x;
+            velocity.z -= newDir.z;
+        }
     }
+
+    position = position + velocity * elapsed_time;
+    velocity = velocity - velocity * elapsed_time * 50;
+
+    model.setTranslation(position.x, position.y, position.z); // position.y = 51 harcoceado
+    model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
 }
 
 EntityCollider::EntityCollider(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture):EntityMesh(model,mesh,shader,texture){
