@@ -164,32 +164,37 @@ void Game::update(double seconds_elapsed)
 {
 	float speed = seconds_elapsed * mouse_speed; //the speed is defined by the seconds_elapsed so it goes constant
     //mouse input to rotate the cam
-    if ((Input::mouse_state & SDL_BUTTON_LEFT) || mouse_locked ) //is left button pressed?
-    {
-        camera->rotate(Input::mouse_delta.x * 0.005f, Vector3(0.0f,-1.0f,0.0f));
-        camera->rotate(Input::mouse_delta.y * 0.005f, camera->getLocalVector( Vector3(-1.0f,0.0f,0.0f)));
+
+    if(current_stage->free_cam == true){
+        if ((Input::mouse_state & SDL_BUTTON_LEFT) || mouse_locked ) //is left button pressed?
+        {
+            camera->rotate(Input::mouse_delta.x * 0.005f, Vector3(0.0f,-1.0f,0.0f));
+            camera->rotate(Input::mouse_delta.y * 0.005f, camera->getLocalVector( Vector3(-1.0f,0.0f,0.0f)));
+        }
+        
+        //async input to move the camera around
+        if(Input::isKeyPressed(SDL_SCANCODE_LSHIFT) ) speed *= 10; //move faster with left shift
+        if (Input::isKeyPressed(SDL_SCANCODE_UP)) camera->move(Vector3(0.0f, 0.0f, 1.0f) * speed);
+        if (Input::isKeyPressed(SDL_SCANCODE_DOWN)) camera->move(Vector3(0.0f, 0.0f,-1.0f) * speed);
+        if (Input::isKeyPressed(SDL_SCANCODE_LEFT)) camera->move(Vector3(1.0f, 0.0f, 0.0f) * speed);
+        if (Input::isKeyPressed(SDL_SCANCODE_RIGHT)) camera->move(Vector3(-1.0f,0.0f, 0.0f) * speed);
+        
+        //to navigate with the mouse fixed in the middle
+        if (mouse_locked)
+            Input::centerMouse();
     }
 
-    //async input to move the camera around
-    if(Input::isKeyPressed(SDL_SCANCODE_LSHIFT) ) speed *= 10; //move faster with left shift
-    if (Input::isKeyPressed(SDL_SCANCODE_UP)) camera->move(Vector3(0.0f, 0.0f, 1.0f) * speed);
-    if (Input::isKeyPressed(SDL_SCANCODE_DOWN)) camera->move(Vector3(0.0f, 0.0f,-1.0f) * speed);
-    if (Input::isKeyPressed(SDL_SCANCODE_LEFT)) camera->move(Vector3(1.0f, 0.0f, 0.0f) * speed);
-    if (Input::isKeyPressed(SDL_SCANCODE_RIGHT)) camera->move(Vector3(-1.0f,0.0f, 0.0f) * speed);
-
-    //to navigate with the mouse fixed in the middle
-    if (mouse_locked)
-        Input::centerMouse();
-    
-    
-    //root->update(seconds_elapsed);
     current_stage->update(seconds_elapsed);
-    if (current_stage->fin == true){
-        current_stage = new PlayStage();
+    if(TitleStage* s = dynamic_cast<TitleStage*>(current_stage)){
+        if (current_stage->fin == true){
+            current_stage = new PlayStage();
+        }
     }
-	//example
-	//angle += (float)seconds_elapsed * 10.0f;
-
+    if(PlayStage* s = dynamic_cast<PlayStage*>(current_stage)){
+        if (current_stage->fin == true){
+            current_stage = new EndStage();
+        }
+    }
 }
 
 //Keyboard event handler (sync input)

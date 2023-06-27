@@ -88,11 +88,12 @@ void TitleStage::render(){
         //render stage here
         World::get_instance()->render();
         
-
         //disable shader
         shader->disable();
     }
     drawText(150, height/2-150, "Error 403: Forbidden", Vector3(1,1,1),5);
+    drawText(200, height/2+250, "Press SPACE to start", Vector3(1,1,1),4);
+    
 }
 
 void TitleStage::update(float elapsed_time){
@@ -186,7 +187,9 @@ PlayStage::PlayStage(){
     AImodel.setTranslation(400.f, 51.f, 400.f);
 
     parseScene("data/scenes/myscene.scene", model, World::get_instance()->root, NULL);
+    
     mesh = Mesh::Get("data/enemy.obj");
+    texture = Texture::Get("data/textures/enemy_texture.tga");
     
     currentDiff = 1;
     spawnCd = 5.f;
@@ -241,6 +244,12 @@ void PlayStage::update(float seconds_elapsed){
         loadNewLvl(seconds_elapsed);
     }
     World::get_instance()->update(seconds_elapsed);
+    if (Input::isKeyPressed(SDL_SCANCODE_Q)) { //toggle freecam
+        this->free_cam = true;
+    }
+    if(World::get_instance()->player->isDead){
+        this->fin = true;
+    }
 }
 
 stageId PlayStage::getId()

@@ -14,6 +14,7 @@ public:
     
     float t = 0.0f;
     bool fin;
+    bool free_cam;
     
     Matrix44 model;
     Camera* camera;

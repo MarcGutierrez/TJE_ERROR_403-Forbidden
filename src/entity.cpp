@@ -204,6 +204,10 @@ void youDie(Entity* entity, EntityProjectile* p){
 
 Vector3 getMouseToWorld(Vector3 mouse_pos){
     //get floor plane
+    Entity* plane = World::get_instance()->root->children[4];
+    EntityMesh* e = dynamic_cast<EntityMesh*>(plane);
+    //e->mesh->collision_model->rayCollision();//testRayCollision(e->model, Vector3 (0,0,0), Vector3 (0,0,0), Vector3 (0,0,0), Vector3 (0,0,0));
+
 
     Vector3 up = Vector3(0, 1, 0);
     return up;
@@ -232,7 +236,7 @@ bool checkCollisions(const Vector3& target_pos, std::vector<sCollisionData>& col
     Vector3 center = target_pos + Vector3(0.f, 1.25f, 0.f);
     float sphereRadius = 2.75f;
     Vector3 colPoint, colNormal;
-    
+
     // For each collider entity “e” in root:
     //for(auto e:World::world->get_instance()->root->children){
     for (int i = 0; i < World::world->get_instance()->root->children.size(); i++) {
@@ -467,6 +471,7 @@ void EntityCollider::update(float elapsed_time){
 }
 
 EntityProjectile::EntityProjectile(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, float speed, float dmg, Vector3 dir, bool isEnemy):EntityCollider(model, mesh, shader, texture){
+    
     this->speed = speed;
     this->dmg = dmg;
     this->dir = dir;
@@ -536,7 +541,9 @@ void EntityProjectile::update(float elapsed_time){
         World::world->get_instance()->root->removeChild(this);
         
     } else {
-        
+        if (this->lifeTime < elapsed_time){
+            World::world->get_instance()->root->removeChild(this);
+        }
     }
     position = position + velocity * elapsed_time;
     model.setTranslation(position.x, position.y, position.z);
