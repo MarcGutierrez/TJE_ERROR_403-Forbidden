@@ -173,7 +173,9 @@ PlayStage::PlayStage(){
     AImodel.setTranslation(400.f, 51.f, 400.f);
 
     parseScene("data/scenes/myscene.scene", model, World::get_instance()->root, NULL);
+    
     mesh = Mesh::Get("data/enemy.obj");
+    texture = Texture::Get("data/textures/enemy_texture.tga");
     
     currentDiff = 1;
     loadNewLvl();

@@ -537,7 +537,9 @@ void EntityProjectile::update(float elapsed_time){
         World::world->get_instance()->root->removeChild(this);
         
     } else {
-        
+        if (this->lifeTime < elapsed_time){
+            World::world->get_instance()->root->removeChild(this);
+        }
     }
     position = position + velocity * elapsed_time;
     model.setTranslation(position.x, position.y, position.z);
