@@ -10,6 +10,7 @@
 #include "input.h"
 #include "world.h"
 #include "game.h"
+#include "framework.h"
 
 #include <random>
 
@@ -320,8 +321,10 @@ void EntityAI::render()
 
 bool EntityAI::canSeePlayer()
 {
-    Vector3 target = World::get_instance()->player->model.getTranslation();
+    Vector3 target = World::get_instance()->player->model.getTranslation() - this->model.getTranslation();
+    target = target.normalize();
     Vector3 eye = this->model.frontVector();
+    eye = eye.normalize();
     return (eye.dot(target) >= .5f) ? true : false;
 }
 
@@ -349,6 +352,8 @@ void EntityAI::setYaw(Vector3 moveDir, float elapsed_time)
     Vector3 toTarget;
     float angle;
 
+    
+
     toTarget = normalize(moveDir);
     angle = atan2(toTarget.z, toTarget.x);
     yaw += (angle - yaw) * elapsed_time * 50;
@@ -371,7 +376,7 @@ void EntityAI::update(float elapsed_time)
             shoot(model, 50.f, dispersion);
             shotCdTime = 0.f;
         }
-        setYaw(move_dir, elapsed_time);
+        yaw += this->model.getYawRotationToAimTo(World::get_instance()->player->model.getTranslation());
         if (move_dir.length() < 1000.f)
         {
             move_dir = Vector3(0.f, 0.f, 0.f);
@@ -379,7 +384,7 @@ void EntityAI::update(float elapsed_time)
         break;
     case RETREAT:
         move_dir = this->model.getTranslation() - World::get_instance()->player->model.getTranslation();
-        setYaw(move_dir, elapsed_time);
+        yaw += this->model.getYawRotationToAimTo(position + move_dir);
         break;
     case WANDER:
         if (wanderChange > 5.f)
@@ -387,7 +392,7 @@ void EntityAI::update(float elapsed_time)
             move_dir = Vector3(get_random_dir(), 0.f, get_random_dir());
             wanderChange = .0f;
         }
-        setYaw(move_dir, elapsed_time);
+        yaw += this->model.getYawRotationToAimTo(position + move_dir);
         break;
     default:
         break;
