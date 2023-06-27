@@ -42,7 +42,9 @@
 		326FB5B92A1FE917003F60D3 /* entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 326FB5B82A1FE917003F60D3 /* entity.cpp */; };
 		328C0BD62A1D403800AF891C /* world.h in Sources */ = {isa = PBXBuildFile; fileRef = 32A824BD2A14DCCD008898A2 /* world.h */; };
 		328C0BD72A1D7D4700AF891C /* world.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32A824C02A14E12E008898A2 /* world.cpp */; };
+		32A6CF922A4AFE66008B7E6C /* libbass.dylib in Resources */ = {isa = PBXBuildFile; fileRef = 32A6CF912A4AFE66008B7E6C /* libbass.dylib */; };
 		32AE74B52A49BDFF0029FEC7 /* audio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32AE74B42A49BDFF0029FEC7 /* audio.cpp */; };
+		32AE74BC2A4AF51B0029FEC7 /* random.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32AE74BB2A4AF51B0029FEC7 /* random.cpp */; };
 		32C627372A216060002CAFC9 /* stage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32C627362A216060002CAFC9 /* stage.cpp */; };
 /* End PBXBuildFile section */
 
@@ -100,9 +102,15 @@
 		328C0BD92A1E2CAF00AF891C /* stage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = stage.h; path = ../../src/stage.h; sourceTree = "<group>"; };
 		328C0BDA2A1E358300AF891C /* audio.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = audio.h; path = ../../src/audio.h; sourceTree = "<group>"; };
 		328C0BDB2A1E7CD500AF891C /* input.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = input.h; path = ../../src/input.h; sourceTree = "<group>"; };
+		32A6CF8C2A4AFD0A008B7E6C /* libbass.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbass.dylib; path = ../../../../../../usr/local/lib/libbass.dylib; sourceTree = "<group>"; };
+		32A6CF8F2A4AFE3B008B7E6C /* libbass.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbass.dylib; path = ../libbass.dylib; sourceTree = "<group>"; };
+		32A6CF912A4AFE66008B7E6C /* libbass.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libbass.dylib; sourceTree = "<group>"; };
 		32A824BD2A14DCCD008898A2 /* world.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = world.h; path = ../../src/world.h; sourceTree = "<group>"; };
 		32A824C02A14E12E008898A2 /* world.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = world.cpp; path = ../../src/world.cpp; sourceTree = "<group>"; };
 		32AE74B42A49BDFF0029FEC7 /* audio.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = audio.cpp; path = ../../src/audio.cpp; sourceTree = "<group>"; };
+		32AE74B72A4AF0AA0029FEC7 /* random.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = random.hpp; path = ../../src/random.hpp; sourceTree = "<group>"; };
+		32AE74BA2A4AF4340029FEC7 /* random.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = random.h; path = ../../src/random.h; sourceTree = "<group>"; };
+		32AE74BB2A4AF51B0029FEC7 /* random.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = random.cpp; path = ../../src/random.cpp; sourceTree = "<group>"; };
 		32C627362A216060002CAFC9 /* stage.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = stage.cpp; path = ../../src/stage.cpp; sourceTree = "<group>"; };
 		32E048E32A0D2DBD003F3DC2 /* entity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = entity.h; path = ../../src/entity.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -125,6 +133,7 @@
 		12BE84B11981D8180090DDBD = {
 			isa = PBXGroup;
 			children = (
+				32A6CF912A4AFE66008B7E6C /* libbass.dylib */,
 				1208AC942433FD5800BB6E8A /* input.cpp */,
 				1208AC842433FCC400BB6E8A /* box_bld.cpp */,
 				1208AC892433FCC500BB6E8A /* box.cpp */,
@@ -155,6 +164,8 @@
 		12BE84BC1981D8180090DDBD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				32A6CF8C2A4AFD0A008B7E6C /* libbass.dylib */,
+				32A6CF8F2A4AFE3B008B7E6C /* libbass.dylib */,
 				12D3D2D519903A9A00779234 /* OpenGL.framework */,
 				12D3D2D319903A8200779234 /* GLUT.framework */,
 				12BE84F11981D8F20090DDBD /* SDL2.framework */,
@@ -209,6 +220,9 @@
 				328C0BD82A1E217500AF891C /* interface.h */,
 				32AE74B42A49BDFF0029FEC7 /* audio.cpp */,
 				328C0BDA2A1E358300AF891C /* audio.h */,
+				32AE74B72A4AF0AA0029FEC7 /* random.hpp */,
+				32AE74BA2A4AF4340029FEC7 /* random.h */,
+				32AE74BB2A4AF51B0029FEC7 /* random.cpp */,
 				12BE84D51981D8180090DDBD /* Images.xcassets */,
 				12BE84C41981D8180090DDBD /* Supporting Files */,
 			);
@@ -280,6 +294,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				32A6CF922A4AFE66008B7E6C /* libbass.dylib in Resources */,
 				12BE84C81981D8180090DDBD /* InfoPlist.strings in Resources */,
 				12BE84D61981D8180090DDBD /* Images.xcassets in Resources */,
 				128DBA291AD69163002B8C0C /* extra in Resources */,
@@ -316,6 +331,7 @@
 				128DBA2C1AD69163002B8C0C /* main.cpp in Sources */,
 				128DBA2D1AD69163002B8C0C /* mesh.cpp in Sources */,
 				32C627372A216060002CAFC9 /* stage.cpp in Sources */,
+				32AE74BC2A4AF51B0029FEC7 /* random.cpp in Sources */,
 				128DBA301AD69163002B8C0C /* texture.cpp in Sources */,
 				128DBA311AD69163002B8C0C /* utils.cpp in Sources */,
 				128DBA2E1AD69163002B8C0C /* rendertotexture.cpp in Sources */,

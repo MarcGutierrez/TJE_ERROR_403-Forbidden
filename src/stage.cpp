@@ -17,8 +17,7 @@
 #include "entity.h"
 #include "stage.h"
 #include "loadScene.h"
-
-#include <random>
+#include "random.h"
 
 Stage::Stage(){
     fin = false;
@@ -112,35 +111,6 @@ stageId TitleStage::getId()
     return stageId::TITLE;
 }
 
-int get_random_sign()
-{
-    static std::default_random_engine e;
-    static std::uniform_real_distribution<float> dis(0, 1); // range [0, 1)
-    return (dis(e) > .5f) ? -1 : 1;
-}
-
-float get_random_dist()
-{
-    static std::default_random_engine e;
-    static std::uniform_real_distribution<float> dis(750, 1000); // range [400, 800)
-    static std::normal_distribution<float> norm(300, 75);
-    return dis(e) + get_random_sign()*norm(e);
-}
-
-int get_random_enemy_num(int diff)
-{
-    static std::default_random_engine e;
-    static std::uniform_int_distribution<int> dis(1, 20); // range [1, 20]
-    return dis(e) + diff; // in essence a gaussian area surrounding the spawn square to distribute enemies evenly
-}
-
-float get_random_float(float min, float max)
-{
-    std::default_random_engine e;
-    std::uniform_real_distribution<float> dis(min, max); // range [min, max)
-    return dis(e);
-}
-
 void PlayStage::loadNewLvl()
 {
     int enemyNum = get_random_enemy_num(currentDiff);
@@ -156,11 +126,10 @@ void PlayStage::loadNewLvl()
 
         hp = 1;
         entityMesh = mesh;
-        spd = get_random_float(20, 50);
+        spd = get_random_spd();
         model.setTranslation(get_random_dist()*get_random_sign(), 51.f, get_random_dist()*get_random_sign());
-        cdShot = get_random_float(0.3, 3);
-        dispersion = get_random_float(-1, 1);
-
+        cdShot = get_random_cdShot();
+        dispersion = get_random_disp();
         if (enemies.size() <= i)
         {
             EntityAI* newEnemy = new EntityAI(model, entityMesh, shader, texture, hp, spd, cdShot, dispersion);
@@ -204,7 +173,8 @@ PlayStage::PlayStage(){
     AImodel.setTranslation(400.f, 51.f, 400.f);
 
     parseScene("data/scenes/myscene.scene", model, World::get_instance()->root, NULL);
-
+    mesh = Mesh::Get("data/enemy.obj");
+    
     currentDiff = 1;
     loadNewLvl();
 }

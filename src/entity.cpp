@@ -10,8 +10,7 @@
 #include "input.h"
 #include "world.h"
 #include "game.h"
-
-#include <random>
+#include "random.h"
 
 // Container to store EACH collision
 struct sCollisionData {
@@ -30,10 +29,18 @@ Entity::~Entity() {
 
 void Entity::addChild(Entity* child){
     children.push_back(child);
+    child->parent = this;
 }
 
 void Entity::removeChild(Entity* child){
-    children.pop_back();
+    auto it = std::find(children.begin(), children.end(), child);
+    if (it == children.end()) {
+        std::cout << "Child not in list" << std::endl;
+        return;
+    }
+    
+    children.erase(it);
+    child->parent = nullptr;
 }
 
 void Entity::render(){
@@ -151,7 +158,7 @@ EntityPlayer::EntityPlayer(Matrix44 model, Mesh* mesh, Shader* shader, Texture* 
     this->yaw = 0.f;
 }
 
-void shoot(Matrix44 model, float speed, float dispersion){
+void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
     Mesh* mesh;
     Shader* shader;
     Texture* texture;
@@ -167,12 +174,27 @@ void shoot(Matrix44 model, float speed, float dispersion){
     
     float dmg = 0.0f;
     Vector3 dir = model.frontVector();
-    dir.x += dispersion;
-    dir.z += dispersion;
-    model.translate(0.f, 0.0f, 0.f);
+    if (dispersion)
+    {
+        dir.x += get_random_dispBullet(dispersion);
+        dir.z += get_random_dispBullet(dispersion);
+        std::cout << "rand value:  " << get_random_dispBullet(dispersion) << std::endl;
+    }
+    model.translate(0.0f, 0.0f, 51.f);
     
-    EntityProjectile* bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, dir);
+    EntityProjectile* bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, dir, isEnemy);
     World::world->get_instance()->root->addChild(bullet);
+}
+
+void youDie(Entity* entity, EntityProjectile* p){
+    if (p->isEnemy){
+        if(EntityPlayer* e = dynamic_cast<EntityPlayer*>(entity))
+            std::cout << "u suck" << std::endl;
+    }
+    else{
+        std::cout << "enemy killed" << std::endl;
+        World::get_instance()->root->removeChild(entity);
+    }
 }
 
 void EntityPlayer::render(){
@@ -195,24 +217,31 @@ void EntityPlayer::render(){
 }
 
 bool checkCollisions(const Vector3& target_pos,
-    std::vector<sCollisionData>& collisions) {
+    std::vector<sCollisionData>& collisions,
+                     Entity* entity) {
     Vector3 center = target_pos + Vector3(0.f, 1.25f, 0.f);
     float sphereRadius = .75f;
     Vector3 colPoint, colNormal;
-
+    
     // For each collider entity “e” in root:
     //for(auto e:World::world->get_instance()->root->children){
     for (int i = 0; i < World::world->get_instance()->root->children.size(); i++) {
-        if (EntityCollider* e = dynamic_cast<EntityCollider*>(World::world->get_instance()->root->children[i])) {
+        if (EntityProjectile* e = dynamic_cast<EntityProjectile*>(World::world->get_instance()->root->children[i])) {
             Mesh* mesh = e->mesh;
-
-            if (mesh->testSphereCollision(e->model, center,
-                sphereRadius, colPoint, colNormal)) {
-                collisions.push_back({ colPoint,
-                    colNormal.normalize() });
+            if (mesh->testSphereCollision(e->model, center,sphereRadius, colPoint, colNormal)) {
+                youDie(entity, e);
             }
+            if (EntityCollider* e = dynamic_cast<EntityCollider*>(World::world->get_instance()->root->children[i])) {
+                Mesh* mesh = e->mesh;
+                
+                if (mesh->testSphereCollision(e->model, center,
+                                              sphereRadius, colPoint, colNormal)) {
+                    collisions.push_back({ colPoint,
+                        colNormal.normalize() });
+                }
+            }
+            // End loop
         }
-        // End loop
     }
     return !collisions.empty();
 }
@@ -222,6 +251,8 @@ void EntityPlayer::update(float elapsed_time){
     std::vector <sCollisionData> collisions;
 
     yaw += Input::mouse_delta.x * elapsed_time * 15.0f;
+    Vector2 mouse_pos = Input::mouse_position;
+    
     Vector3 move_dir = Vector3(0.0f, 0.0f, 0.0f);
     
     if (Input::isKeyPressed(SDL_SCANCODE_W)) {
@@ -257,7 +288,7 @@ void EntityPlayer::update(float elapsed_time){
     move_dir.normalize();
     velocity = velocity + move_dir * speed;
     position.y = 51.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
-    if (checkCollisions(position + velocity * elapsed_time, collisions)) {
+    if (checkCollisions(position + velocity * elapsed_time, collisions, this)) {
         //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
         for (const sCollisionData& collisions : collisions) {
             //Vector3& velocity = velocity;
@@ -271,17 +302,26 @@ void EntityPlayer::update(float elapsed_time){
     velocity = velocity - velocity * elapsed_time * 50;
     
     model.setTranslation(position.x, position.y, position.z); // position.y = 51 harcoceado
-    if (Input::mouse_position.y < Game::instance->window_height/2){
+    
+    //std::cout << model.getTranslation().x << " " << model.getTranslation().y << " " << model.getTranslation().z << std::endl;
+    /*if (Input::mouse_position.y < Game::instance->window_height/2){
         model.rotate(yaw, Vector3(0.0f, -1.0f, 0.0f));
     }
     if (Input::mouse_position.y >= Game::instance->window_height/2){
         model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
-    }
-    //model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
+    }*/
+    
+    model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
+    
+    Vector3 world_pos = camera->unproject(Vector3(mouse_pos.x, mouse_pos.y, 0), Game::instance->window_width, Game::instance->window_height);
+    world_pos.y = 51.0;
+    //world_pos.z += 6000;
+    //std::cout << world_pos.x << " " << world_pos.y << " " << world_pos.z << std::endl;
 
+    Vector3 up = Vector3(0, 1, 0);
     //camera->lookAt(camera->eye, camera->center, camera->up);
     if  (Input::wasKeyPressed(SDL_SCANCODE_SPACE)) {
-        shoot(model, 50.0f, 0);
+        shoot(model, 2000.0f, 0, false);
     }
 }
 
@@ -318,9 +358,11 @@ void EntityAI::render()
 
 bool EntityAI::canSeePlayer()
 {
-    Vector3 target = World::get_instance()->player->model.getTranslation();
+    Vector3 target = World::get_instance()->player->model.getTranslation() - this->model.getTranslation();
+    target = target.normalize();
     Vector3 eye = this->model.frontVector();
-    return (eye.dot(target) >= .5f) ? true : false;
+    eye = eye.normalize();
+    return (eye.dot(target) >= 0.5f) ? true : false;
 }
 
 void EntityAI::behaviourUpdate()
@@ -332,15 +374,8 @@ void EntityAI::behaviourUpdate()
     }
     else if (canSeePlayer())
         currentBehaviour = ATTACK;
-    else WANDER;
+    else currentBehaviour = WANDER;
     wanderChange = 0.f;
-}
-
-int get_random_dir()
-{
-    static std::default_random_engine e;
-    static std::uniform_int_distribution<int> dis(-5, 5); // range [-5, 5]
-    return dis(e);
 }
 
 void EntityAI::update(float elapsed_time)
@@ -359,7 +394,7 @@ void EntityAI::update(float elapsed_time)
         shotCdTime += elapsed_time;
         if (shotCdTime > cdShot)
         {
-            //shoot(model, 50.f, dispersion);
+            shoot(model, 100.f * this->speed, dispersion, true);
             shotCdTime = 0.f;
         }
         if (move_dir.length() < 1000.f)
@@ -384,7 +419,7 @@ void EntityAI::update(float elapsed_time)
     move_dir.normalize();
     velocity = velocity + move_dir * speed;
     position.y = 51.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
-    if (checkCollisions(position + velocity * elapsed_time, collisions)) {
+    if (checkCollisions(position + velocity * elapsed_time, collisions, this)) {
         //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
         for (const sCollisionData& collisions : collisions) {
             //Vector3& velocity = velocity;
@@ -393,6 +428,7 @@ void EntityAI::update(float elapsed_time)
             velocity.z -= newDir.z;
         }
     }
+    
     position = position + velocity * elapsed_time;
     velocity = velocity - velocity * elapsed_time * 50;
 
@@ -424,10 +460,11 @@ void EntityCollider::render(){
 void EntityCollider::update(float elapsed_time){
 }
 
-EntityProjectile::EntityProjectile(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, float speed, float dmg, Vector3 dir):EntityCollider(model, mesh, shader, texture){
+EntityProjectile::EntityProjectile(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, float speed, float dmg, Vector3 dir, bool isEnemy):EntityCollider(model, mesh, shader, texture){
     this->speed = speed;
     this->dmg = dmg;
     this->dir = dir;
+    this->isEnemy = isEnemy;
 }
 
 void EntityProjectile::render(){
@@ -482,14 +519,8 @@ void EntityProjectile::update(float elapsed_time){
     Vector3 position = model.getTranslation();
     
     dir.normalize();
-    velocity = velocity + dir * speed;
+    velocity =  dir * speed;
     
-    
-
-    //Vector3 new_position = model.getTranslation() + velocity * elapsed_time;
-    //model.setTranslation(position.x, position.y, position.z);
-    //model.setTranslation(new_position.x, new_position.y, new_position.z);
-    //velocity = velocity + dir * speed;
     float height = model.getTranslation().y;
     position.y = height;
     
@@ -502,21 +533,6 @@ void EntityProjectile::update(float elapsed_time){
         
     }
     position = position + velocity * elapsed_time;
-    //position = position + velocity * elapsed_time;
-    /*
-     Vector3 position = model.getTranslation();
-     
-     move_dir.normalize();
-     velocity = velocity + move_dir * speed;
-     
-     position = position + velocity * elapsed_time;
-     velocity = velocity - velocity * elapsed_time * 50;
-     
-     model.setTranslation(position.x, 51.0f, position.z); //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
-     */
-    
-    
-    //Vector3 new_position = model.getTranslation() + velocity * elapsed_time;
     model.setTranslation(position.x, position.y, position.z);
     
 }

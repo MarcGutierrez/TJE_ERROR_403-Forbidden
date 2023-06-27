@@ -143,10 +143,12 @@ class EntityProjectile : public EntityCollider{
         float speed;
         float dmg;
         Vector3 dir;
+        float lifeTime = 4.f;
+        bool isEnemy;
         //Vector3 position;
         Vector3 velocity = Vector3(0.0f,0.0f,0.0f);
         
-        EntityProjectile(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, float speed, float dmg, Vector3 dir);
+        EntityProjectile(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, float speed, float dmg, Vector3 dir, bool isEnemy);
         
         void render();
         void update(float elapsed_time);
