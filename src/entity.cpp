@@ -178,9 +178,8 @@ void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
     Vector3 dir = model.frontVector();
     if (dispersion)
     {
-        dir.x += get_random_dispBullet(dispersion);
-        dir.z += get_random_dispBullet(dispersion);
-        std::cout << "rand value:  " << get_random_dispBullet(dispersion) << std::endl;
+        dir.x += random(dispersion, -dispersion / 2);
+        dir.z += random(dispersion, -dispersion / 2);
     }
     model.translate(0.0f, 0.0f, 51.f);
     
