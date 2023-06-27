@@ -113,7 +113,7 @@ stageId TitleStage::getId()
 
 void PlayStage::loadNewLvl()
 {
-    enemyNum = min(get_random_enemy_num(currentDiff), 20);
+    enemyNum = min(get_random_enemy_num(currentDiff), 1);
     // this code is for if we want to use it to change things via randomness or other factors like difficulty and position and to not destroy enemies on death
     for (int i = 0; i < enemyNum; i++)
     {

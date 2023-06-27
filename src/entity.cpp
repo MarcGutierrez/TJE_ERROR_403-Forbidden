@@ -236,20 +236,15 @@ bool checkCollisions(const Vector3& target_pos, std::vector<sCollisionData>& col
     // For each collider entity “e” in root:
     //for(auto e:World::world->get_instance()->root->children){
     for (int i = 0; i < World::world->get_instance()->root->children.size(); i++) {
-        if (EntityProjectile* e = dynamic_cast<EntityProjectile*>(World::world->get_instance()->root->children[i]))
-            center = center;
         if (EntityCollider* e = dynamic_cast<EntityCollider*>(World::world->get_instance()->root->children[i])) {
-            if (EntityProjectile* e = dynamic_cast<EntityProjectile*>(World::world->get_instance()->root->children[i])) {
-                Mesh* mesh = e->mesh;
-                if (mesh->testSphereCollision(e->model, center,sphereRadius, colPoint, colNormal)) {
-                    youDie(entity, e);
-                    continue;
-                } 
-                if (EntityCollider* e = dynamic_cast<EntityCollider*>(World::world->get_instance()->root->children[i]))
-                {
-                    Mesh* mesh = e->mesh;
-                    continue;
+            Mesh* mesh = e->mesh;
+            if (EntityProjectile* p = dynamic_cast<EntityProjectile*>(e)) {
+                if (mesh->testSphereCollision(e->model, center, sphereRadius, colPoint, colNormal)) {
+                    youDie(entity, p);
                 }
+            }
+            else
+            {
                 if (mesh->testSphereCollision(e->model, center, sphereRadius, colPoint, colNormal)) {
                     collisions.push_back({ colPoint, colNormal.normalize() });
                 }
@@ -514,7 +509,7 @@ struct sImpactData {
 bool checkImpacts(const Vector3& target_pos,
     std::vector<sImpactData>& impacts) {
     Vector3 center = target_pos + Vector3(0.f, 1.25f, 0.f);
-    float sphereRadius = .75f;
+    float sphereRadius = 2.75f;
     Vector3 impPoint, impNormal;
 
     // For each collider entity “e” in root:
