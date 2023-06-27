@@ -53,12 +53,13 @@ public:
     int currentDiff;
     std::vector<EntityAI*> enemies;
     int enemyNum;
+    float spawnCd;
 
     PlayStage();
     
     stageId getId();
 
-    void loadNewLvl();
+    void loadNewLvl(float seconds_elapsed);
 
     
     void render();
