@@ -242,10 +242,10 @@ bool checkCollisions(const Vector3& target_pos, std::vector<sCollisionData>& col
                 Mesh* mesh = e->mesh;
                 if (mesh->testSphereCollision(e->model, center,sphereRadius, colPoint, colNormal)) {
                     youDie(entity, e);
-                }
+                } continue;
                 if (EntityCollider* e = dynamic_cast<EntityCollider*>(World::world->get_instance()->root->children[i]))
                     Mesh* mesh = e->mesh;
-                
+                continue;
                 if (mesh->testSphereCollision(e->model, center, sphereRadius, colPoint, colNormal)) {
                     collisions.push_back({ colPoint, colNormal.normalize() });
                 }
