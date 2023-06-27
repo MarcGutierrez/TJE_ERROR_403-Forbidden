@@ -248,12 +248,7 @@ public:
 	void setRotation(float angle_in_rad, const Vector3& axis);
 	void setScale(float x, float y, float z);
 
-<<<<<<< HEAD
 	Vector3 getTranslation();
-=======
-		Vector3 getTranslation();
-        float getYawRotationToAimTo(const Vector3& position);
->>>>>>> 7c36331dad5fe4b6ef0467f5be7fc95468ea5c7a
 
 	bool getXYZ(float* euler) const;
 

@@ -10,13 +10,9 @@
 #include "input.h"
 #include "world.h"
 #include "game.h"
-<<<<<<< HEAD
 #include "framework.h"
 
-#include <random>
-=======
 #include "random.h"
->>>>>>> 7c36331dad5fe4b6ef0467f5be7fc95468ea5c7a
 
 // Container to store EACH collision
 struct sCollisionData {
@@ -231,9 +227,7 @@ void EntityPlayer::render(){
 
 }
 
-bool checkCollisions(const Vector3& target_pos,
-    std::vector<sCollisionData>& collisions,
-                     Entity* entity) {
+bool checkCollisions(const Vector3& target_pos, std::vector<sCollisionData>& collisions, Entity* entity) {
     Vector3 center = target_pos + Vector3(0.f, 1.25f, 0.f);
     float sphereRadius = .75f;
     Vector3 colPoint, colNormal;
@@ -241,24 +235,19 @@ bool checkCollisions(const Vector3& target_pos,
     // For each collider entity “e” in root:
     //for(auto e:World::world->get_instance()->root->children){
     for (int i = 0; i < World::world->get_instance()->root->children.size(); i++) {
-<<<<<<< HEAD
         if (EntityProjectile* e = dynamic_cast<EntityProjectile*>(World::world->get_instance()->root->children[i]))
             center = center;
         if (EntityCollider* e = dynamic_cast<EntityCollider*>(World::world->get_instance()->root->children[i])) {
-=======
-        if (EntityProjectile* e = dynamic_cast<EntityProjectile*>(World::world->get_instance()->root->children[i])) {
->>>>>>> 7c36331dad5fe4b6ef0467f5be7fc95468ea5c7a
-            Mesh* mesh = e->mesh;
-            if (mesh->testSphereCollision(e->model, center,sphereRadius, colPoint, colNormal)) {
-                youDie(entity, e);
-            }
-            if (EntityCollider* e = dynamic_cast<EntityCollider*>(World::world->get_instance()->root->children[i])) {
+            if (EntityProjectile* e = dynamic_cast<EntityProjectile*>(World::world->get_instance()->root->children[i])) {
                 Mesh* mesh = e->mesh;
+                if (mesh->testSphereCollision(e->model, center,sphereRadius, colPoint, colNormal)) {
+                    youDie(entity, e);
+                }
+                if (EntityCollider* e = dynamic_cast<EntityCollider*>(World::world->get_instance()->root->children[i]))
+                    Mesh* mesh = e->mesh;
                 
-                if (mesh->testSphereCollision(e->model, center,
-                                              sphereRadius, colPoint, colNormal)) {
-                    collisions.push_back({ colPoint,
-                        colNormal.normalize() });
+                if (mesh->testSphereCollision(e->model, center, sphereRadius, colPoint, colNormal)) {
+                    collisions.push_back({ colPoint, colNormal.normalize() });
                 }
             }
             // End loop
@@ -380,11 +369,7 @@ bool EntityAI::canSeePlayer()
     target = target.normalize();
     Vector3 eye = this->model.frontVector();
     eye = eye.normalize();
-<<<<<<< HEAD
     return (eye.dot(target) >= .5f) ? true : false;
-=======
-    return (eye.dot(target) >= 0.5f) ? true : false;
->>>>>>> 7c36331dad5fe4b6ef0467f5be7fc95468ea5c7a
 }
 
 void EntityAI::behaviourUpdate()
@@ -397,33 +382,8 @@ void EntityAI::behaviourUpdate()
     else if (canSeePlayer())
         currentBehaviour = ATTACK;
     else currentBehaviour = WANDER;
-<<<<<<< HEAD
 }
 
-int get_random_dir()
-{
-    static std::default_random_engine e;
-    static std::uniform_int_distribution<int> dis(-5, 5); // range [-5, 5]
-    return dis(e);
-}
-
-void EntityAI::setYaw(Vector3 moveDir, float elapsed_time)
-{
-    Vector3 toTarget;
-    float angle;
-
-    
-
-    toTarget = normalize(moveDir);
-    angle = atan2(toTarget.z, toTarget.x);
-    yaw += (angle - yaw) * elapsed_time * 50;
-}
-
-=======
-    wanderChange = 0.f;
-}
-
->>>>>>> 7c36331dad5fe4b6ef0467f5be7fc95468ea5c7a
 void EntityAI::update(float elapsed_time)
 {
     wanderChange += elapsed_time;
@@ -438,11 +398,7 @@ void EntityAI::update(float elapsed_time)
         shotCdTime += elapsed_time;
         if (shotCdTime > cdShot)
         {
-<<<<<<< HEAD
-            shoot(model, 50.f, dispersion);
-=======
             shoot(model, 100.f * this->speed, dispersion, true);
->>>>>>> 7c36331dad5fe4b6ef0467f5be7fc95468ea5c7a
             shotCdTime = 0.f;
         }
         yaw += this->model.getYawRotationToAimTo(World::get_instance()->player->model.getTranslation());
