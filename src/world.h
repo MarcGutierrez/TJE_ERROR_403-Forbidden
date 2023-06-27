@@ -36,9 +36,6 @@ public:
     Entity* root = nullptr;
     EntityPlayer* player = nullptr;
     bool free_cam = false;
-    //Camera* camera;
-    //void checkLineOfSight(const Matrix44& obs, const Matrix44& target)
-    //bool checkCollisions(Vector3 position, Vector3 &colisions);
     void render();
     void update(float elapsed_time);
     

@@ -1,3 +1,5 @@
+
+
 //
 //  random.h
 //  TJE_XCODE
@@ -6,8 +8,24 @@
 //  Copyright © 2023 manu. All rights reserved.
 //
 
-#ifndef random_h
-#define random_h
+#pragma once
 
+#include <stdio.h>
+#include <random>
 
-#endif /* random_h */
+int get_random_sign();
+
+float get_random_dist();
+
+int get_random_enemy_num(int diff);
+
+float get_random_spd();
+
+float get_random_cdShot();
+
+float get_random_disp();
+
+float get_random_dispBullet(float val);
+
+int get_random_dir();
+
