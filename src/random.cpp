@@ -41,21 +41,14 @@ float get_random_spd()
 float get_random_cdShot()
 {
     static std::default_random_engine e(time(0));
-    static std::uniform_real_distribution<float> dis(0.3f, 3.f); // range [min, max)
+    static std::uniform_real_distribution<float> dis(0.5f, 3.f); // range [min, max)
     return dis(e);
 }
 
 float get_random_disp()
 {
     static std::default_random_engine e(time(0));
-    static std::uniform_real_distribution<float> dis(.5f, 1.f); // range [min, max)
-    return dis(e);
-}
-
-float get_random_dispBullet(float val) // deprecate, use framwork instead
-{
-    std::default_random_engine e(time(0));
-    std::uniform_real_distribution<float> dis(-val, val); // range [min, max)
+    static std::uniform_real_distribution<float> dis(.05f, .2f); // range [min, max)
     return dis(e);
 }
 

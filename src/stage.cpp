@@ -113,7 +113,7 @@ stageId TitleStage::getId()
 
 void PlayStage::loadNewLvl()
 {
-    int enemyNum = get_random_enemy_num(currentDiff);
+    int enemyNum = min(get_random_enemy_num(currentDiff), 20);
     // this code is for if we want to use it to change things via randomness or other factors like difficulty and position and to not destroy enemies on death
     for (int i = 0; i < enemyNum; i++)
     {
@@ -133,7 +133,7 @@ void PlayStage::loadNewLvl()
         dispersion = get_random_disp();
         if (enemies.size() <= i)
         {
-            EntityAI* newEnemy = new EntityAI(model, entityMesh, shader, texture, hp, spd, cdShot, dispersion);
+            EntityAI* newEnemy = new EntityAI(model, entityMesh, shader, texture, hp, spd, cdShot, dispersion, 5.f);
             enemies.push_back(newEnemy);
             root->addChild(newEnemy);
         }
