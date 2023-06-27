@@ -113,7 +113,8 @@ stageId TitleStage::getId()
 
 void PlayStage::loadNewLvl()
 {
-    int enemyNum = 1;//fmin(get_random_enemy_num(currentDiff), 20);
+    int enemyNum = fmin(get_random_enemy_num(currentDiff), 20);
+    enemyNum = min(get_random_enemy_num(currentDiff), 1);
     // this code is for if we want to use it to change things via randomness or other factors like difficulty and position and to not destroy enemies on death
     for (int i = 0; i < enemyNum; i++)
     {
@@ -144,6 +145,11 @@ void PlayStage::loadNewLvl()
             enemies.at(i)->mesh = entityMesh;
             enemies.at(i)->speed = spd;
             enemies.at(i)->model = model;
+            enemies.at(i)->cdShot = cdShot;
+            enemies.at(i)->dispersion = dispersion;
+            enemies.at(i)->cdSpawn = 5.f;
+
+            root->addChild(enemies.at(i));
         }
     }
 
@@ -225,6 +231,9 @@ void PlayStage::render(){
 }
 
 void PlayStage::update(float seconds_elapsed){
+    if (!enemyNum) {
+        loadNewLvl();
+    }
     World::get_instance()->update(seconds_elapsed);
     if (Input::isKeyPressed(SDL_SCANCODE_Q)) { //toggle freecam
         this->free_cam = true;

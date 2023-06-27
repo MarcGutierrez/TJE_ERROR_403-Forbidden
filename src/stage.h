@@ -52,6 +52,7 @@ class PlayStage : public Stage {
 public:
     int currentDiff;
     std::vector<EntityAI*> enemies;
+    int enemyNum;
 
     PlayStage();
     
