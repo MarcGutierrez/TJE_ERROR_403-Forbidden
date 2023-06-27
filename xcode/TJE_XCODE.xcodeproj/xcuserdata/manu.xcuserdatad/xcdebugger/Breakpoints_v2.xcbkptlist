@@ -14,8 +14,8 @@
             filePath = "../src/game.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "128"
-            endingLineNumber = "128"
+            startingLineNumber = "119"
+            endingLineNumber = "119"
             landmarkName = "Game::render()"
             landmarkType = "7">
             <Locations>
@@ -63,70 +63,6 @@
                   startingLineNumber = "146"
                   endingLineNumber = "146"
                   offsetFromSymbolStart = "28">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "37ACBE0C-F498-4DE0-93E5-72DD3A25954E"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../src/loadScene.cpp"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "74"
-            endingLineNumber = "74"
-            landmarkName = "parseScene(filename, model, root, mapId)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "DBAE0145-F22C-49E3-BE48-E699E05AD0E8"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../src/entity.cpp"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "431"
-            endingLineNumber = "431"
-            landmarkName = "EntityAI::update(elapsed_time)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "DBAE0145-F22C-49E3-BE48-E699E05AD0E8 - 2542f68f9a2905a0"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "EntityProjectile::update(float)"
-                  moduleName = "TJE_XCODE"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/manu/Documents/GitHub/TJE_ERROR_403-Forbidden/src/entity.cpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "384"
-                  endingLineNumber = "384"
-                  offsetFromSymbolStart = "292">
-               </Location>
-               <Location
-                  uuid = "DBAE0145-F22C-49E3-BE48-E699E05AD0E8 - 2542f68f9a2905a0"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "EntityProjectile::update(float)"
-                  moduleName = "TJE_XCODE"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/manu/Documents/GitHub/TJE_ERROR_403-Forbidden/src/entity.cpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "384"
-                  endingLineNumber = "384"
-                  offsetFromSymbolStart = "400">
                </Location>
             </Locations>
          </BreakpointContent>
