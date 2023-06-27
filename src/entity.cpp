@@ -230,7 +230,7 @@ void EntityPlayer::render(){
 
 bool checkCollisions(const Vector3& target_pos, std::vector<sCollisionData>& collisions, Entity* entity) {
     Vector3 center = target_pos + Vector3(0.f, 1.25f, 0.f);
-    float sphereRadius = .75f;
+    float sphereRadius = 2.75f;
     Vector3 colPoint, colNormal;
     
     // For each collider entity “e” in root:
@@ -245,6 +245,7 @@ bool checkCollisions(const Vector3& target_pos, std::vector<sCollisionData>& col
             }
             else
             {
+
                 if (mesh->testSphereCollision(e->model, center, sphereRadius, colPoint, colNormal)) {
                     collisions.push_back({ colPoint, colNormal.normalize() });
                 }
