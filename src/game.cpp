@@ -185,10 +185,16 @@ void Game::update(double seconds_elapsed)
     }
 
     current_stage->update(seconds_elapsed);
-    if (current_stage->fin == true){
-        current_stage = new PlayStage();
+    if(TitleStage* s = dynamic_cast<TitleStage*>(current_stage)){
+        if (current_stage->fin == true){
+            current_stage = new PlayStage();
+        }
     }
-
+    if(PlayStage* s = dynamic_cast<PlayStage*>(current_stage)){
+        if (current_stage->fin == true){
+            current_stage = new EndStage();
+        }
+    }
 }
 
 //Keyboard event handler (sync input)

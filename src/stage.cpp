@@ -88,11 +88,12 @@ void TitleStage::render(){
         //render stage here
         World::get_instance()->render();
         
-
         //disable shader
         shader->disable();
     }
     drawText(150, height/2-150, "Error 403: Forbidden", Vector3(1,1,1),5);
+    drawText(200, height/2+250, "Press SPACE to start", Vector3(1,1,1),4);
+    
 }
 
 void TitleStage::update(float elapsed_time){
@@ -113,8 +114,8 @@ stageId TitleStage::getId()
 
 void PlayStage::loadNewLvl()
 {
-    int enemyNum = fmin(get_random_enemy_num(currentDiff), 20);
-    enemyNum = min(get_random_enemy_num(currentDiff), 1);
+    int rand = get_random_enemy_num(currentDiff);
+    enemyNum = (rand > 1) ? 1 : rand;
     // this code is for if we want to use it to change things via randomness or other factors like difficulty and position and to not destroy enemies on death
     for (int i = 0; i < enemyNum; i++)
     {
@@ -237,6 +238,9 @@ void PlayStage::update(float seconds_elapsed){
     World::get_instance()->update(seconds_elapsed);
     if (Input::isKeyPressed(SDL_SCANCODE_Q)) { //toggle freecam
         this->free_cam = true;
+    }
+    if(World::get_instance()->player->isDead){
+        this->fin = true;
     }
 }
 

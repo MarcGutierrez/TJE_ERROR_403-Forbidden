@@ -12,8 +12,6 @@
 #include "game.h"
 #include "framework.h"
 
-#include "extra/coldet/coldet.h"
-
 #include "random.h"
 
 // Container to store EACH collision
@@ -238,21 +236,11 @@ bool checkCollisions(const Vector3& target_pos, std::vector<sCollisionData>& col
     Vector3 center = target_pos + Vector3(0.f, 1.25f, 0.f);
     float sphereRadius = 2.75f;
     Vector3 colPoint, colNormal;
-    
+
     // For each collider entity “e” in root:
     //for(auto e:World::world->get_instance()->root->children){
     for (int i = 0; i < World::world->get_instance()->root->children.size(); i++) {
         if (EntityCollider* e = dynamic_cast<EntityCollider*>(World::world->get_instance()->root->children[i])) {
-            if (EntityProjectile* e = dynamic_cast<EntityProjectile*>(World::world->get_instance()->root->children[i])) {
-                Mesh* mesh = e->mesh;
-                if (mesh->testSphereCollision(e->model, center,sphereRadius, colPoint, colNormal)) {
-                    youDie(entity, e);
-                } 
-                if (EntityCollider* e = dynamic_cast<EntityCollider*>(World::world->get_instance()->root->children[i]))
-                {
-                    Mesh* mesh = e->mesh;
-
-                }
             Mesh* mesh = e->mesh;
             if (EntityProjectile* p = dynamic_cast<EntityProjectile*>(e)) {
                 if (mesh->testSphereCollision(e->model, center, sphereRadius, colPoint, colNormal)) {
