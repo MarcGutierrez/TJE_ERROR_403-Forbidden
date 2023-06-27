@@ -113,7 +113,7 @@ stageId TitleStage::getId()
 
 void PlayStage::loadNewLvl()
 {
-    int enemyNum = get_random_enemy_num(currentDiff);
+    int enemyNum = 1;//fmin(get_random_enemy_num(currentDiff), 20);
     // this code is for if we want to use it to change things via randomness or other factors like difficulty and position and to not destroy enemies on death
     for (int i = 0; i < enemyNum; i++)
     {
@@ -127,12 +127,13 @@ void PlayStage::loadNewLvl()
         hp = 1;
         entityMesh = mesh;
         spd = get_random_spd();
-        model.setTranslation(get_random_dist()*get_random_sign(), 51.f, get_random_dist()*get_random_sign());
+
+        model.setTranslation(get_random_dist() * get_random_sign(), 51.f, get_random_dist() * get_random_sign());
         cdShot = get_random_cdShot();
         dispersion = get_random_disp();
         if (enemies.size() <= i)
         {
-            EntityAI* newEnemy = new EntityAI(model, entityMesh, shader, texture, hp, spd, cdShot, dispersion);
+            EntityAI* newEnemy = new EntityAI(model, entityMesh, shader, texture, hp, spd, cdShot, dispersion, 5.f);
             enemies.push_back(newEnemy);
             root->addChild(newEnemy);
         }
@@ -225,6 +226,9 @@ void PlayStage::render(){
 
 void PlayStage::update(float seconds_elapsed){
     World::get_instance()->update(seconds_elapsed);
+    if (Input::isKeyPressed(SDL_SCANCODE_Q)) { //toggle freecam
+        this->free_cam = true;
+    }
 }
 
 stageId PlayStage::getId()
