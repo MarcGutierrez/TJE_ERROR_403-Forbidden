@@ -5,6 +5,7 @@
 #include "mesh.h"
 #include "texture.h"
 #include "shader.h"
+#include "audio.h"
 
 enum stageId { TITLE, GAME, MENU, ENDING};
 
