@@ -56,6 +56,8 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
     
     current_stage = stages[0];*/
     current_stage = title_stage;
+    musicCd = 64.f;
+    Audio::Init();
     
 
 	/*//OpenGL flags
@@ -183,7 +185,12 @@ void Game::update(double seconds_elapsed)
         if (mouse_locked)
             Input::centerMouse();
     }
-
+    musicCd += seconds_elapsed;
+    if (musicCd >= 64.f)
+    {
+        Audio::Play("data/audio/forbidden_theme_test.wav");
+        musicCd = 0.f;
+    }
 
     if(TitleStage* s = dynamic_cast<TitleStage*>(current_stage)){
         if (current_stage->fin == true){

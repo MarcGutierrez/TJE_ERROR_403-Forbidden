@@ -183,10 +183,6 @@ PlayStage::PlayStage(){
     player->model.translate(0.0f, 51.0f, 0.0f);
     
     World::get_instance()->player = player;
-    
-    Matrix44 AImodel = Matrix44();
-
-    AImodel.setTranslation(400.f, 51.f, 400.f);
 
     parseScene("data/scenes/test_room3.scene", model, World::get_instance()->root, NULL);
     
@@ -247,6 +243,7 @@ void PlayStage::update(float seconds_elapsed){
         this->free_cam = !this->free_cam;
     }
     if(World::get_instance()->player->isDead){
+        std::cout << World::get_instance()->player->killCount << std::endl;
         World::get_instance()->cleanRoot();
         World::get_instance()->player = nullptr;
         fin = true;

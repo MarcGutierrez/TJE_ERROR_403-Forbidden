@@ -79,6 +79,9 @@
     <ClCompile Include="..\..\src\random.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\extra\jpgd.cpp">
+      <Filter>extra</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\camera.h" />
@@ -160,6 +163,18 @@
     </ClInclude>
     <ClInclude Include="..\..\src\interface.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\extra\jpgd.h">
+      <Filter>extra</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\extra\jpgd_idct.h">
+      <Filter>extra</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\extra\stb_easy_font.h">
+      <Filter>extra</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\extra\stb_image.h">
+      <Filter>extra</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

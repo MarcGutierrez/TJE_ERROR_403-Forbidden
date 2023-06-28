@@ -26,6 +26,7 @@ public:
 	float elapsed_time;
 	int fps;
 	bool must_exit;
+	float musicCd;
 
     Stage* current_stage;
 	//some vars
