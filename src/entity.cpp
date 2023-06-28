@@ -266,11 +266,21 @@ bool checkCollisions(const Vector3& target_pos, std::vector<sCollisionData>& col
     return !collisions.empty();
 }
 
+Vector3 lookingAt()
+{
+    Vector2 mouse_pos = Input::mouse_position;
+    Vector3 position = Vector3((mouse_pos.x / Game::instance->window_width) * 9600 - 4800, 51.f, (mouse_pos.y / Game::instance->window_height) * 6400 - 3200);
+    std::cout << "Look at: " << position.x << " " << position.z << std::endl;
+    return position;
+}
+
 void EntityPlayer::update(float elapsed_time){
     Vector3 position = model.getTranslation();
     std::vector <sCollisionData> collisions;
 
-    yaw += Input::mouse_delta.x * elapsed_time * 15.0f;
+    yaw += this->model.getYawRotationToAimTo(lookingAt());
+
+
     
     Vector3 move_dir = Vector3(0.0f, 0.0f, 0.0f);
     
@@ -316,7 +326,6 @@ void EntityPlayer::update(float elapsed_time){
             velocity.z -= newDir.z;
         }
     }
-    
     position = position + velocity * elapsed_time;
     velocity = velocity - velocity * elapsed_time * 50;
     
@@ -329,10 +338,7 @@ void EntityPlayer::update(float elapsed_time){
     if (Input::mouse_position.y >= Game::instance->window_height/2){
         model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
     }*/
-    
-    Vector2 mouse_pos = Input::mouse_position;
-    Vector3 world_pos = camera->unproject(Vector3(mouse_pos.x, mouse_pos.y, 0), Game::instance->window_width, Game::instance->window_height);
-    
+    std::cout << "Position: " << position.x << " " << position.z << std::endl;
     model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
 
     shootCd += elapsed_time;
