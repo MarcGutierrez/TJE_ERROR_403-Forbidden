@@ -96,7 +96,7 @@ void TitleStage::render(){
 
 void TitleStage::update(float elapsed_time){
     camera->move(Vector3(0.0f, 0.0f, 1)*elapsed_time);
-    if (Input::isKeyPressed(SDL_SCANCODE_SPACE)) {
+    if (Input::wasKeyPressed(SDL_SCANCODE_SPACE)) {
         fin = true;
         for (int i = 0; i < World::get_instance()->root->children.size(); i++) { //clean root
             World::get_instance()->root->removeChild(World::get_instance()->root->children[i]);
@@ -343,10 +343,16 @@ void EndStage::render(){
 }
 
 void EndStage::update(float elapsed_time){
-    if(Input::isKeyPressed(SDL_SCANCODE_R))
+    if (Input::wasKeyPressed(SDL_SCANCODE_R))
+    {
+        World::get_instance()->cleanRoot();
         retry = true;
-    if(Input::isKeyPressed(SDL_SCANCODE_SPACE))
+    }
+    if (Input::wasKeyPressed(SDL_SCANCODE_SPACE))
+    {
+        World::get_instance()->cleanRoot();
         restart = true;
+    }
 }
 
 stageId EndStage::getId()
