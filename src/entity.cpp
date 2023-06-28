@@ -161,7 +161,7 @@ EntityPlayer::EntityPlayer(Matrix44 model, Mesh* mesh, Shader* shader, Texture* 
     this->isDead = false;
     killCount = 0;
     velocity = Vector3(0.0f, 0.0f, 0.0f);
-    speed = 50.0f;
+    speed = 30.0f;
     shootCd = 0.f;
 }
 
@@ -196,13 +196,12 @@ void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
 void youDie(Entity* entity, EntityProjectile* p){
     if (p->isEnemy){
         if(EntityPlayer* e = dynamic_cast<EntityPlayer*>(entity)){
-            std::cout << "u suck" << std::endl;
+            //std::cout << "u suck" << std::endl;
             e->isDead = true;
             Audio::Play("data/audio/videogame-death-sound-43894.mp3");
         }
     }
     else{
-        std::cout << "enemy killed" << std::endl;
         World::get_instance()->root->removeChild(entity);
         PlayStage* stage = ((PlayStage*)Game::instance->current_stage);
         stage->enemyNum--;
@@ -271,7 +270,7 @@ bool checkCollisions(const Vector3& target_pos, std::vector<sCollisionData>& col
 Vector3 lookingAt()
 {
     Vector2 mouse_pos = Input::mouse_position;
-    return Vector3((mouse_pos.x / Game::instance->window_width) * 9600 - 4800, 51.f, (mouse_pos.y / Game::instance->window_height) * 6400 - 3200);;
+    return Vector3((mouse_pos.x / Game::instance->window_width) * 8200 - 4100, 51.f, (mouse_pos.y / Game::instance->window_height) * 6000 - 3000);;
 }
 
 void EntityPlayer::update(float elapsed_time){
@@ -345,7 +344,7 @@ void EntityPlayer::update(float elapsed_time){
     if (Input::isKeyPressed(SDL_SCANCODE_SPACE)) {
         if (shootCd > .3f)
         {
-            shoot(model, 2000.0f, 0, false);
+            shoot(model, 4000.0f, 0, false);
             shootCd = 0.f;
         }
     }
@@ -418,7 +417,7 @@ void EntityAI::update(float elapsed_time)
         shotCdTime += elapsed_time;
         if (shotCdTime > cdShot)
         {
-            shoot(model, 100.f * this->speed, dispersion, true);
+            shoot(model, 4000.f, dispersion, true);
             shotCdTime = 0.f;
         }
         yaw += this->model.getYawRotationToAimTo(World::get_instance()->player->model.getTranslation());
@@ -522,7 +521,7 @@ struct sImpactData {
 bool checkImpacts(const Vector3& target_pos,
     std::vector<sImpactData>& impacts) {
     Vector3 center = target_pos + Vector3(0.f, 1.25f, 0.f);
-    float sphereRadius = 2.75f;
+    float sphereRadius = 1.75f;
     Vector3 impPoint, impNormal;
 
     // For each collider entity “e” in root:
