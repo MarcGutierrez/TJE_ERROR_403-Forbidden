@@ -189,6 +189,8 @@ void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
     
     EntityProjectile* bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, dir, isEnemy);
     World::world->get_instance()->root->addChild(bullet);
+    if (random() > 0.5f) Audio::Play("data/audio/363698__jofae__retro-gun-shot.mp3");
+    else Audio::Play("data/audio/mixkit-game-gun-shot-1662.mp3");;
 }
 
 void youDie(Entity* entity, EntityProjectile* p){
