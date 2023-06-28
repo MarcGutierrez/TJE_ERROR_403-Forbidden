@@ -166,6 +166,7 @@ PlayStage::PlayStage(){
     glEnable( GL_DEPTH_TEST ); //check the occlusions using the Z buffer
     
     camera->move(Vector3(0.0f, 0.0f,-2500.0f));
+    camera->rotate(0.20, Vector3(1.0f, 0.f, 0.f));
     
     
     texture = new Texture();
