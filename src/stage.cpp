@@ -115,7 +115,7 @@ void PlayStage::loadNewLvl(float seconds_elapsed)
     if (spawnCd <= 0.f)
     {
         int rand = get_random_enemy_num(currentDiff);
-        enemyNum = (rand > 20) ? 20 : rand;
+        enemyNum = (rand > 0) ? 0 : rand;
         // this code is for if we want to use it to change things via randomness or other factors like difficulty and position and to not destroy enemies on death
         for (int i = 0; i < enemyNum; i++)
         {
@@ -165,8 +165,9 @@ PlayStage::PlayStage(){
     glEnable( GL_CULL_FACE ); //render both sides of every triangle
     glEnable( GL_DEPTH_TEST ); //check the occlusions using the Z buffer
     
-    camera->move(Vector3(0.0f, 0.0f,-2500.0f));
-    camera->rotate(0.20, Vector3(1.0f, 0.f, 0.f));
+    camera->lookAt(Vector3(0.f,4500.f, 1),Vector3(0.f,0.f,0.f), Vector3(0.f,1.f,0.f)); //position the camera and point to 0,0,0
+    //camera->move(Vector3(0.0f, 0.0f,-1500.0f));
+    //camera->rotate(0.30, Vector3(1.0f, 0.f, 0.f));
     
     
     texture = new Texture();
