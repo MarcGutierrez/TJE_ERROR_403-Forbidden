@@ -233,7 +233,7 @@ void PlayStage::render(){
         World::get_instance()->render();
         //drawText(2, 2, getGPUStats(), Vector3(1, 1, 1), 2);
         drawText(10, 10, "Enemies Killed: " + std::to_string(killCount), Vector3(1,1,1),3);
-        drawText(Game::instance->window_width-165, 10, "Wave: " + std::to_string(wave+1), Vector3(1,1,1),4);
+        drawText(Game::instance->window_width-165, 10, "Wave: " + std::to_string(wave), Vector3(1,1,1),4);
         //disable shader
         shader->disable();
     }
