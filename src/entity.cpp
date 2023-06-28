@@ -159,6 +159,10 @@ EntityPlayer::EntityPlayer(Matrix44 model, Mesh* mesh, Shader* shader, Texture* 
     this->hp = 750;
     this->yaw = 0.f;
     this->isDead = false;
+    killCount = 0;
+    velocity = Vector3(0.0f, 0.0f, 0.0f);
+    speed = 50.0f;
+    shootCd = 0.f;
 }
 
 void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
@@ -199,6 +203,7 @@ void youDie(Entity* entity, EntityProjectile* p){
         World::get_instance()->root->removeChild(entity);
         PlayStage* stage = ((PlayStage*)Game::instance->current_stage);
         stage->enemyNum--;
+        World::get_instance()->player->killCount++;
     }
 }
 

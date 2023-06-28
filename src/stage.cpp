@@ -247,6 +247,7 @@ void PlayStage::update(float seconds_elapsed){
         this->free_cam = true;
     }
     if(World::get_instance()->player->isDead){
+        std::cout << World::get_instance()->player->killCount << std::endl;
         World::get_instance()->cleanRoot();
         World::get_instance()->player = nullptr;
         fin = true;
