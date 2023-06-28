@@ -69,8 +69,6 @@ public:
     void onKeyDown( SDL_KeyboardEvent event );
     void onMouseWheel(SDL_MouseWheelEvent event);
     void onResize(int width, int height);
-    
-    
 };
 
 class MenuStage : public Stage {

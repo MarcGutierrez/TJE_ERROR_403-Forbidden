@@ -72,7 +72,7 @@ Audio* Audio::Get(const char* filename)
 HCHANNEL Audio::Play(const char* filename)
 {
     Audio* audio = Get(filename);
-    printf("getting audio");
+    //printf("getting audio");
     if (audio != NULL) {
         return audio->play(1.0f);
     }
@@ -82,7 +82,7 @@ HCHANNEL Audio::Play(const char* filename)
 HCHANNEL Audio::PlayM(const char* filename)
 {
     Audio* audio = Get(filename);
-    printf("getting audio");
+    //printf("getting audio");
     if (audio != NULL) {
         return audio->play(0.7f);
     }
