@@ -79,6 +79,16 @@ HCHANNEL Audio::Play(const char* filename)
     return 0;
 }
 
+HCHANNEL Audio::PlayM(const char* filename)
+{
+    Audio* audio = Get(filename);
+    printf("getting audio");
+    if (audio != NULL) {
+        return audio->play(0.7f);
+    }
+    return 0;
+}
+
 bool Audio::Stop(HCHANNEL channel)
 {
     return BASS_ChannelStop(channel);
