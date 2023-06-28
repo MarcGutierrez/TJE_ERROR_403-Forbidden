@@ -68,22 +68,11 @@ bool parseScene(const char* filename, Matrix44 model, Entity* root, int mapId)
 		// No transforms, anything to do here
 		if (render_data.models.empty())
 			continue;
-
-		// Create instanced entity
-		if (render_data.models.size() > 1) {
-            InstancedEntityMesh* new_entity = new InstancedEntityMesh(model, Mesh::Get(mesh_name.c_str()), render_data.shader, render_data.texture);
-			// Add all instances
-			new_entity->models = render_data.models;
-			// Add entity to scene root
-			root->addChild(new_entity);
-		}
-		// Create normal entity
-		else {
-			EntityCollider* new_entity = new EntityCollider(model, Mesh::Get(mesh_name.c_str()), render_data.shader, render_data.texture);
-			new_entity->model = render_data.models[0];
-			// Add entity to scene root
-			root->addChild(new_entity);
-		}
+		EntityCollider* new_entity = new EntityCollider(model, Mesh::Get(mesh_name.c_str()), render_data.shader, render_data.texture);
+		new_entity->model = render_data.models[0];
+		// Add entity to scene root
+		root->addChild(new_entity);
+		
 	}
 
 	std::cout << "Scene [OK]" << " Meshes added: " << mesh_count << std::endl;

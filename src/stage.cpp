@@ -285,6 +285,21 @@ stageId MenuStage::getId()
 
 EndStage::EndStage(){
 
+    camera->lookAt(Vector3(0.f, 2.f, 10.f), Vector3(0.f, 2.f, 0.f), Vector3(0.f, 1.f, 0.f));
+
+    texture = new Texture();
+    texture->load("data/textures/texture3.tga");
+
+    // example of loading Mesh from Mesh Manager
+    mesh = Mesh::Get("data/background.obj");
+
+    // example of shader loading using the shaders manager
+    shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+    //model.setTranslation(10000.0, 0, 1000);
+    model.rotate(-PI / 2, Vector3(0, 1, 0));
+    EntityMesh* background = new EntityMesh(model, mesh, shader, texture);
+    World::world->get_instance()->root->addChild(background);
+
     restart = false;
     retry = false;
 }
