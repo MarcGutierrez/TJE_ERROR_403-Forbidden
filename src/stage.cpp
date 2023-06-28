@@ -43,7 +43,7 @@ TitleStage::TitleStage(){
     camera->lookAt(Vector3(0.f,2.f, 10.f),Vector3(0.f,2.f,0.f), Vector3(0.f,1.f,0.f));
     
     texture = new Texture();
-    texture->load("data/texture.tga");
+    texture->load("data/textures/texture3.tga");
 
     // example of loading Mesh from Mesh Manager
     mesh = Mesh::Get("data/background.obj");
@@ -58,7 +58,7 @@ TitleStage::TitleStage(){
 
 void TitleStage::render(){
     //set the clear color (the background color)
-    glClearColor(0.5f, 0.125f, 0.94f, 1);
+    glClearColor(0.f, 0.f, 0.f, 1);
 
     // Clear the window and the depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -184,7 +184,7 @@ PlayStage::PlayStage(){
 
     AImodel.setTranslation(400.f, 51.f, 400.f);
 
-    parseScene("data/scenes/myscene.scene", model, World::get_instance()->root, NULL);
+    parseScene("data/scenes/test_room3.scene", model, World::get_instance()->root, NULL);
     
     mesh = Mesh::Get("data/enemy.obj");
     texture = Texture::Get("data/textures/enemy_texture.tga");
@@ -284,12 +284,13 @@ stageId MenuStage::getId()
 }
 
 EndStage::EndStage(){
-    camera->lookAt(Vector3(0.f,2.f, 10.f),Vector3(0.f,2.f,0.f), Vector3(0.f,1.f,0.f));
+
     restart = false;
 }
 
 void EndStage::render(){
     glClearColor(0.0f, 0.0f, 0.0f, 1);
+    camera->lookAt(Vector3(0.f,2.f, 10.f),Vector3(0.f,2.f,0.f), Vector3(0.f,1.f,0.f));
 
     // Clear the window and the depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -301,7 +302,25 @@ void EndStage::render(){
     glDisable(GL_CULL_FACE);
 
     Matrix44 m;
-    World::get_instance()->render();
+    
+    if(shader)
+    {
+        //enable shader
+        shader->enable();
+
+        //upload uniforms
+        shader->setUniform("u_color", Vector4(1,1,1,1));
+        shader->setUniform("u_viewprojection", camera->viewprojection_matrix );
+        shader->setUniform("u_texture", texture, 0);
+        shader->setUniform("u_model", m);
+        shader->setUniform("u_time", time);
+        
+        //render stage here
+        World::get_instance()->render();
+        
+        //disable shader
+        shader->disable();
+    }
     drawText(Game::instance->window_width/2-130, Game::instance->window_height/2-100, "YOU DIED", Vector3(1,0,0),6);
     drawText(175, Game::instance->window_height/2+200, "Press R to play again", Vector3(1,1,1),4);
     drawText(90, Game::instance->window_height/2+250, "Or press SPACE to exit to title screen", Vector3(1,1,1),3);
