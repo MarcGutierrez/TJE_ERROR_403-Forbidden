@@ -179,10 +179,6 @@ PlayStage::PlayStage(){
     player->model.translate(0.0f, 51.0f, 0.0f);
     
     World::get_instance()->player = player;
-    
-    Matrix44 AImodel = Matrix44();
-
-    AImodel.setTranslation(400.f, 51.f, 400.f);
 
     parseScene("data/scenes/test_room3.scene", model, World::get_instance()->root, NULL);
     

@@ -6,13 +6,14 @@
 //  Copyright © 2023 manu. All rights reserved.
 //
 
-/*#include "audio.h"
+#include "audio.h"
 
 std::map<std::string, Audio*> Audio::sAudiosLoaded;
 
 Audio::Audio()
 {
     sample = 0;
+
 }
 
 Audio::~Audio()
@@ -35,6 +36,7 @@ bool Audio::Init()
 {
 
     return BASS_Init(-1, 44100, 0, NULL, NULL);
+
 }
 
 Audio* Audio::Get(const char* filename)
@@ -81,4 +83,4 @@ bool Audio::Stop(HCHANNEL channel)
 {
     return BASS_ChannelStop(channel);
 }
-*/
+
