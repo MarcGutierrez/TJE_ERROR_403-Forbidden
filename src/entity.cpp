@@ -269,9 +269,7 @@ bool checkCollisions(const Vector3& target_pos, std::vector<sCollisionData>& col
 Vector3 lookingAt()
 {
     Vector2 mouse_pos = Input::mouse_position;
-    Vector3 position = Vector3((mouse_pos.x / Game::instance->window_width) * 9600 - 4800, 51.f, (mouse_pos.y / Game::instance->window_height) * 6400 - 3200);
-    std::cout << "Look at: " << position.x << " " << position.z << std::endl;
-    return position;
+    return Vector3((mouse_pos.x / Game::instance->window_width) * 9600 - 4800, 51.f, (mouse_pos.y / Game::instance->window_height) * 6400 - 3200);;
 }
 
 void EntityPlayer::update(float elapsed_time){
@@ -338,7 +336,6 @@ void EntityPlayer::update(float elapsed_time){
     if (Input::mouse_position.y >= Game::instance->window_height/2){
         model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
     }*/
-    std::cout << "Position: " << position.x << " " << position.z << std::endl;
     model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
 
     shootCd += elapsed_time;
