@@ -32,7 +32,7 @@ void World::update(float elapsed_time){
     root->update(elapsed_time);
 }
 void World::cleanRoot(){
-    for (int i = 0; i < root->children.size(); i++) { //clean root
+    for (int i = root->children.size() - 1; i >= 0; i--) { //clean root
         root->removeChild(root->children[i]);
     }
 }

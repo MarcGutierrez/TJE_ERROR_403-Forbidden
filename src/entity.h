@@ -84,7 +84,7 @@ class EntityPlayer : public EntityMesh{
     public:
         // Attributes of the derived class
         int hp, maxHP;
-        float speed = 50.0f;
+        float speed = 50.0f, shootCd = 0.f;
         bool isDead;  
         Vector3 velocity = Vector3(0.0f,0.0f,0.0f);
    

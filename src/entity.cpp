@@ -158,6 +158,7 @@ EntityPlayer::EntityPlayer(Matrix44 model, Mesh* mesh, Shader* shader, Texture* 
     this->camera = camera;
     this->hp = 750;
     this->yaw = 0.f;
+    this->isDead = false;
 }
 
 void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
@@ -327,9 +328,14 @@ void EntityPlayer::update(float elapsed_time){
     
     model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
 
+    shootCd += elapsed_time;
     //camera->lookAt(camera->eye, camera->center, camera->up);
-    if  (Input::wasKeyPressed(SDL_SCANCODE_SPACE)) {
-        shoot(model, 2000.0f, 0, false);
+    if (Input::isKeyPressed(SDL_SCANCODE_SPACE)) {
+        if (shootCd > .3f)
+        {
+            shoot(model, 2000.0f, 0, false);
+            shootCd = 0.f;
+        }
     }
 }
 

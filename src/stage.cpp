@@ -286,6 +286,7 @@ stageId MenuStage::getId()
 EndStage::EndStage(){
 
     restart = false;
+    retry = false;
 }
 
 void EndStage::render(){

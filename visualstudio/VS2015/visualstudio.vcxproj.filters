@@ -158,6 +158,9 @@
     <ClInclude Include="..\..\src\random.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\interface.h">
+      <Filter>utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="extra">
