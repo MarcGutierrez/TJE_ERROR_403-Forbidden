@@ -53,6 +53,7 @@ public:
     int currentDiff;
     std::vector<EntityAI*> enemies;
     int enemyNum;
+    int waveNum;
     float spawnCd;
 
     PlayStage();
