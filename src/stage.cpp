@@ -242,7 +242,7 @@ void PlayStage::update(float seconds_elapsed){
         loadNewLvl(seconds_elapsed);
     }
     World::get_instance()->update(seconds_elapsed);
-    if (Input::isKeyPressed(SDL_SCANCODE_Q)) { //toggle freecam
+    if (Input::wasKeyPressed(SDL_SCANCODE_Q)) { //toggle freecam
         this->free_cam = !this->free_cam;
     }
     if(World::get_instance()->player->isDead){
