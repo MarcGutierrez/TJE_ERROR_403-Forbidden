@@ -189,8 +189,8 @@ void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
     
     EntityProjectile* bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, dir, isEnemy);
     World::world->get_instance()->root->addChild(bullet);
-    //if (random() > 0.5f) Audio::Play("data/audio/363698__jofae__retro-gun-shot.mp3");
-    //else Audio::Play("data/audio/mixkit-game-gun-shot-1662.mp3");;
+    if (random() > 0.5f) Audio::Play("data/audio/363698__jofae__retro-gun-shot.mp3");
+    else Audio::Play("data/audio/mixkit-game-gun-shot-1662.mp3");;
 }
 
 void youDie(Entity* entity, EntityProjectile* p){
@@ -198,7 +198,7 @@ void youDie(Entity* entity, EntityProjectile* p){
         if(EntityPlayer* e = dynamic_cast<EntityPlayer*>(entity)){
             //std::cout << "u suck" << std::endl;
             e->isDead = true;
-            //Audio::Play("data/audio/videogame-death-sound-43894.mp3");
+            Audio::Play("data/audio/videogame-death-sound-43894.mp3");
         }
     }
     else{
@@ -206,7 +206,7 @@ void youDie(Entity* entity, EntityProjectile* p){
         PlayStage* stage = ((PlayStage*)Game::instance->current_stage);
         stage->enemyNum--;
         World::get_instance()->player->killCount++;
-        //Audio::Play("data/audio/expl6.wav");
+        Audio::Play("data/audio/expl6.wav");
     }
 }
 
