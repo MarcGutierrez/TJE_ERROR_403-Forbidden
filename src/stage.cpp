@@ -165,6 +165,9 @@ PlayStage::PlayStage(){
     glEnable( GL_CULL_FACE ); //render both sides of every triangle
     glEnable( GL_DEPTH_TEST ); //check the occlusions using the Z buffer
     
+    camera->move(Vector3(0.0f, 0.0f,-2500.0f));
+    
+    
     texture = new Texture();
     texture->load("data/texture.tga");
 
@@ -223,14 +226,10 @@ void PlayStage::render(){
         shader->setUniform("u_texture", texture, 0);
         shader->setUniform("u_model", m);
         shader->setUniform("u_time", time);
-
-        //do the draw call
-        //mesh->render( GL_TRIANGLES );
         
         //render stage here
         drawText(2, 2, getGPUStats(), Vector3(1, 1, 1), 2);
         World::get_instance()->render();
-        
 
         //disable shader
         shader->disable();
@@ -244,21 +243,22 @@ void PlayStage::update(float seconds_elapsed){
     }
     World::get_instance()->update(seconds_elapsed);
     if (Input::isKeyPressed(SDL_SCANCODE_Q)) { //toggle freecam
-        this->free_cam = true;
+        this->free_cam = !this->free_cam;
     }
     if(World::get_instance()->player->isDead){
         World::get_instance()->cleanRoot();
         World::get_instance()->player = nullptr;
         fin = true;
     }
-    if (Input::isKeyPressed(SDL_SCANCODE_P)) { //debug
+    /*
+    if (Input::isKeyPressed(SDL_SCANCODE_P)) { //debug boton suicidio
         fin = true;
         World::get_instance()->player = nullptr;
         for (int i = 0; i < World::get_instance()->root->children.size(); i++) { //clean root
             World::get_instance()->root->removeChild(World::get_instance()->root->children[i]);
             
         }
-    }
+    }*/
 }
 
 stageId PlayStage::getId()
@@ -295,7 +295,6 @@ EndStage::EndStage(){
 
     // example of shader loading using the shaders manager
     shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
-    //model.setTranslation(10000.0, 0, 1000);
     model.rotate(-PI / 2, Vector3(0, 1, 0));
     EntityMesh* background = new EntityMesh(model, mesh, shader, texture);
     World::world->get_instance()->root->addChild(background);
@@ -306,7 +305,6 @@ EndStage::EndStage(){
 
 void EndStage::render(){
     glClearColor(0.0f, 0.0f, 0.0f, 1);
-    camera->lookAt(Vector3(0.f,2.f, 10.f),Vector3(0.f,2.f,0.f), Vector3(0.f,1.f,0.f));
 
     // Clear the window and the depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -339,16 +337,17 @@ void EndStage::render(){
     }
     drawText(Game::instance->window_width/2-130, Game::instance->window_height/2-100, "YOU DIED", Vector3(1,0,0),6);
     drawText(175, Game::instance->window_height/2+200, "Press R to play again", Vector3(1,1,1),4);
-    drawText(90, Game::instance->window_height/2+250, "Or press SPACE to exit to title screen", Vector3(1,1,1),3);
+    drawText(135, Game::instance->window_height/2+250, "Or press F to exit to title screen", Vector3(1,1,1),3);
 }
 
 void EndStage::update(float elapsed_time){
+    camera->move(Vector3(0.0f, 0.0f, 1)*elapsed_time);
     if (Input::wasKeyPressed(SDL_SCANCODE_R))
     {
         World::get_instance()->cleanRoot();
         retry = true;
     }
-    if (Input::wasKeyPressed(SDL_SCANCODE_SPACE))
+    if (Input::wasKeyPressed(SDL_SCANCODE_F))
     {
         World::get_instance()->cleanRoot();
         restart = true;
