@@ -157,6 +157,17 @@ class EntityProjectile : public EntityCollider{
         void update(float elapsed_time);
 };
 
+class EntityPowerUp : public EntityCollider{
+    
+    float lifeTime;
+    bool inWorld;
+
+    EntityPowerUp(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, float lifeTime);
+    void render();
+    void update(float elapsed_time);
+    
+};
+
 /*class EntityEnemy : public EntityMesh{
     public:
         // Attributes of the derived class
