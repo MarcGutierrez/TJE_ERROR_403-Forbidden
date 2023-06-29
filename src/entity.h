@@ -124,6 +124,15 @@ public:
     void setYaw(Vector3 moveDir, float elapsed_time);
 };
 
+class EntityBoss : public EntityAI {
+public:
+    
+    EntityBoss(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, int hp, float speed, float cdShot, float dispersion );
+    
+    void render();
+    void update(float elapsed_time);
+};
+
 
 class EntityCollider : public EntityMesh{
 

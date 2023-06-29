@@ -184,7 +184,7 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
 
             hp = 50;
             entityMesh = mesh;
-            spd = get_random_spd() - 700;
+            spd = get_random_spd() - 800;
 
             model.setTranslation(get_random_dist() * get_random_sign(), 51.f, get_random_dist() * get_random_sign());
             cdShot = get_random_cdShot();
@@ -192,7 +192,7 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
             
             if (enemies.size() <= i)
             {
-                EntityAI* newEnemy = new EntityAI(model, entityMesh, shader, texture, hp, spd, cdShot, dispersion);
+                EntityBoss* newEnemy = new EntityBoss(model, entityMesh, shader, texture, hp, spd, cdShot, dispersion);
                 enemies.push_back(newEnemy);
                 root->addChild(newEnemy);
             }

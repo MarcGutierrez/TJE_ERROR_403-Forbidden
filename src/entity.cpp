@@ -189,8 +189,35 @@ void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
     
     EntityProjectile* bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, dir, isEnemy);
     World::world->get_instance()->root->addChild(bullet);
-    if (random() > 0.5f) Audio::Play("data/audio/363698__jofae__retro-gun-shot.mp3");
-    else Audio::Play("data/audio/mixkit-game-gun-shot-1662.mp3");;
+    //if (random() > 0.5f) Audio::Play("data/audio/363698__jofae__retro-gun-shot.mp3");
+    //else Audio::Play("data/audio/mixkit-game-gun-shot-1662.mp3");;
+}
+
+void multishot(Matrix44 model, float speed, float dispersion, bool isEnemy){
+    
+    Mesh* mesh;
+    Shader* shader;
+    Texture* texture;
+
+    texture = Texture::Get("data/texture.tga");
+
+    // example of loading Mesh from Mesh Manager
+    mesh = Mesh::Get("data/projectile.obj");
+
+    // example of shader loading using the shaders manager
+    shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+    
+    float dmg = 0.0f;
+    Vector3 dir = model.frontVector();
+    /*if (dispersion) //multishot sin dispersion
+    {
+        dir.x += random(dispersion, -dispersion / 2);
+        dir.z += random(dispersion, -dispersion / 2);
+    }*/
+    model.translate(0.0f, 0.0f, 51.f);
+    
+    EntityProjectile* bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, dir, isEnemy);
+    World::world->get_instance()->root->addChild(bullet);
 }
 
 void youDie(Entity* entity, EntityProjectile* p){
@@ -198,7 +225,7 @@ void youDie(Entity* entity, EntityProjectile* p){
         if(EntityPlayer* e = dynamic_cast<EntityPlayer*>(entity)){
             //std::cout << "u suck" << std::endl;
             e->isDead = true;
-            Audio::Play("data/audio/videogame-death-sound-43894.mp3");
+            //Audio::Play("data/audio/videogame-death-sound-43894.mp3");
         }
     }
     else{
@@ -207,7 +234,7 @@ void youDie(Entity* entity, EntityProjectile* p){
         PlayStage* stage = ((PlayStage*)Game::instance->current_stage);
         stage->enemyNum--;
         World::get_instance()->player->killCount++;
-        Audio::Play("data/audio/expl6.wav");
+        //Audio::Play("data/audio/expl6.wav");
     }
 }
 
@@ -424,6 +451,97 @@ void EntityAI::update(float elapsed_time)
         }
         yaw += this->model.getYawRotationToAimTo(World::get_instance()->player->model.getTranslation());
         if (move_dir.length() < 1000.f)
+        {
+            move_dir = Vector3(0.f, 0.f, 0.f);
+        }
+        break;
+    case RETREAT:
+        move_dir = this->model.getTranslation() - World::get_instance()->player->model.getTranslation();
+        yaw += this->model.getYawRotationToAimTo(position + move_dir);
+        break;
+    case WANDER:
+        if (wanderChange > 5.f)
+        {
+            move_dir = Vector3(get_random_dir(), 0.f, get_random_dir());
+            wanderChange = .0f;
+        }
+        yaw += this->model.getYawRotationToAimTo(position + move_dir);
+        break;
+    default:
+        break;
+    }
+
+    move_dir.normalize();
+    velocity = move_dir * speed;
+    position.y = 51.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
+    if (checkCollisions(position + velocity * elapsed_time, collisions, this)) {
+        //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+        for (const sCollisionData& collisions : collisions) {
+            //Vector3& velocity = velocity;
+            Vector3 newDir = velocity.dot(collisions.colNormal) * collisions.colNormal;
+            velocity.x -= newDir.x;
+            velocity.z -= newDir.z;
+        }
+    }
+    position = position + velocity * elapsed_time;
+    
+    velocity -= velocity * elapsed_time;
+
+    model.setTranslation(position.x, position.y, position.z); // position.y = 51 harcoceado
+    model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
+}
+
+EntityBoss::EntityBoss(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, int hp, float speed, float cdShot, float dispersion)
+    :EntityAI(model, mesh, shader, texture, hp, speed, cdShot, dispersion) {
+        
+    this->hp = hp;
+    this->maxhp = hp;
+    this->speed = speed;
+    this->currentBehaviour = NOTHING;
+    this->cdShot = cdShot;
+    this->dispersion = dispersion;
+    this->yaw = 0.f;
+    this->shotCdTime = 0.f;
+    this->wanderChange = 30.f;
+}
+
+void EntityBoss::render(){
+    // Get the last camera that was activated
+    Camera* camera = Camera::current;
+
+    // Enable shader and pass uniforms
+    shader->enable();
+    shader->setUniform("u_model", model);
+    shader->setUniform("u_viewproj", camera->viewprojection_matrix);
+    shader->setTexture("u_texture", texture, 0);
+
+
+    // Render the mesh using the shader
+    mesh->render(GL_TRIANGLES);
+
+    // Disable shader after finishing rendering
+    shader->disable();
+}
+
+void EntityBoss::update(float elapsed_time){
+    
+    wanderChange += elapsed_time;
+    Vector3 position = model.getTranslation();
+    std::vector <sCollisionData> collisions;
+    // yaw = degree between player and enemy; acos or asin? but that's inneficient
+    behaviourUpdate();
+    switch (currentBehaviour)
+    {
+    case ATTACK:
+        move_dir = World::get_instance()->player->model.getTranslation() - this->model.getTranslation();
+        shotCdTime += elapsed_time;
+        if (shotCdTime > cdShot)
+        {
+            multishot(model, 4000.f, dispersion, true);
+            shotCdTime = 0.f;
+        }
+        yaw += this->model.getYawRotationToAimTo(World::get_instance()->player->model.getTranslation());
+        if (move_dir.length() < 2500.f)
         {
             move_dir = Vector3(0.f, 0.f, 0.f);
         }
