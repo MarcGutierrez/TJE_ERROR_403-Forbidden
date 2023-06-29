@@ -161,7 +161,7 @@ EntityPlayer::EntityPlayer(Matrix44 model, Mesh* mesh, Shader* shader, Texture* 
     this->isDead = false;
     killCount = 0;
     velocity = Vector3(0.0f, 0.0f, 0.0f);
-    speed = 1000.0f;
+    speed = 1500.0f;
     shootCd = 0.f;
 }
 
@@ -243,7 +243,7 @@ void EntityPlayer::render(){
 
 bool checkCollisions(const Vector3& target_pos, std::vector<sCollisionData>& collisions, Entity* entity) {
     Vector3 center = target_pos + Vector3(0.f, 1.25f, 0.f);
-    float sphereRadius = 2.75f;
+    float sphereRadius = 12.5f;
     Vector3 colPoint, colNormal;
 
     // For each collider entity “e” in root:
@@ -445,7 +445,7 @@ void EntityAI::update(float elapsed_time)
     }
 
     move_dir.normalize();
-    velocity = velocity + move_dir * speed;
+    velocity = move_dir * speed;
     position.y = 51.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
     if (checkCollisions(position + velocity * elapsed_time, collisions, this)) {
         //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
@@ -456,9 +456,9 @@ void EntityAI::update(float elapsed_time)
             velocity.z -= newDir.z;
         }
     }
-
     position = position + velocity * elapsed_time;
-    velocity = velocity - velocity * elapsed_time * 50;
+    
+    velocity -= velocity * elapsed_time;
 
     model.setTranslation(position.x, position.y, position.z); // position.y = 51 harcoceado
     model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
