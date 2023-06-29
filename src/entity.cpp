@@ -219,7 +219,7 @@ void multishot(Matrix44 model, float speed, float dispersion, bool isEnemy){
     
     for (int i = -2; i < 3; i++)
     {
-        Vector3 newDir = dir - Vector3(i * 0.1f, 0, i * 0.1f);
+        Vector3 newDir = dir - Vector3(i * 0.15f, 0, i * 0.15f);
         newDir.normalize();
         EntityProjectile* bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, newDir, isEnemy);
         World::world->get_instance()->root->addChild(bullet);
