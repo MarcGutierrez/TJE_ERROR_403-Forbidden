@@ -523,7 +523,7 @@ struct sImpactData {
 bool checkImpacts(const Vector3& target_pos,
     std::vector<sImpactData>& impacts) {
     Vector3 center = target_pos + Vector3(0.f, 1.25f, 0.f);
-    float sphereRadius = 10.f;
+    float sphereRadius = 5.f;
     Vector3 impPoint, impNormal;
 
     // For each collider entity “e” in root:
