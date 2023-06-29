@@ -119,7 +119,7 @@ void PlayStage::loadNewLvl(float seconds_elapsed)
     texture = Texture::Get("data/textures/enemy_texture.tga");if (spawnCd <= 0.f)
     {
         int rand = get_random_enemy_num(currentDiff);
-        enemyNum = (rand > 40) ? 40 : rand;
+        enemyNum = (rand > 50) ? 50 : rand;
         // this code is for if we want to use it to change things via randomness or other factors like difficulty and position and to not destroy enemies on death
         for (int i = 0; i < enemyNum; i++)
         {
@@ -299,8 +299,10 @@ void PlayStage::update(float seconds_elapsed){
     killCount = World::get_instance()->player->killCount;
     wave = this->currentDiff-1;
     if (!enemyNum || spawnCd > 0.f) {
-        //loadNewLvl(seconds_elapsed);
-        loadBossLvl(seconds_elapsed);
+        if (this->currentDiff % 5)
+            loadNewLvl(seconds_elapsed);
+        else
+            loadBossLvl(seconds_elapsed);
     }
     World::get_instance()->update(seconds_elapsed);
     if (Input::wasKeyPressed(SDL_SCANCODE_Q)) { //toggle freecam

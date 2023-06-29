@@ -34,7 +34,7 @@ int get_random_enemy_num(int diff)
 float get_random_spd()
 {
     static std::default_random_engine e(time(0));
-    static std::uniform_real_distribution<float> dis(15.f, 30.f); // range [min, max)
+    static std::uniform_real_distribution<float> dis(950.f, 1700.f); // range [min, max)
     return dis(e);
 }
 
