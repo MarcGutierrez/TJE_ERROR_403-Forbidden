@@ -543,11 +543,11 @@ void EntityBoss::update(float elapsed_time){
         shotCdTime += elapsed_time;
         if (shotCdTime > cdShot)
         {
-            multishot(model, 4000.f, dispersion, true);
+            multishot(model, 2500.f, dispersion, true);
             shotCdTime = 0.f;
         }
         yaw += this->model.getYawRotationToAimTo(World::get_instance()->player->model.getTranslation());
-        if (move_dir.length() < 2500.f)
+        if (move_dir.length() < 3500.f)
         {
             move_dir = Vector3(0.f, 0.f, 0.f);
         }
