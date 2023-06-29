@@ -446,7 +446,7 @@ void EntityAI::update(float elapsed_time)
         shotCdTime += elapsed_time;
         if (shotCdTime > cdShot)
         {
-            shoot(model, 4000.f, dispersion, true);
+            shoot(model, 3000.f, dispersion, true);
             shotCdTime = 0.f;
         }
         yaw += this->model.getYawRotationToAimTo(World::get_instance()->player->model.getTranslation());
