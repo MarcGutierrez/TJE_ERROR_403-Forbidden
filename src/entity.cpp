@@ -161,7 +161,7 @@ EntityPlayer::EntityPlayer(Matrix44 model, Mesh* mesh, Shader* shader, Texture* 
     this->isDead = false;
     killCount = 0;
     velocity = Vector3(0.0f, 0.0f, 0.0f);
-    speed = 30.0f;
+    speed = 1000.0f;
     shootCd = 0.f;
 }
 
@@ -203,6 +203,7 @@ void youDie(Entity* entity, EntityProjectile* p){
     }
     else{
         World::get_instance()->root->removeChild(entity);
+        World::get_instance()->root->removeChild(p);
         PlayStage* stage = ((PlayStage*)Game::instance->current_stage);
         stage->enemyNum--;
         World::get_instance()->player->killCount++;
@@ -314,7 +315,7 @@ void EntityPlayer::update(float elapsed_time){
     }
     
     move_dir.normalize();
-    velocity = velocity + move_dir * speed;
+    velocity = move_dir * speed;
     position.y = 51.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
     if (checkCollisions(position + velocity * elapsed_time, collisions, this)) {
         //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
@@ -326,7 +327,8 @@ void EntityPlayer::update(float elapsed_time){
         }
     }
     position = position + velocity * elapsed_time;
-    velocity = velocity - velocity * elapsed_time * 50;
+    
+    velocity -= velocity * elapsed_time;
     
     model.setTranslation(position.x, position.y, position.z); // position.y = 51 harcoceado
     
@@ -521,7 +523,7 @@ struct sImpactData {
 bool checkImpacts(const Vector3& target_pos,
     std::vector<sImpactData>& impacts) {
     Vector3 center = target_pos + Vector3(0.f, 1.25f, 0.f);
-    float sphereRadius = 1.75f;
+    float sphereRadius = 10.f;
     Vector3 impPoint, impNormal;
 
     // For each collider entity “e” in root:
