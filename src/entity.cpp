@@ -456,7 +456,7 @@ void EntityAI::update(float elapsed_time)
             shotCdTime = 0.f;
         }
         yaw += this->model.getYawRotationToAimTo(World::get_instance()->player->model.getTranslation());
-        if (move_dir.length() < 1500.f)
+        if (move_dir.length() < 2500.f)
         {
             move_dir = Vector3(0.f, 0.f, 0.f);
         }
