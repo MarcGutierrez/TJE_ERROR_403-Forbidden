@@ -209,6 +209,7 @@ void multishot(Matrix44 model, float speed, float dispersion, bool isEnemy){
     
     float dmg = 0.0f;
     Vector3 dir = model.frontVector();
+
     /*if (dispersion) //multishot sin dispersion
     {
         dir.x += random(dispersion, -dispersion / 2);
@@ -216,8 +217,13 @@ void multishot(Matrix44 model, float speed, float dispersion, bool isEnemy){
     }*/
     model.translate(0.0f, 0.0f, 51.f);
     
-    EntityProjectile* bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, dir, isEnemy);
-    World::world->get_instance()->root->addChild(bullet);
+    for (int i = -2; i < 3; i++)
+    {
+        Vector3 newDir = dir - Vector3(i * 0.1f, 0, i * 0.1f);
+        newDir.normalize();
+        EntityProjectile* bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, newDir, isEnemy);
+        World::world->get_instance()->root->addChild(bullet);
+    }
 }
 
 void youDie(Entity* entity, EntityProjectile* p){
@@ -647,6 +653,8 @@ bool checkImpacts(const Vector3& target_pos,
     // For each collider entity “e” in root:
     //for(auto e:World::world->get_instance()->root->children){
     for (int i = 0; i < World::world->get_instance()->root->children.size(); i++) {
+        if (EntityProjectile* b = dynamic_cast<EntityProjectile*>(World::world->get_instance()->root->children[i]))
+            continue;
         if (EntityCollider* e = dynamic_cast<EntityCollider*>(World::world->get_instance()->root->children[i])) {
             Mesh* mesh = e->mesh;
 

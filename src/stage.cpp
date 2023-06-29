@@ -299,9 +299,9 @@ void PlayStage::update(float seconds_elapsed){
     killCount = World::get_instance()->player->killCount;
     wave = this->currentDiff-1;
     if (!enemyNum || spawnCd > 0.f) {
-        if (this->currentDiff % 5)
-            loadNewLvl(seconds_elapsed);
-        else
+        //if (this->currentDiff % 5)
+        //    loadNewLvl(seconds_elapsed);
+        //else
             loadBossLvl(seconds_elapsed);
     }
     World::get_instance()->update(seconds_elapsed);

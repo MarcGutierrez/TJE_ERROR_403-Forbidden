@@ -48,7 +48,7 @@ float get_random_cdShot()
 float get_random_disp()
 {
     static std::default_random_engine e(time(0));
-    static std::uniform_real_distribution<float> dis(.05f, .2f); // range [min, max)
+    static std::uniform_real_distribution<float> dis(.1f, .3f); // range [min, max)
     return dis(e);
 }
 
