@@ -31,6 +31,7 @@ public:
     Stage* current_stage;
 	//some vars
 	Camera* camera; //our global camera
+	HCHANNEL audioChannel;
 	bool mouse_locked; //tells if the mouse is locked (not seen)
 
 	Game( int window_width, int window_height, SDL_Window* window );

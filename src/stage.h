@@ -21,6 +21,7 @@ public:
     Mesh* mesh;
     Texture* texture;
     Shader* shader;
+    Audio* audio;
     
     Stage();
     //Stage* current_stage;
