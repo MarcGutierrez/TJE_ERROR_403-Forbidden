@@ -159,6 +159,7 @@ EntityPlayer::EntityPlayer(Matrix44 model, Mesh* mesh, Shader* shader, Texture* 
     this->hp = 750;
     this->yaw = 0.f;
     this->isDead = false;
+    this->godMode = false;
     killCount = 0;
     velocity = Vector3(0.0f, 0.0f, 0.0f);
     speed = 1500.0f;
@@ -229,9 +230,15 @@ void multishot(Matrix44 model, float speed, float dispersion, bool isEnemy){
 void youDie(Entity* entity, EntityProjectile* p){
     if (p->isEnemy){
         if(EntityPlayer* e = dynamic_cast<EntityPlayer*>(entity)){
+            if (!e->godMode){
+                e->isDead = true;
+                //Audio::Play("data/audio/videogame-death-sound-43894.mp3");
+            }
+                
             //std::cout << "u suck" << std::endl;
-            e->isDead = true;
-            //Audio::Play("data/audio/videogame-death-sound-43894.mp3");
+            else{
+
+            }
         }
     }
     else{
@@ -345,6 +352,9 @@ void EntityPlayer::update(float elapsed_time){
         //velocity = move_dir * speed;
         //position = position + velocity * elapsed_time;
         //model.setTranslation(position.x, 51.0f, position.z); //el 51 es hardcodeado por la mesh del cubo (se
+    }
+    if (Input::isKeyPressed(SDL_SCANCODE_X)) {
+        this->godMode = !this->godMode;
     }
     
     move_dir.normalize();
