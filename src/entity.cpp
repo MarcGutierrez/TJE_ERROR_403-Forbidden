@@ -353,8 +353,9 @@ void EntityPlayer::update(float elapsed_time){
         //position = position + velocity * elapsed_time;
         //model.setTranslation(position.x, 51.0f, position.z); //el 51 es hardcodeado por la mesh del cubo (se
     }
-    if (Input::isKeyPressed(SDL_SCANCODE_X)) {
+    if (Input::wasKeyPressed(SDL_SCANCODE_X)) {
         this->godMode = !this->godMode;
+        std::cout << "God Mode Activated" << std::endl;
     }
     
     move_dir.normalize();
