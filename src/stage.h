@@ -57,6 +57,7 @@ public:
     int enemyNum;
     int waveNum;
     float spawnCd;
+    bool soundEffPlayed;
 
     PlayStage();
     

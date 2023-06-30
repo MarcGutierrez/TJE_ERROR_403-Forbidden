@@ -170,7 +170,7 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
     mesh = Mesh::Get("data/boss_test2.obj");
     texture = Texture::Get("data/textures/enemy_texture.tga");
     
-    if (spawnCd <= 0.f){
+    if (spawnCd <= 0.f) {
         enemyNum = 1;
         // this code is for if we want to use it to change things via randomness or other factors like difficulty and position and to not destroy enemies on death
         for (int i = 0; i < enemyNum; i++)
@@ -184,7 +184,7 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
 
             hp = get_random_hpBoss(currentDiff);
             entityMesh = mesh;
-            spd = get_random_spd()/10;
+            spd = get_random_spd() / 10;
 
             model.setTranslation(get_random_dist() * get_random_sign(), 51.f, get_random_dist() * get_random_sign());
             cdShot = get_random_cdShot();
@@ -206,9 +206,15 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
 
         currentDiff++;
         spawnCd = 5.f;
+        soundEffPlayed = false;
     }
     else if (!enemyNum){
         spawnCd -= seconds_elapsed;
+        if (spawnCd < 1.f && !soundEffPlayed)
+        {
+            Audio::Play("data/audio/boss_wave_alarm.wav");
+            soundEffPlayed = true;
+        }
     }
 }
 
@@ -249,6 +255,7 @@ PlayStage::PlayStage(){
     currentDiff = 1;
     spawnCd = 5.f;
     enemyNum = 0;
+    soundEffPlayed = false;
     //loadNewLvl(0.f);
     loadBossLvl(0.f);
 }
