@@ -23,8 +23,6 @@ float get_random_spd();
 
 float get_random_cdShot();
 
-float get_random_cdShot_boss();
-
 float get_random_disp();
 
 float get_random_dispBullet(float val);

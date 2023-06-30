@@ -489,7 +489,7 @@ void takeAction(EntityAI* entity, Vector3 position, float elapsed_time)
         );
         if (isBoss)
         {
-            if (entity->move_dir.length() < 3500.f)
+            if (entity->move_dir.length() < 500.f)
                 entity->move_dir = Vector3(0.f, 0.f, 0.f);
         }
         else
@@ -515,13 +515,26 @@ void takeAction(EntityAI* entity, Vector3 position, float elapsed_time)
 void checkCollisions(EntityAI* entity, Vector3 position, float elapsed_time)
 {
     std::vector <sCollisionData> collisions;
-    if (checkCollisions(position + entity->velocity * elapsed_time, collisions, entity, 12.5f)) {
-        //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
-        for (const sCollisionData& collisions : collisions) {
-            //Vector3& velocity = velocity;
-            Vector3 newDir = entity->velocity.dot(collisions.colNormal) * collisions.colNormal;
-            entity->velocity.x -= newDir.x;
-            entity->velocity.z -= newDir.z;
+    if(entity == dynamic_cast<EntityAI*>(entity)){
+        if (checkCollisions(position + entity->velocity * elapsed_time, collisions, entity, 12.5f)) {
+            //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+            for (const sCollisionData& collisions : collisions) {
+                //Vector3& velocity = velocity;
+                Vector3 newDir = entity->velocity.dot(collisions.colNormal) * collisions.colNormal;
+                entity->velocity.x -= newDir.x;
+                entity->velocity.z -= newDir.z;
+            }
+        }
+    }
+    else if(entity == dynamic_cast<EntityBoss*>(entity)){
+        if (checkCollisions(position + entity->velocity * elapsed_time, collisions, entity, 62.5f)) {
+            //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+            for (const sCollisionData& collisions : collisions) {
+                //Vector3& velocity = velocity;
+                Vector3 newDir = entity->velocity.dot(collisions.colNormal) * collisions.colNormal;
+                entity->velocity.x -= newDir.x;
+                entity->velocity.z -= newDir.z;
+            }
         }
     }
 }

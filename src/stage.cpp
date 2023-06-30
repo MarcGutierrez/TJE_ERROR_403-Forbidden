@@ -167,7 +167,7 @@ void PlayStage::loadNewLvl(float seconds_elapsed)
 
 void PlayStage::loadBossLvl(float seconds_elapsed){
     
-    mesh = Mesh::Get("data/boss_test.obj");
+    mesh = Mesh::Get("data/boss_test2.obj");
     texture = Texture::Get("data/textures/enemy_texture.tga");
     
     if (spawnCd <= 0.f){
@@ -184,12 +184,12 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
 
             hp = get_random_hpBoss(currentDiff);
             entityMesh = mesh;
-            spd = get_random_spd() - 800;
+            spd = get_random_spd()/10;
 
             model.setTranslation(get_random_dist() * get_random_sign(), 51.f, get_random_dist() * get_random_sign());
             cdShot = get_random_cdShot();
             bulletsShoot = get_random_bulletsBoss(currentDiff);
-            bulletsShoot = (bulletsShoot > 7) ? 7 : bulletsShoot;
+            bulletsShoot = (bulletsShoot > 5) ? 5 : bulletsShoot;
             dispersion = 1.f / (bulletsShoot);
 
             boss->hp = hp;

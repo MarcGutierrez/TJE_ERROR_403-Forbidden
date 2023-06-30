@@ -45,13 +45,6 @@ float get_random_cdShot()
     return dis(e);
 }
 
-float get_random_cdShot_boss()
-{
-    static std::default_random_engine e;
-    static std::uniform_real_distribution<float> dis(0.3f, 0.7f); // range [min, max)
-    return dis(e);
-}
-
 float get_random_disp()
 {
     static std::default_random_engine e;
@@ -70,5 +63,33 @@ int get_random_dir()
 {
     static std::default_random_engine e;
     static std::uniform_int_distribution<int> dis(-5, 5); // range [-5, 5]
+    return dis(e);
+}
+
+float get_random_dispBoss()
+{
+    static std::default_random_engine e(time(0));
+    static std::uniform_real_distribution<float> dis(.15f, .25f); // range [min, max)
+    return dis(e);
+}
+
+int get_random_bulletsBoss(int diff)
+{
+    static std::default_random_engine e(time(0));
+    static std::uniform_int_distribution<int> dis(3, 5); // range [10, 20]
+    return dis(e) + diff * 2;
+}
+
+int get_random_hpBoss(int diff)
+{
+    static std::default_random_engine e(time(0));
+    static std::uniform_int_distribution<int> dis(35, 60); // range [3, 10]
+    return dis(e) + diff;
+}
+
+float get_random_cdShot_boss()
+{
+    static std::default_random_engine e;
+    static std::uniform_real_distribution<float> dis(0.3f, 0.7f); // range [min, max)
     return dis(e);
 }
