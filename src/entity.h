@@ -87,6 +87,7 @@ class EntityPlayer : public EntityMesh{
         float speed, shootCd;
         bool isDead;  
         int killCount;
+        bool godMode;
         Vector3 velocity;
    
         float yaw;
