@@ -133,7 +133,6 @@ public:
     EntityBoss(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, int hp, float speed, float cdShot, float dispersion, int numBulletsShoot );
     
     void render();
-    void update(float elapsed_time);
 };
 
 

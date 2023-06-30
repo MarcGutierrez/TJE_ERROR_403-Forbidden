@@ -464,53 +464,78 @@ void EntityAI::behaviourUpdate()
     else currentBehaviour = WANDER;
 }
 
-void EntityAI::update(float elapsed_time)
+void takeAction(EntityAI* entity, Vector3 position, float elapsed_time)
 {
-    wanderChange += elapsed_time;
-    Vector3 position = model.getTranslation();
-    std::vector <sCollisionData> collisions;
-    // yaw = degree between player and enemy; acos or asin? but that's inneficient
-    behaviourUpdate();
-    switch (currentBehaviour)
+    bool isBoss = false;
+    switch (entity->currentBehaviour)
     {
     case ATTACK:
-        move_dir = World::get_instance()->player->model.getTranslation() - this->model.getTranslation();
-        shotCdTime += elapsed_time;
-        if (shotCdTime > cdShot)
+        entity->move_dir = World::get_instance()->player->model.getTranslation() - entity->model.getTranslation();
+        entity->shotCdTime += elapsed_time;
+        if (entity->shotCdTime > entity->cdShot)
         {
-            shoot(model, 3000.f, dispersion, true);
-            shotCdTime = 0.f;
+            if (EntityBoss* b = dynamic_cast<EntityBoss*>(entity))
+            {
+                multishot(b->model, 2500.f, b->numBulletsShoot, b->dispersion, true);
+                isBoss = true;
+            }
+            else
+                shoot(entity->model, 3000.f, entity->dispersion, true);
+            entity->shotCdTime = 0.f;
         }
-        yaw += this->model.getYawRotationToAimTo(World::get_instance()->player->model.getTranslation());
-        if (move_dir.length() < 2500.f)
+        entity->yaw += entity->model.getYawRotationToAimTo(World::get_instance()->player->model.getTranslation());
+        if (isBoss)
         {
-            move_dir = Vector3(0.f, 0.f, 0.f);
+            if (entity->move_dir.length() < 3500.f)
+                entity->move_dir = Vector3(0.f, 0.f, 0.f);
+        }
+        else
+        {
+            if (entity->move_dir.length() < 2500.f)
+                entity->move_dir = Vector3(0.f, 0.f, 0.f);
         }
         break;
     case WANDER:
-        if (wanderChange > 5.f)
+        if (entity->wanderChange > 5.f)
         {
-            move_dir = Vector3(get_random_dir(), 0.f, get_random_dir());
-            wanderChange = .0f;
+            entity->move_dir = Vector3(get_random_dir(), 0.f, get_random_dir());
+            entity->wanderChange = .0f;
         }
-        yaw += this->model.getYawRotationToAimTo(position + move_dir);
+        entity->yaw += entity->model.getYawRotationToAimTo(position + entity->move_dir);
         break;
     default:
         break;
     }
+    entity->move_dir.normalize();
+}
 
-    move_dir.normalize();
-    velocity = move_dir * speed;
-    position.y = 51.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
-    if (checkCollisions(position + velocity * elapsed_time, collisions, this, 12.5f)) {
+void checkCollisions(EntityAI* entity, Vector3 position, float elapsed_time)
+{
+    std::vector <sCollisionData> collisions;
+    if (checkCollisions(position + entity->velocity * elapsed_time, collisions, entity, 12.5f)) {
         //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
         for (const sCollisionData& collisions : collisions) {
             //Vector3& velocity = velocity;
-            Vector3 newDir = velocity.dot(collisions.colNormal) * collisions.colNormal;
-            velocity.x -= newDir.x;
-            velocity.z -= newDir.z;
+            Vector3 newDir = entity->velocity.dot(collisions.colNormal) * collisions.colNormal;
+            entity->velocity.x -= newDir.x;
+            entity->velocity.z -= newDir.z;
         }
     }
+}
+
+void EntityAI::update(float elapsed_time)
+{
+    wanderChange += elapsed_time;
+    Vector3 position = model.getTranslation();
+    // yaw = degree between player and enemy; acos or asin? but that's inneficient
+    behaviourUpdate();
+    takeAction(this, position, elapsed_time);
+
+    velocity = move_dir * speed;
+    position.y = 51.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
+
+    checkCollisions(this, position, elapsed_time);
+    
     position = position + velocity * elapsed_time;
     
     velocity -= velocity * elapsed_time;
@@ -541,61 +566,6 @@ void EntityBoss::render(){
 
     // Disable shader after finishing rendering
     shader->disable();
-}
-
-void EntityBoss::update(float elapsed_time){
-    
-    wanderChange += elapsed_time;
-    Vector3 position = model.getTranslation();
-    std::vector <sCollisionData> collisions;
-    // yaw = degree between player and enemy; acos or asin? but that's inneficient
-    behaviourUpdate();
-    switch (currentBehaviour)
-    {
-    case ATTACK:
-        move_dir = (World::get_instance()->player->model.getTranslation()) - this->model.getTranslation();
-        shotCdTime += elapsed_time;
-        if (shotCdTime > cdShot)
-        {
-            multishot(model, 2500.f, numBulletsShoot, dispersion, true);
-            shotCdTime = 0.f;
-        }
-        yaw += this->model.getYawRotationToAimTo(World::get_instance()->player->model.getTranslation()+ World::get_instance()->player->velocity);
-        if (move_dir.length() < 3500.f)
-        {
-            move_dir = Vector3(0.f, 0.f, 0.f);
-        }
-        break;
-    case WANDER:
-        if (wanderChange > 5.f)
-        {
-            move_dir = Vector3(get_random_dir(), 0.f, get_random_dir());
-            wanderChange = .0f;
-        }
-        yaw += this->model.getYawRotationToAimTo(position + move_dir);
-        break;
-    default:
-        break;
-    }
-
-    move_dir.normalize();
-    velocity = move_dir * speed;
-    position.y = 51.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
-    if (checkCollisions(position + velocity * elapsed_time, collisions, this, 75.f)) {
-        //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
-        for (const sCollisionData& collisions : collisions) {
-            //Vector3& velocity = velocity;
-            Vector3 newDir = velocity.dot(collisions.colNormal) * collisions.colNormal;
-            velocity.x -= newDir.x;
-            velocity.z -= newDir.z;
-        }
-    }
-    position = position + velocity * elapsed_time;
-    
-    velocity -= velocity * elapsed_time;
-
-    model.setTranslation(position.x, position.y, position.z); // position.y = 51 harcoceado
-    model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
 }
 
 EntityCollider::EntityCollider(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture):EntityMesh(model,mesh,shader,texture){
