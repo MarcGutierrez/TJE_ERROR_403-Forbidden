@@ -539,14 +539,14 @@ void EntityBoss::update(float elapsed_time){
     switch (currentBehaviour)
     {
     case ATTACK:
-        move_dir = World::get_instance()->player->model.getTranslation() - this->model.getTranslation();
+        move_dir = (World::get_instance()->player->model.getTranslation()) - this->model.getTranslation();
         shotCdTime += elapsed_time;
         if (shotCdTime > cdShot)
         {
             multishot(model, 2500.f, dispersion, true);
             shotCdTime = 0.f;
         }
-        yaw += this->model.getYawRotationToAimTo(World::get_instance()->player->model.getTranslation());
+        yaw += this->model.getYawRotationToAimTo(World::get_instance()->player->model.getTranslation()+ World::get_instance()->player->velocity);
         if (move_dir.length() < 3500.f)
         {
             move_dir = Vector3(0.f, 0.f, 0.f);
