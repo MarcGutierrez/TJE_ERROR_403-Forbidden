@@ -175,39 +175,33 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
         // this code is for if we want to use it to change things via randomness or other factors like difficulty and position and to not destroy enemies on death
         for (int i = 0; i < enemyNum; i++)
         {
-            int hp;
+            int hp, bulletsShoot;
             float spd, cdShot, dispersion;
             Matrix44 model;
             Mesh* entityMesh;
 
             Entity* root = World::world->get_instance()->root;
 
-            hp = 50;
+            hp = get_random_hpBoss(currentDiff);
             entityMesh = mesh;
             spd = get_random_spd() - 800;
 
             model.setTranslation(get_random_dist() * get_random_sign(), 51.f, get_random_dist() * get_random_sign());
             cdShot = get_random_cdShot();
-            dispersion = 0;
-            
-            if (enemies.size() <= i)
-            {
-                EntityBoss* newEnemy = new EntityBoss(model, entityMesh, shader, texture, hp, spd, cdShot, dispersion);
-                enemies.push_back(newEnemy);
-                root->addChild(newEnemy);
-            }
-            else
-            {
-                enemies.at(i)->hp = hp;
-                enemies.at(i)->maxhp = hp;
-                enemies.at(i)->mesh = entityMesh;
-                enemies.at(i)->speed = spd;
-                enemies.at(i)->model = model;
-                enemies.at(i)->cdShot = cdShot;
-                enemies.at(i)->dispersion = dispersion;
+            bulletsShoot = get_random_bulletsBoss(currentDiff);
+            bulletsShoot = (bulletsShoot > 7) ? 7 : bulletsShoot;
+            dispersion = 1.f / (bulletsShoot);
 
-                root->addChild(enemies.at(i));
-            }
+            boss->hp = hp;
+            boss->maxhp = hp;
+            boss->mesh = entityMesh;
+            boss->speed = spd;
+            boss->model = model;
+            boss->cdShot = cdShot;
+            boss->dispersion = dispersion;
+            boss->numBulletsShoot = bulletsShoot;
+
+            root->addChild(boss);
         }
 
         currentDiff++;
@@ -241,6 +235,11 @@ PlayStage::PlayStage(){
     player->model.translate(0.0f, 51.0f, 0.0f);
     
     World::get_instance()->player = player;
+
+    mesh = Mesh::Get("data/boss_test.obj");
+    texture = Texture::Get("data/textures/enemy_texture.tga");
+
+    boss = new EntityBoss(model, mesh, shader, texture, 0, 0.f, 0.f, 0.f, 0);
 
     parseScene("data/scenes/test_room3.scene", model, World::get_instance()->root, NULL);
     

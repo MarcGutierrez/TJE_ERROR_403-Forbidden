@@ -99,7 +99,7 @@ class EntityPlayer : public EntityMesh{
         void update(float elapsed_time);
 };
 
-enum behaviour {NOTHING = 0, WANDER, ATTACK, RETREAT};
+enum behaviour {NOTHING = 0, WANDER, ATTACK};
 
 class EntityAI : public EntityMesh {
 public:
@@ -111,6 +111,7 @@ public:
     Vector3 move_dir = Vector3(0.0f, 0.0f, 0.0f);
     float wanderChange;
     float cdShot, shotCdTime, dispersion;
+    bool hasBeenAttacked;
 
     float yaw;
     //EntityAI(std::string name, Matrix44 model, Mesh* mesh, Texture* texture, Shader* shader, Vector4 color, Camera* camera);
@@ -126,8 +127,9 @@ public:
 
 class EntityBoss : public EntityAI {
 public:
-    
-    EntityBoss(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, int hp, float speed, float cdShot, float dispersion );
+    int numBulletsShoot;
+
+    EntityBoss(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, int hp, float speed, float cdShot, float dispersion, int numBulletsShoot );
     
     void render();
     void update(float elapsed_time);
