@@ -483,7 +483,10 @@ void takeAction(EntityAI* entity, Vector3 position, float elapsed_time)
                 shoot(entity->model, 3000.f, entity->dispersion, true);
             entity->shotCdTime = 0.f;
         }
-        entity->yaw += entity->model.getYawRotationToAimTo(World::get_instance()->player->model.getTranslation());
+        entity->yaw += entity->model.getYawRotationToAimTo
+        (
+            World::get_instance()->player->model.getTranslation() + World::get_instance()->player->velocity * Vector3(0.5f, 0.5f, 0.5f)
+        );
         if (isBoss)
         {
             if (entity->move_dir.length() < 3500.f)
