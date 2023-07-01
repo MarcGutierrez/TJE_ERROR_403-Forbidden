@@ -190,8 +190,8 @@ void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
     
     EntityProjectile* bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, dir, isEnemy);
     World::world->get_instance()->root->addChild(bullet);
-    //if (random() > 0.5f) Audio::Play("data/audio/363698__jofae__retro-gun-shot.mp3");
-    //else Audio::Play("data/audio/mixkit-game-gun-shot-1662.mp3");;
+    if (random() > 0.5f) Audio::Play("data/audio/363698__jofae__retro-gun-shot.mp3");
+    else Audio::Play("data/audio/mixkit-game-gun-shot-1662.mp3");
 }
 
 void multishot(Matrix44 model, float speed, int bulletsShoot, float dispersion, bool isEnemy){
@@ -226,6 +226,8 @@ void multishot(Matrix44 model, float speed, int bulletsShoot, float dispersion, 
         EntityProjectile* bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, newDir, isEnemy);
         World::world->get_instance()->root->addChild(bullet);
     }
+    if (random() > 0.5f) Audio::Play("data/audio/363698__jofae__retro-gun-shot.mp3");
+    else Audio::Play("data/audio/mixkit-game-gun-shot-1662.mp3");
 }
 
 void youDie(Entity* entity, EntityProjectile* p){
@@ -233,7 +235,7 @@ void youDie(Entity* entity, EntityProjectile* p){
         if(EntityPlayer* e = dynamic_cast<EntityPlayer*>(entity)){
             if (!e->godMode){
                 e->isDead = true;
-                //Audio::Play("data/audio/videogame-death-sound-43894.mp3");
+                Audio::Play("data/audio/videogame-death-sound-43894.mp3");
             }
                 
             //std::cout << "u suck" << std::endl;
@@ -255,8 +257,10 @@ void youDie(Entity* entity, EntityProjectile* p){
                 PlayStage* stage = ((PlayStage*)Game::instance->current_stage);
                 stage->enemyNum--;
                 World::get_instance()->player->killCount++;
-                //Audio::Play("data/audio/expl6.wav");
+                Audio::Play("data/audio/expl6.wav");
             }
+            else
+                Audio::Play("data/audio/hitmarker_2.mp3");
         }
         else
         {
@@ -265,7 +269,7 @@ void youDie(Entity* entity, EntityProjectile* p){
             PlayStage* stage = ((PlayStage*)Game::instance->current_stage);
             stage->enemyNum--;
             World::get_instance()->player->killCount++;
-            //Audio::Play("data/audio/expl6.wav");
+            Audio::Play("data/audio/expl6.wav");
         }
     }
 }
@@ -466,7 +470,7 @@ void EntityAI::behaviourUpdate()
 
 void takeAction(EntityAI* entity, Vector3 position, float elapsed_time)
 {
-    bool isBoss = false;
+    bool isBoss = (dynamic_cast<EntityBoss*>(entity) ? true : false) ;
     switch (entity->currentBehaviour)
     {
     case ATTACK:
@@ -477,7 +481,6 @@ void takeAction(EntityAI* entity, Vector3 position, float elapsed_time)
             if (EntityBoss* b = dynamic_cast<EntityBoss*>(entity))
             {
                 multishot(b->model, 2500.f, b->numBulletsShoot, b->dispersion, true);
-                isBoss = true;
             }
             else
                 shoot(entity->model, 3000.f, entity->dispersion, true);
@@ -487,9 +490,11 @@ void takeAction(EntityAI* entity, Vector3 position, float elapsed_time)
         (
             World::get_instance()->player->model.getTranslation() + World::get_instance()->player->velocity * Vector3(0.5f, 0.5f, 0.5f)
         );
+        std::cout << entity->move_dir.length() << std::endl;
         if (isBoss)
         {
-            if (entity->move_dir.length() < 5000.f)
+            if (entity->move_dir.length() < 4000.f)
+            if (entity->move_dir.length() < 1500.f)
                 entity->move_dir = Vector3(0.f, 0.f, 0.f);
         }
         else
@@ -527,7 +532,7 @@ void checkCollisions(EntityAI* entity, Vector3 position, float elapsed_time)
         }
     }
     else if(entity == dynamic_cast<EntityBoss*>(entity)){
-        if (checkCollisions(position + entity->velocity * elapsed_time, collisions, entity, 62.5)) {
+        if (checkCollisions(position + entity->velocity * elapsed_time, collisions, entity, 62.5f)) {
             //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
             for (const sCollisionData& collisions : collisions) {
                 //Vector3& velocity = velocity;
