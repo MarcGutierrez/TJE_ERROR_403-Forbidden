@@ -73,9 +73,9 @@ int get_random_hpBoss(int diff)
     return dis(e) + diff; 
 }
 
-int get_random_dir()
+float get_random_dir()
 {
     static std::default_random_engine e(time(0));
-    static std::uniform_int_distribution<int> dis(-5, 5); // range [-5, 5]
+    static std::uniform_real_distribution<float> dis(-0.5f, 0.5f); // range [-0.5, 0.5]
     return dis(e);
 }

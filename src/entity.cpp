@@ -193,8 +193,8 @@ void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
     
     EntityProjectile* bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, dir, isEnemy);
     World::world->get_instance()->root->addChild(bullet);
-    //if (random() > 0.5f) Audio::Play("data/audio/363698__jofae__retro-gun-shot.mp3");
-    //else Audio::Play("data/audio/mixkit-game-gun-shot-1662.mp3");
+    if (random() > 0.5f) Audio::PlayS("data/audio/363698__jofae__retro-gun-shot.mp3");
+    else Audio::PlayS("data/audio/mixkit-game-gun-shot-1662.mp3");
 }
 
 void multishot(Matrix44 model, float speed, int bulletsShoot, float dispersion, bool isEnemy){
@@ -232,8 +232,8 @@ void multishot(Matrix44 model, float speed, int bulletsShoot, float dispersion, 
         EntityProjectile* bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, newDir, isEnemy);
         World::world->get_instance()->root->addChild(bullet);
     }
-    //if (random() > 0.5f) Audio::Play("data/audio/363698__jofae__retro-gun-shot.mp3");
-    //else Audio::Play("data/audio/mixkit-game-gun-shot-1662.mp3");
+    if (random() > 0.5f) Audio::PlayS("data/audio/363698__jofae__retro-gun-shot.mp3");
+    else Audio::PlayS("data/audio/mixkit-game-gun-shot-1662.mp3");
 }
 
 void youDie(Entity* entity, EntityProjectile* p){
@@ -241,7 +241,7 @@ void youDie(Entity* entity, EntityProjectile* p){
         if(EntityPlayer* e = dynamic_cast<EntityPlayer*>(entity)){
             if (!e->godMode){
                 e->isDead = true;
-                //Audio::Play("data/audio/videogame-death-sound-43894.mp3");
+                Audio::Play("data/audio/videogame-death-sound-43894.mp3");
             }
                 
             //std::cout << "u suck" << std::endl;
@@ -253,9 +253,10 @@ void youDie(Entity* entity, EntityProjectile* p){
     else{
         if (EntityBoss* b = dynamic_cast<EntityBoss*>(entity))
         {
-            b->color = Vector4(1, 0, 0, 1);
             b->hp--;
             b->hasBeenAttacked = true;
+            b->isHurt = true;
+            b->color = Vector4(1, 0, 0, 1);
             World::get_instance()->root->removeChild(p);
             std::cout << b->hp << std::endl;
             if (b->hp == 0)
@@ -264,10 +265,10 @@ void youDie(Entity* entity, EntityProjectile* p){
                 PlayStage* stage = ((PlayStage*)Game::instance->current_stage);
                 stage->enemyNum--;
                 World::get_instance()->player->killCount++;
-                //Audio::Play("data/audio/expl6.wav");
+                Audio::Play("data/audio/expl6.wav");
             }
-            //else
-                //Audio::Play("data/audio/hitmarker_2.mp3");
+            else
+                Audio::Play("data/audio/hitmarker_2.mp3");
         }
         else
         {
@@ -276,7 +277,7 @@ void youDie(Entity* entity, EntityProjectile* p){
             PlayStage* stage = ((PlayStage*)Game::instance->current_stage);
             stage->enemyNum--;
             World::get_instance()->player->killCount++;
-            //Audio::Play("data/audio/expl6.wav");
+            Audio::Play("data/audio/expl6.wav");
         }
     }
 }
@@ -298,6 +299,7 @@ void EntityPlayer::render(){
 
     // Enable shader and pass uniforms
     shader->enable();
+    shader->setUniform("u_color", color);
     shader->setUniform("u_model", model);
     shader->setUniform("u_viewproj", camera->viewprojection_matrix);
     shader->setTexture("u_texture", texture, 0);
@@ -479,9 +481,15 @@ void EntityAI::behaviourUpdate()
     else currentBehaviour = WANDER;
 }
 
+Vector3 get_center_dir(Vector3 pos)
+{
+    return Vector3(-pos.x, 0, -pos.z).normalize();
+}
+
 void takeAction(EntityAI* entity, Vector3 position, float elapsed_time)
 {
-    bool isBoss = (dynamic_cast<EntityBoss*>(entity) ? true : false) ;
+    bool isBoss = (dynamic_cast<EntityBoss*>(entity) ? true : false);
+    if (EntityBoss* b = dynamic_cast<EntityBoss*>(entity)) if(b->isHurt) b->hurtFrames += elapsed_time;
     switch (entity->currentBehaviour)
     {
     case ATTACK:
@@ -524,9 +532,10 @@ void takeAction(EntityAI* entity, Vector3 position, float elapsed_time)
         break;
     case WANDER:
         //entity->speed = entity->speed - 800;
-        if (entity->wanderChange > 5.f)
+        if (entity->wanderChange > 2.f)
         {
-            entity->move_dir = Vector3(get_random_dir(), 0.f, get_random_dir());
+            Vector3 centerDir = get_center_dir(entity->model.getTranslation());
+            entity->move_dir = Vector3(centerDir.x + get_random_dir(), 0.f, centerDir.y + get_random_dir());
             entity->wanderChange = .0f;
         }
         entity->yaw += entity->model.getYawRotationToAimTo(position + entity->move_dir);
@@ -590,6 +599,8 @@ EntityBoss::EntityBoss(Matrix44 model, Mesh* mesh, Shader* shader, Texture* text
     :EntityAI(model, mesh, shader, texture, hp, speed, cdShot, dispersion) {
         
     this->numBulletsShoot = numBulletsShoot;
+    this->isHurt = false;
+    this->hurtFrames = 0.f;
 }
 
 void EntityBoss::render(){
@@ -598,6 +609,15 @@ void EntityBoss::render(){
 
     // Enable shader and pass uniforms
     shader->enable();
+    if (isHurt)
+    {
+        if (hurtFrames > .2f)
+        {
+            color = Vector4(1, 1, 1, 1);
+            isHurt = false;
+            hurtFrames = 0.f;
+        }
+    }
     shader->setUniform("u_color", color);
     shader->setUniform("u_model", model);
     shader->setUniform("u_viewproj", camera->viewprojection_matrix);
@@ -650,6 +670,7 @@ void EntityProjectile::render(){
 
     // Enable shader and pass uniforms
     shader->enable();
+    shader->setUniform("u_color", color);
     shader->setUniform("u_model", model);
     shader->setUniform("u_viewproj", camera->viewprojection_matrix);
     shader->setTexture("u_texture", texture, 0);
@@ -670,7 +691,7 @@ struct sImpactData {
 bool checkImpacts(const Vector3& target_pos,
     std::vector<sImpactData>& impacts, bool isEnemy) {
     Vector3 center = target_pos + Vector3(0.f, 1.25f, 0.f);
-    float sphereRadius = 5.f;
+    float sphereRadius = 3.f;
     Vector3 impPoint, impNormal;
 
     // For each collider entity “e” in root:
@@ -681,8 +702,7 @@ bool checkImpacts(const Vector3& target_pos,
         if (EntityCollider* e = dynamic_cast<EntityCollider*>(World::world->get_instance()->root->children[i])) {
             Mesh* mesh = e->mesh;
 
-            if (mesh->testSphereCollision(e->model, center,
-                sphereRadius, impPoint, impNormal)) {
+            if (mesh->testSphereCollision(e->model, center, sphereRadius, impPoint, impNormal)) {
                 return true;
             }
         }
@@ -713,7 +733,6 @@ void EntityProjectile::update(float elapsed_time){
     }
     position = position + velocity * elapsed_time;
     model.setTranslation(position.x, position.y, position.z);
-    
 }
 
 /*void EntityProjectile::update(float elapsed_time){

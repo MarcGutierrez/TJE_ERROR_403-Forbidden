@@ -119,7 +119,7 @@ void PlayStage::loadNewLvl(float seconds_elapsed)
     //texture = Texture::Get("data/textures/enemy_texture.tga");
     if (spawnCd <= 0.f){
         int rand = get_random_enemy_num(currentDiff);
-        enemyNum = (rand > 50) ? 50 : rand;
+        enemyNum = (rand > 20) ? 20 : rand;
         // this code is for if we want to use it to change things via randomness or other factors like difficulty and position and to not destroy enemies on death
         for (int i = 0; i < enemyNum; i++)
         {
@@ -160,7 +160,7 @@ void PlayStage::loadNewLvl(float seconds_elapsed)
         currentDiff++;
         spawnCd = 5.f;
     }
-    else if (!enemyNum){
+    else if (!enemyNum) {
         spawnCd -= seconds_elapsed;
     }
 }
@@ -170,36 +170,34 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
     if (spawnCd <= 0.f) {
         enemyNum = 1;
         // this code is for if we want to use it to change things via randomness or other factors like difficulty and position and to not destroy enemies on death
-        for (int i = 0; i < enemyNum; i++)
-        {
-            int hp, bulletsShoot;
-            float spd, cdShot, dispersion;
-            Matrix44 model;
-            Mesh* entityMesh;
+        
+        int hp, bulletsShoot;
+        float spd, cdShot, dispersion;
+        Matrix44 model;
+        Mesh* entityMesh;
 
-            Entity* root = World::world->get_instance()->root;
+        Entity* root = World::world->get_instance()->root;
 
-            hp = get_random_hpBoss(currentDiff);
-            entityMesh = bossMesh;
-            spd = get_random_spd() / 10;
+        hp = get_random_hpBoss(currentDiff);
+        entityMesh = bossMesh;
+        spd = get_random_spd() / 10;
 
-            model.setTranslation(get_random_dist() * get_random_sign(), 51.f, get_random_dist() * get_random_sign());
-            cdShot = get_random_cdShot(); // MIRAR FUNCION BOSS
-            bulletsShoot = get_random_bulletsBoss(currentDiff);
-            bulletsShoot = (bulletsShoot > 5) ? 5 : bulletsShoot;
-            dispersion = 1.f / (bulletsShoot);
+        model.setTranslation(get_random_dist() * get_random_sign(), 51.f, get_random_dist() * get_random_sign());
+        cdShot = get_random_cdShot(); // MIRAR FUNCION BOSS
+        bulletsShoot = get_random_bulletsBoss(currentDiff);
+        bulletsShoot = (bulletsShoot > 5) ? 5 : bulletsShoot;
+        dispersion = 1.f / (bulletsShoot);
 
-            boss->hp = hp;
-            boss->maxhp = hp;
-            boss->mesh = entityMesh;
-            boss->speed = spd;
-            boss->model = model;
-            boss->cdShot = cdShot;
-            boss->dispersion = dispersion;
-            boss->numBulletsShoot = bulletsShoot;
+        boss->hp = hp;
+        boss->maxhp = hp;
+        boss->mesh = entityMesh;
+        boss->speed = spd;
+        boss->model = model;
+        boss->cdShot = cdShot;
+        boss->dispersion = dispersion;
+        boss->numBulletsShoot = bulletsShoot;
 
-            root->addChild(boss);
-        }
+        root->addChild(boss);
 
         currentDiff++;
         spawnCd = 5.f;
@@ -209,7 +207,7 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
         spawnCd -= seconds_elapsed;
         if (spawnCd < 1.f && !soundEffPlayed)
         {
-            //Audio::Play("data/audio/boss_wave_alarm.wav");
+            Audio::Play("data/audio/boss_wave_alarm.wav");
             soundEffPlayed = true;
         }
     }
@@ -307,9 +305,9 @@ void PlayStage::update(float seconds_elapsed){
     killCount = World::get_instance()->player->killCount;
     wave = this->currentDiff-1;
     if (!enemyNum || spawnCd > 0.f) {
-        if (this->currentDiff % 5)
-            loadNewLvl(seconds_elapsed);
-        else
+        //if (this->currentDiff % 5)
+        //    loadNewLvl(seconds_elapsed);
+        //else
             loadBossLvl(seconds_elapsed);
     }
     World::get_instance()->update(seconds_elapsed);
