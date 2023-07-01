@@ -113,6 +113,7 @@ public:
     float wanderChange;
     float cdShot, shotCdTime, dispersion;
     bool hasBeenAttacked;
+    float hitCd;
 
     float yaw;
     //EntityAI(std::string name, Matrix44 model, Mesh* mesh, Texture* texture, Shader* shader, Vector4 color, Camera* camera);

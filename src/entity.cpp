@@ -253,7 +253,7 @@ void youDie(Entity* entity, EntityProjectile* p){
     else{
         if (EntityBoss* b = dynamic_cast<EntityBoss*>(entity))
         {
-            b->color = Vector4(1, 0, 0, 1);
+
             b->hp--;
             b->hasBeenAttacked = true;
             World::get_instance()->root->removeChild(p);
@@ -266,8 +266,9 @@ void youDie(Entity* entity, EntityProjectile* p){
                 World::get_instance()->player->killCount++;
                 //Audio::Play("data/audio/expl6.wav");
             }
-            //else
+            else{
                 //Audio::Play("data/audio/hitmarker_2.mp3");
+            }
         }
         else
         {
@@ -278,6 +279,7 @@ void youDie(Entity* entity, EntityProjectile* p){
             World::get_instance()->player->killCount++;
             //Audio::Play("data/audio/expl6.wav");
         }
+        
     }
 }
 
@@ -311,7 +313,7 @@ void EntityPlayer::render(){
 
 }
 
-bool checkCollisions(const Vector3& target_pos, std::vector<sCollisionData>& collisions, Entity* entity, float radiusSphere) {
+bool checkCollisions(const Vector3& target_pos, std::vector<sCollisionData>& collisions, EntityMesh* entity, float radiusSphere) {
     Vector3 center = target_pos + Vector3(0.f, 1.25f, 0.f);
     float sphereRadius = radiusSphere;
     Vector3 colPoint, colNormal;
@@ -441,6 +443,7 @@ EntityAI::EntityAI(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture,
     this->shotCdTime = 0.f;
     this->wanderChange = 30.f;
     this->hasBeenAttacked = false;
+    this->hitCd = 0.f;
 }
 
 void EntityAI::render()
@@ -584,12 +587,16 @@ void EntityAI::update(float elapsed_time)
 
     model.setTranslation(position.x, position.y, position.z); // position.y = 51 harcoceado
     model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
+    //color = Vector4(1, 1, 1, 1);
+    }
+
 }
 
 EntityBoss::EntityBoss(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, int hp, float speed, float cdShot, float dispersion, int numBulletsShoot)
     :EntityAI(model, mesh, shader, texture, hp, speed, cdShot, dispersion) {
         
     this->numBulletsShoot = numBulletsShoot;
+        color = Vector4(1, 1, 1, 1);
 }
 
 void EntityBoss::render(){

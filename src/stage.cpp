@@ -232,8 +232,7 @@ PlayStage::PlayStage(){
     mesh = World::get_instance()->playerMesh;
 
     // example of shader loading using the shaders manager
-    //shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
-    shader = World::get_instance()->shader;
+    shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
     
     EntityPlayer* player = new EntityPlayer(model, mesh, shader, texture, camera);
     
@@ -258,8 +257,8 @@ PlayStage::PlayStage(){
     spawnCd = 5.f;
     enemyNum = 0;
     soundEffPlayed = false;
-    loadNewLvl(0.f);
-    //loadBossLvl(0.f);
+    //loadNewLvl(0.f);
+    loadBossLvl(0.f);
 }
 
 void PlayStage::render(){
@@ -308,7 +307,8 @@ void PlayStage::update(float seconds_elapsed){
     wave = this->currentDiff-1;
     if (!enemyNum || spawnCd > 0.f) {
         if (this->currentDiff % 5)
-            loadNewLvl(seconds_elapsed);
+            //loadNewLvl(seconds_elapsed);
+            loadBossLvl(seconds_elapsed);
         else
             loadBossLvl(seconds_elapsed);
     }
