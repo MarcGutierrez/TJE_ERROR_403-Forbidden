@@ -282,7 +282,7 @@ void PlayStage::render(){
         shader->enable();
 
         //upload uniforms
-        shader->setUniform("u_color", Vector4(1,1,1,1));
+        shader->setUniform("u_color", color);
         shader->setUniform("u_viewprojection", camera->viewprojection_matrix );
         shader->setUniform("u_texture", texture, 0);
         shader->setUniform("u_model", m);

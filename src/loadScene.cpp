@@ -51,10 +51,12 @@ bool parseScene(const char* filename, Matrix44 model, Entity* root, int mapId)
 
 	Shader* shader;
 	Texture* texture;
+    Texture* texture2;
 	if (!mapId)
 	{
 		shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
-		texture = Texture::Get("data/textures/texture4.tga");
+		texture = Texture::Get("data/textures/texture6.tga");
+        texture2 = Texture::Get("data/textures/texture4.tga");
 	}
 
 	// Iterate through meshes loaded and create corresponding entities
@@ -63,8 +65,10 @@ bool parseScene(const char* filename, Matrix44 model, Entity* root, int mapId)
 		mesh_name = "data/" + data.first;
 		sRenderData& render_data = data.second;
 		render_data.shader = shader;
-		render_data.texture = texture;
-
+        if(mesh_name == "data/meshes/Plane.obj")
+            render_data.texture = texture;
+        else
+            render_data.texture = texture2;
 		// No transforms, anything to do here
 		if (render_data.models.empty())
 			continue;
