@@ -489,7 +489,7 @@ void takeAction(EntityAI* entity, Vector3 position, float elapsed_time)
         );
         if (isBoss)
         {
-            if (entity->move_dir.length() < 500.f)
+            if (entity->move_dir.length() < 5000.f)
                 entity->move_dir = Vector3(0.f, 0.f, 0.f);
         }
         else
@@ -527,7 +527,7 @@ void checkCollisions(EntityAI* entity, Vector3 position, float elapsed_time)
         }
     }
     else if(entity == dynamic_cast<EntityBoss*>(entity)){
-        if (checkCollisions(position + entity->velocity * elapsed_time, collisions, entity, 62.5f)) {
+        if (checkCollisions(position + entity->velocity * elapsed_time, collisions, entity, 62.5)) {
             //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
             for (const sCollisionData& collisions : collisions) {
                 //Vector3& velocity = velocity;

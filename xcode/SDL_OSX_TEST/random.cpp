@@ -83,7 +83,7 @@ int get_random_bulletsBoss(int diff)
 int get_random_hpBoss(int diff)
 {
     static std::default_random_engine e(time(0));
-    static std::uniform_int_distribution<int> dis(35, 60); // range [3, 10]
+    static std::uniform_int_distribution<int> dis(15, 20); // range [3, 10]
     return dis(e) + diff;
 }
 
