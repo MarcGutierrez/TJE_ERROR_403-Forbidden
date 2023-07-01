@@ -497,10 +497,18 @@ void takeAction(EntityAI* entity, Vector3 position, float elapsed_time)
                 shoot(entity->model, 3000.f, entity->dispersion, true);
             entity->shotCdTime = 0.f;
         }
-        entity->yaw += entity->model.getYawRotationToAimTo
-        (
-            World::get_instance()->player->model.getTranslation() + World::get_instance()->player->velocity * Vector3(0.5f, 0.5f, 0.5f)
-        );
+        if(isBoss){
+            entity->yaw += entity->model.getYawRotationToAimTo
+            (
+             World::get_instance()->player->model.getTranslation() + World::get_instance()->player->velocity * Vector3(0.5f, 0.5f, 0.5f)
+             );
+        }
+        else{
+            entity->yaw += entity->model.getYawRotationToAimTo
+            (
+             World::get_instance()->player->model.getTranslation()
+             );
+        }
         //std::cout << entity->move_dir.length() << std::endl;
         if (isBoss)
         {
@@ -515,12 +523,14 @@ void takeAction(EntityAI* entity, Vector3 position, float elapsed_time)
         }
         break;
     case WANDER:
+        //entity->speed = entity->speed - 800;
         if (entity->wanderChange > 5.f)
         {
             entity->move_dir = Vector3(get_random_dir(), 0.f, get_random_dir());
             entity->wanderChange = .0f;
         }
         entity->yaw += entity->model.getYawRotationToAimTo(position + entity->move_dir);
+        //entity->speed = entity->speed + 800;
         break;
     default:
         break;
@@ -588,6 +598,7 @@ void EntityBoss::render(){
 
     // Enable shader and pass uniforms
     shader->enable();
+    shader->setUniform("u_color", color);
     shader->setUniform("u_model", model);
     shader->setUniform("u_viewproj", camera->viewprojection_matrix);
     shader->setTexture("u_texture", texture, 0);
