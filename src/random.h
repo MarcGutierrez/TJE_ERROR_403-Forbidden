@@ -31,5 +31,5 @@ float get_random_disp();
 
 float get_random_dispBoss();
 
-int get_random_dir();
+float get_random_dir();
 

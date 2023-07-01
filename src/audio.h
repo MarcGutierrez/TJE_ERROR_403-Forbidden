@@ -37,6 +37,7 @@ static Audio* Get( const char* filename );
     // Play Manager API
 static HCHANNEL Play( const char* filename );
 static HCHANNEL PlayM(const char* filename);
+static HCHANNEL PlayS(const char* filename);
 static HCHANNEL Play3D( const char* filename,
 Vector3 position); //se llama una vez solo, no en el update
     // Stop sounds

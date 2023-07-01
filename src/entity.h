@@ -54,7 +54,7 @@ public:
     Mesh* mesh = nullptr;
     Texture* texture = nullptr;
     Shader* shader = nullptr;
-    Vector4 color;
+    Vector4 color = Vector4(1, 1, 1, 1);
     //EntityMesh(std::string name, Matrix44 model, Mesh* mesh, Texture* texture, Shader* shader, Vector4 color);
     EntityMesh(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture);
     //EntityMesh(std::string name, Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture);
@@ -130,6 +130,8 @@ public:
 class EntityBoss : public EntityAI {
 public:
     int numBulletsShoot;
+    bool isHurt;
+    float hurtFrames;
 
     EntityBoss(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, int hp, float speed, float cdShot, float dispersion, int numBulletsShoot );
     
