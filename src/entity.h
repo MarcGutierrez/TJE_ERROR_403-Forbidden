@@ -100,9 +100,23 @@ class EntityPlayer : public EntityMesh{
         void update(float elapsed_time);
 };
 
+class EntityCollider : public EntityMesh{
+
+    public:
+
+        bool isDynamic = false;
+     
+        EntityCollider(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture);
+        
+        // New methods
+        //bool checkPlayerCollisions(Vector3 position, Vector3 &colisions);
+        void render();
+        void update(float elapsed_time);
+};
+
 enum behaviour {NOTHING = 0, WANDER, ATTACK};
 
-class EntityAI : public EntityMesh {
+class EntityAI : public EntityCollider {
 public:
     // Attributes of the derived class
     int hp, maxhp;
@@ -135,21 +149,6 @@ public:
     EntityBoss(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, int hp, float speed, float cdShot, float dispersion, int numBulletsShoot );
     
     void render();
-};
-
-
-class EntityCollider : public EntityMesh{
-
-    public:
-
-        bool isDynamic = false;
-     
-        EntityCollider(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture);
-        
-        // New methods
-        //bool checkPlayerCollisions(Vector3 position, Vector3 &colisions);
-        void render();
-        void update(float elapsed_time);
 };
 
 class EntityProjectile : public EntityCollider{

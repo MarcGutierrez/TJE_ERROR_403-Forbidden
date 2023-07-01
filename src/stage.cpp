@@ -256,7 +256,7 @@ PlayStage::PlayStage(){
     enemyNum = 0;
     soundEffPlayed = false;
     //loadNewLvl(0.f);
-    loadBossLvl(0.f);
+    //loadBossLvl(0.f);
 }
 
 void PlayStage::render(){
@@ -305,9 +305,10 @@ void PlayStage::update(float seconds_elapsed){
     wave = this->currentDiff-1;
     if (!enemyNum || spawnCd > 0.f) {
         loadBossLvl(seconds_elapsed);
-        //if (this->currentDiff % 5)
-        //    loadNewLvl(seconds_elapsed);
-        //else
+        if (this->currentDiff % 5)
+            loadNewLvl(seconds_elapsed);
+        else
+            loadBossLvl(seconds_elapsed);
     }
     World::get_instance()->update(seconds_elapsed);
     if (Input::wasKeyPressed(SDL_SCANCODE_Q)) { //toggle freecam

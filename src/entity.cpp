@@ -359,33 +359,16 @@ void EntityPlayer::update(float elapsed_time){
     Vector3 move_dir = Vector3(0.0f, 0.0f, 0.0f);
     
     if (Input::isKeyPressed(SDL_SCANCODE_W)) {
-        //model.translate(0.0f, 0.0f, -1.0f * move_speed);
         move_dir = Vector3(0.0f + move_dir.x, 0.0f, -1.0f + move_dir.z);
-        
-        //velocity = move_dir * speed;
-        //position = position + velocity * elapsed_time;
-        //model.setTranslation(position.x, 51.0f, position.z);
     }
     if (Input::isKeyPressed(SDL_SCANCODE_S)) {
-        //model.translate(0.0f, 0.0f, 1.0f * move_speed);
         move_dir = Vector3(0.0f + move_dir.x, 0.0f, 1.0f + move_dir.z);
-        //velocity = move_dir * speed;
-        //position = position + velocity * elapsed_time;
-        //model.setTranslation(position.x, 51.0f, position.z); //el 51 es hardcodeado por la mesh del cubo (se
     }
     if (Input::isKeyPressed(SDL_SCANCODE_A)) {
-        //model.translate(-1.0f * move_speed, 0.0f, 0.0f);
         move_dir = Vector3(-1.0f + move_dir.x, 0.0f, 0.0f + move_dir.z);
-        //velocity = move_dir * speed;
-        //position = position + velocity * elapsed_time;
-        //model.setTranslation(position.x, 51.0f, position.z); //el 51 es hardcodeado por la mesh del cubo (se
     }
     if (Input::isKeyPressed(SDL_SCANCODE_D)) {
-        //model.translate(1.0f * move_speed, 0.0f, 0.0f);
         move_dir = Vector3(1.0f + move_dir.x, 0.0f, 0.0f + move_dir.z);
-        //velocity = move_dir * speed;
-        //position = position + velocity * elapsed_time;
-        //model.setTranslation(position.x, 51.0f, position.z); //el 51 es hardcodeado por la mesh del cubo (se
     }
     if (Input::wasKeyPressed(SDL_SCANCODE_X)) {
         this->godMode = !this->godMode;
@@ -399,9 +382,7 @@ void EntityPlayer::update(float elapsed_time){
     velocity = move_dir * speed;
     position.y = 51.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
     if (checkCollisions(position + velocity * elapsed_time, collisions, this, 12.5f)) {
-        //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
         for (const sCollisionData& collisions : collisions) {
-            //Vector3& velocity = velocity;
             Vector3 newDir = velocity.dot(collisions.colNormal) * collisions.colNormal;
             velocity.x -= newDir.x;
             velocity.z -= newDir.z;
@@ -413,13 +394,6 @@ void EntityPlayer::update(float elapsed_time){
     
     model.setTranslation(position.x, position.y, position.z); // position.y = 51 harcoceado
     
-    //std::cout << model.getTranslation().x << " " << model.getTranslation().y << " " << model.getTranslation().z << std::endl;
-    /*if (Input::mouse_position.y < Game::instance->window_height/2){
-        model.rotate(yaw, Vector3(0.0f, -1.0f, 0.0f));
-    }
-    if (Input::mouse_position.y >= Game::instance->window_height/2){
-        model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
-    }*/
     model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
 
     shootCd += elapsed_time;
@@ -434,7 +408,7 @@ void EntityPlayer::update(float elapsed_time){
 }
 
 EntityAI::EntityAI(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, int hp, float speed, float cdShot, float dispersion)
-    :EntityMesh(model, mesh, shader, texture) {
+    :EntityCollider(model, mesh, shader, texture) {
     this->hp = hp;
     this->maxhp = hp;
     this->speed = speed;
