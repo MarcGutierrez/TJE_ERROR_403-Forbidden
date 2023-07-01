@@ -333,7 +333,8 @@ bool checkCollisions(const Vector3& target_pos, std::vector<sCollisionData>& col
             else
             {
                 if (mesh->testSphereCollision(e->model, center, sphereRadius, colPoint, colNormal)) {
-                    collisions.push_back({ colPoint, colNormal.normalize() });
+                    if (colNormal.x != 0.f || colNormal.z != 0.f)
+                        collisions.push_back({ colPoint, colNormal.normalize() });
                 }
             }
             // End loop
@@ -383,9 +384,9 @@ void EntityPlayer::update(float elapsed_time){
     position.y = 51.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
     if (checkCollisions(position + velocity * elapsed_time, collisions, this, 12.5f)) {
         for (const sCollisionData& collisions : collisions) {
-            Vector3 newDir = velocity.dot(collisions.colNormal) * collisions.colNormal;
-            velocity.x -= newDir.x;
-            velocity.z -= newDir.z;
+            Vector3 newDir = Vector3(collisions.colNormal.x, 0.f, collisions.colNormal.z).normalize();
+            velocity.x += newDir.x * speed;
+            velocity.z += newDir.z * speed;
         }
     }
     position = position + velocity * elapsed_time;
@@ -465,6 +466,7 @@ Vector3 get_center_dir(Vector3 pos)
 void takeAction(EntityAI* entity, Vector3 position, float elapsed_time)
 {
     bool isBoss = (dynamic_cast<EntityBoss*>(entity) ? true : false);
+    int multiShootSpd = 2500.f, normalShootSpd = 3000.f;
     if (EntityBoss* b = dynamic_cast<EntityBoss*>(entity)) if(b->isHurt) b->hurtFrames += elapsed_time;
     switch (entity->currentBehaviour)
     {
@@ -475,16 +477,18 @@ void takeAction(EntityAI* entity, Vector3 position, float elapsed_time)
         {
             if (EntityBoss* b = dynamic_cast<EntityBoss*>(entity))
             {
-                multishot(b->model, 2500.f, b->numBulletsShoot, b->dispersion, true);
+                multishot(b->model, multiShootSpd, b->numBulletsShoot, b->dispersion, true);
             }
             else
-                shoot(entity->model, 3000.f, entity->dispersion, true);
+                shoot(entity->model, normalShootSpd, entity->dispersion, true);
             entity->shotCdTime = 0.f;
         }
         if(isBoss){
+            float normDist = entity->model.getTranslation().distance(World::get_instance()->player->model.getTranslation())/multiShootSpd;
+
             entity->yaw += entity->model.getYawRotationToAimTo
             (
-             World::get_instance()->player->model.getTranslation() + World::get_instance()->player->velocity * Vector3(0.5f, 0.5f, 0.5f)
+             World::get_instance()->player->model.getTranslation() + World::get_instance()->player->velocity * normDist
              );
         }
         else{
@@ -531,9 +535,9 @@ void checkCollisions(EntityAI* entity, Vector3 position, float elapsed_time)
             //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
             for (const sCollisionData& collisions : collisions) {
                 //Vector3& velocity = velocity;
-                Vector3 newDir = entity->velocity.dot(collisions.colNormal) * collisions.colNormal;
-                entity->velocity.x -= newDir.x;
-                entity->velocity.z -= newDir.z;
+                Vector3 newDir = Vector3(collisions.colNormal.x, 0.f, collisions.colNormal.z).normalize();
+                entity->velocity.x += newDir.x * entity->speed;
+                entity->velocity.z += newDir.z * entity->speed;
             }
         }
     }
@@ -542,9 +546,9 @@ void checkCollisions(EntityAI* entity, Vector3 position, float elapsed_time)
             //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
             for (const sCollisionData& collisions : collisions) {
                 //Vector3& velocity = velocity;
-                Vector3 newDir = entity->velocity.dot(collisions.colNormal) * collisions.colNormal;
-                entity->velocity.x -= newDir.x;
-                entity->velocity.z -= newDir.z;
+                Vector3 newDir = Vector3(collisions.colNormal.x, 0.f, collisions.colNormal.z).normalize();
+                entity->velocity.x += newDir.x * entity->speed;
+                entity->velocity.z += newDir.z * entity->speed;
             }
         }
     }
