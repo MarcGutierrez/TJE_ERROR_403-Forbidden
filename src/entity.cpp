@@ -193,8 +193,8 @@ void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
     
     EntityProjectile* bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, dir, isEnemy);
     World::world->get_instance()->root->addChild(bullet);
-    if (random() > 0.5f) Audio::PlayS("data/audio/363698__jofae__retro-gun-shot.mp3");
-    else Audio::PlayS("data/audio/mixkit-game-gun-shot-1662.mp3");
+    //if (random() > 0.5f) Audio::PlayS("data/audio/363698__jofae__retro-gun-shot.mp3");
+    //else Audio::PlayS("data/audio/mixkit-game-gun-shot-1662.mp3");
 }
 
 void multishot(Matrix44 model, float speed, int bulletsShoot, float dispersion, bool isEnemy){
@@ -232,8 +232,8 @@ void multishot(Matrix44 model, float speed, int bulletsShoot, float dispersion, 
         EntityProjectile* bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, newDir, isEnemy);
         World::world->get_instance()->root->addChild(bullet);
     }
-    if (random() > 0.5f) Audio::PlayS("data/audio/363698__jofae__retro-gun-shot.mp3");
-    else Audio::PlayS("data/audio/mixkit-game-gun-shot-1662.mp3");
+    //if (random() > 0.5f) Audio::PlayS("data/audio/363698__jofae__retro-gun-shot.mp3");
+    //else Audio::PlayS("data/audio/mixkit-game-gun-shot-1662.mp3");
 }
 
 void youDie(Entity* entity, EntityProjectile* p){
@@ -241,7 +241,7 @@ void youDie(Entity* entity, EntityProjectile* p){
         if(EntityPlayer* e = dynamic_cast<EntityPlayer*>(entity)){
             if (!e->godMode){
                 e->isDead = true;
-                Audio::Play("data/audio/videogame-death-sound-43894.mp3");
+                //Audio::Play("data/audio/videogame-death-sound-43894.mp3");
             }
                 
             //std::cout << "u suck" << std::endl;
@@ -261,14 +261,15 @@ void youDie(Entity* entity, EntityProjectile* p){
             std::cout << b->hp << std::endl;
             if (b->hp == 0)
             {
+                b->color = Vector4(1, 1, 1, 1);
                 World::get_instance()->root->removeChild(entity);
                 PlayStage* stage = ((PlayStage*)Game::instance->current_stage);
                 stage->enemyNum--;
                 World::get_instance()->player->killCount++;
-                Audio::Play("data/audio/expl6.wav");
+                //Audio::Play("data/audio/expl6.wav");
             }
             else{
-                Audio::Play("data/audio/hitmarker_2.mp3");
+                //Audio::Play("data/audio/hitmarker_2.mp3");
             }
         }
         else
@@ -278,7 +279,7 @@ void youDie(Entity* entity, EntityProjectile* p){
             PlayStage* stage = ((PlayStage*)Game::instance->current_stage);
             stage->enemyNum--;
             World::get_instance()->player->killCount++;
-            Audio::Play("data/audio/expl6.wav");
+            //Audio::Play("data/audio/expl6.wav");
         }
         
     }
@@ -289,7 +290,6 @@ Vector3 getMouseToWorld(Vector3 mouse_pos){
     Entity* plane = World::get_instance()->root->children[4];
     EntityMesh* e = dynamic_cast<EntityMesh*>(plane);
     //e->mesh->collision_model->rayCollision();//testRayCollision(e->model, Vector3 (0,0,0), Vector3 (0,0,0), Vector3 (0,0,0), Vector3 (0,0,0));
-
 
     Vector3 up = Vector3(0, 1, 0);
     return up;
@@ -445,7 +445,6 @@ EntityAI::EntityAI(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture,
     this->shotCdTime = 0.f;
     this->wanderChange = 30.f;
     this->hasBeenAttacked = false;
-    this->hitCd = 0.f;
 }
 
 void EntityAI::render()
