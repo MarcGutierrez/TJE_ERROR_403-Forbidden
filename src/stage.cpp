@@ -115,9 +115,9 @@ stageId TitleStage::getId()
 
 void PlayStage::loadNewLvl(float seconds_elapsed)
 {
-    mesh = Mesh::Get("data/enemy.obj");
-    texture = Texture::Get("data/textures/enemy_texture.tga");if (spawnCd <= 0.f)
-    {
+    //mesh = Mesh::Get("data/enemy.obj");
+    //texture = Texture::Get("data/textures/enemy_texture.tga");
+    if (spawnCd <= 0.f){
         int rand = get_random_enemy_num(currentDiff);
         enemyNum = (rand > 50) ? 50 : rand;
         // this code is for if we want to use it to change things via randomness or other factors like difficulty and position and to not destroy enemies on death
@@ -131,7 +131,7 @@ void PlayStage::loadNewLvl(float seconds_elapsed)
             Entity* root = World::world->get_instance()->root;
 
             hp = 1;
-            entityMesh = mesh;
+            entityMesh = enemyMesh;
             spd = get_random_spd();
 
             model.setTranslation(get_random_dist() * get_random_sign(), 51.f, get_random_dist() * get_random_sign());
@@ -139,7 +139,7 @@ void PlayStage::loadNewLvl(float seconds_elapsed)
             dispersion = get_random_disp();
             if (enemies.size() <= i)
             {
-                EntityAI* newEnemy = new EntityAI(model, entityMesh, shader, texture, hp, spd, cdShot, dispersion);
+                EntityAI* newEnemy = new EntityAI(model, entityMesh, shader, enemyTexture, hp, spd, cdShot, dispersion);
                 enemies.push_back(newEnemy);
                 root->addChild(newEnemy);
             }
@@ -167,9 +167,6 @@ void PlayStage::loadNewLvl(float seconds_elapsed)
 
 void PlayStage::loadBossLvl(float seconds_elapsed){
     
-    mesh = Mesh::Get("data/boss_test2.obj");
-    texture = Texture::Get("data/textures/enemy_texture.tga");
-    
     if (spawnCd <= 0.f) {
         enemyNum = 1;
         // this code is for if we want to use it to change things via randomness or other factors like difficulty and position and to not destroy enemies on death
@@ -183,7 +180,7 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
             Entity* root = World::world->get_instance()->root;
 
             hp = get_random_hpBoss(currentDiff);
-            entityMesh = mesh;
+            entityMesh = bossMesh;
             spd = get_random_spd() / 10;
 
             model.setTranslation(get_random_dist() * get_random_sign(), 51.f, get_random_dist() * get_random_sign());
@@ -227,14 +224,16 @@ PlayStage::PlayStage(){
     //camera->rotate(0.30, Vector3(1.0f, 0.f, 0.f));
     
     
-    texture = new Texture();
-    texture->load("data/texture.tga");
-
+    //texture = new Texture();
+    //texture->load("data/texture.tga");
+    texture = World::get_instance()->playerTexture;
+    
     // example of loading Mesh from Mesh Manager
     mesh = World::get_instance()->playerMesh;
 
     // example of shader loading using the shaders manager
-    shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+    //shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+    shader = World::get_instance()->shader;
     
     EntityPlayer* player = new EntityPlayer(model, mesh, shader, texture, camera);
     
@@ -242,10 +241,13 @@ PlayStage::PlayStage(){
     
     World::get_instance()->player = player;
 
-    mesh = Mesh::Get("data/boss_test.obj");
-    texture = Texture::Get("data/textures/enemy_texture.tga");
+    enemyMesh = Mesh::Get("data/enemy.obj");
+    enemyTexture = Texture::Get("data/textures/enemy_texture.tga");
+    
+    bossMesh = Mesh::Get("data/boss_test2.obj");
+    bossTexture = Texture::Get("data/textures/enemy_texture.tga");
 
-    boss = new EntityBoss(model, mesh, shader, texture, 0, 0.f, 0.f, 0.f, 0);
+    boss = new EntityBoss(model, bossMesh, shader, bossTexture, 0, 0.f, 0.f, 0.f, 0);
 
     parseScene("data/scenes/test_room3.scene", model, World::get_instance()->root, NULL);
     
@@ -256,8 +258,8 @@ PlayStage::PlayStage(){
     spawnCd = 5.f;
     enemyNum = 0;
     soundEffPlayed = false;
-    //loadNewLvl(0.f);
-    loadBossLvl(0.f);
+    loadNewLvl(0.f);
+    //loadBossLvl(0.f);
 }
 
 void PlayStage::render(){
@@ -305,9 +307,9 @@ void PlayStage::update(float seconds_elapsed){
     killCount = World::get_instance()->player->killCount;
     wave = this->currentDiff-1;
     if (!enemyNum || spawnCd > 0.f) {
-        //if (this->currentDiff % 5)
-        //    loadNewLvl(seconds_elapsed);
-        //else
+        if (this->currentDiff % 5)
+            loadNewLvl(seconds_elapsed);
+        else
             loadBossLvl(seconds_elapsed);
     }
     World::get_instance()->update(seconds_elapsed);

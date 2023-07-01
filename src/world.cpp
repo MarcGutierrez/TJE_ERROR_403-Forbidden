@@ -18,6 +18,7 @@ World::World(){
     playerMesh = Mesh::Get("data/box.ASE");
     projectileMesh = Mesh::Get("data/projectile.obj");
     projectileTexture = Texture::Get("data/texture.tga");
+    playerTexture = Texture::Get("data/texture.tga");
     shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
     
 }

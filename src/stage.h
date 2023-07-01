@@ -53,7 +53,11 @@ class PlayStage : public Stage {
 public:
     int currentDiff;
     std::vector<EntityAI*> enemies;
+    Mesh* enemyMesh = nullptr;
+    Texture* enemyTexture = nullptr;
     EntityBoss* boss;
+    Mesh* bossMesh = nullptr;
+    Texture* bossTexture = nullptr;
     int enemyNum;
     int waveNum;
     float spawnCd;

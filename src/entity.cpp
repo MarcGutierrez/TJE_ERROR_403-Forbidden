@@ -450,7 +450,7 @@ void EntityAI::render()
 
     // Enable shader and pass uniforms
     shader->enable();
-    shader->setUniform("u_color", color);
+    //shader->setUniform("u_color", color);
     shader->setUniform("u_model", model);
     shader->setUniform("u_viewproj", camera->viewprojection_matrix);
     shader->setTexture("u_texture", texture, 0);
