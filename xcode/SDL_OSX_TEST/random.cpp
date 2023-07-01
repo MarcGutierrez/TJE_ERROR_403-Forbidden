@@ -83,13 +83,13 @@ int get_random_bulletsBoss(int diff)
 int get_random_hpBoss(int diff)
 {
     static std::default_random_engine e(time(0));
-    static std::uniform_int_distribution<int> dis(15, 20); // range [3, 10]
+    static std::uniform_int_distribution<int> dis(3, 5); // range [3, 10]
     return dis(e) + diff;
 }
 
-float get_random_cdShot_boss()
+float get_random_cdShotBoss()
 {
     static std::default_random_engine e;
-    static std::uniform_real_distribution<float> dis(0.3f, 0.7f); // range [min, max)
+    static std::uniform_real_distribution<float> dis(0.5f, 1.f); // range [min, max)
     return dis(e);
 }

@@ -12,6 +12,9 @@
 #pragma once
 #include "entity.h"
 #include "camera.h"
+#include "mesh.h"
+#include "texture.h"
+#include "shader.h"
 
 
 //#endif /* world_h */
@@ -35,6 +38,14 @@ public:
     Matrix44 model;
     Entity* root = nullptr;
     EntityPlayer* player = nullptr;
+    
+    Mesh* playerMesh = nullptr;
+    Mesh* projectileMesh = nullptr;
+    
+    Texture* projectileTexture = nullptr;
+    
+    Shader* shader = nullptr;
+    
     bool free_cam = false;
     void render();
     void update(float elapsed_time);

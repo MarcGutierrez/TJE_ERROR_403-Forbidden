@@ -187,7 +187,7 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
             spd = get_random_spd() / 10;
 
             model.setTranslation(get_random_dist() * get_random_sign(), 51.f, get_random_dist() * get_random_sign());
-            cdShot = get_random_cdShot();
+            cdShot = get_random_cdShot(); // MIRAR FUNCION BOSS
             bulletsShoot = get_random_bulletsBoss(currentDiff);
             bulletsShoot = (bulletsShoot > 5) ? 5 : bulletsShoot;
             dispersion = 1.f / (bulletsShoot);
@@ -212,7 +212,7 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
         spawnCd -= seconds_elapsed;
         if (spawnCd < 1.f && !soundEffPlayed)
         {
-            Audio::Play("data/audio/boss_wave_alarm.wav");
+            //Audio::Play("data/audio/boss_wave_alarm.wav");
             soundEffPlayed = true;
         }
     }
@@ -231,7 +231,7 @@ PlayStage::PlayStage(){
     texture->load("data/texture.tga");
 
     // example of loading Mesh from Mesh Manager
-    mesh = Mesh::Get("data/box.ASE");
+    mesh = World::get_instance()->playerMesh;
 
     // example of shader loading using the shaders manager
     shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");

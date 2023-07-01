@@ -27,5 +27,7 @@ float get_random_disp();
 
 float get_random_dispBullet(float val);
 
+float get_random_cdShotBoss();
+
 int get_random_dir();
 
