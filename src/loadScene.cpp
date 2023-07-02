@@ -55,8 +55,8 @@ bool parseScene(const char* filename, Matrix44 model, Entity* root, int mapId)
 	if (!mapId)
 	{
 		shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
-		texture = Texture::Get("data/textures/texture6.tga");
-        texture2 = Texture::Get("data/textures/texture4.tga");
+		texture = Texture::Get("data/textures/texture4_white2.tga");
+        texture2 = Texture::Get("data/textures/texture4_white2.tga");
 	}
 
 	// Iterate through meshes loaded and create corresponding entities

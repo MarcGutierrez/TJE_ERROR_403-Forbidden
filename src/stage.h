@@ -66,7 +66,12 @@ public:
     
     //color test
     Vector4 color;
-    bool walkDown;
+    bool gradient;
+    float gradientFactor;
+    bool walkDownX;
+    bool walkDownY;
+    bool walkDownZ;
+    bool walkUpZ;
 
     PlayStage();
     

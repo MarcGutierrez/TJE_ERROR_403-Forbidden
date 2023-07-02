@@ -248,7 +248,8 @@ PlayStage::PlayStage(){
 
     parseScene("data/scenes/test_room3.scene", model, World::get_instance()->root, NULL);
     
-    color = Vector4(1,1,1,1);
+    color = Vector4(0.95f,0.21f,0.67f,1);
+    //color = Vector4(1,1,1,1);
     
     //mesh = Mesh::Get("data/enemy.obj");
     //texture = Texture::Get("data/textures/enemy_texture.tga");
@@ -257,7 +258,11 @@ PlayStage::PlayStage(){
     spawnCd = 5.f;
     enemyNum = 0;
     soundEffPlayed = false;
-    walkDown = true;
+    walkDownX = true;
+    walkDownY = false;
+    walkDownZ = false;
+    gradient = true;
+    gradientFactor = 0.1;
     //loadNewLvl(0.f);
     //loadBossLvl(0.f);
 }
@@ -303,29 +308,58 @@ void PlayStage::render(){
 
 }
 
+/*void WalkDownColor(float seconds_elapsed, Vector4 color, float grad, float thresh){
+    
+}*/
+
 void PlayStage::update(float seconds_elapsed){
     //color = Vector4(0.95f, 0.21f, 0.67f, 1);
-    if(walkDown){
-        color.x -= 0.1 * seconds_elapsed;
-        if(color.x <= 0){
-            //bool turnAround = true;
-            walkDown = false;
-            //color.x += 0.1 * seconds_elapsed;
+    if(gradient){
+        if(walkDownX){
+            color.x -= gradientFactor * seconds_elapsed;
+            if(color.x <= 0){
+                //walkDownZ = true;
+                walkDownX = false;
+                walkDownZ = true;
+            }
         }
-    }
-    if(!walkDown){
-        color.x += 0.1 * seconds_elapsed;
-        if(color.x >= 1){
-            //bool turnAround = true;
-            walkDown = true;
-            //color.x += 0.1 * seconds_elapsed;
+        if(!walkDownX){
+            color.x += gradientFactor * seconds_elapsed;
+            if(color.x >= 0.96){
+                walkUpZ = true;
+            }
+        }
+        /*if(walkDownY){
+            color.y -= gradientFactor * seconds_elapsed;
+            if(color.y <= 0){
+                walkDownY = false;
+            }
+        }
+        if(!walkDownY){
+            color.y += gradientFactor * seconds_elapsed;
+            if(color.y >= 1){
+                walkDownY = true;
+            }
+        }*/
+        if(walkDownZ){
+            color.z -= gradientFactor * seconds_elapsed;
+            if(color.z <= 0.1){
+                walkDownZ = false;
+            }
+        }
+        if(walkUpZ){
+            color.z += gradientFactor * seconds_elapsed;
+            if(color.z >= 1){
+                walkDownX = true;
+                walkUpZ = false;
+            }
         }
     }
     
     killCount = World::get_instance()->player->killCount;
     wave = this->currentDiff-1;
     if (!enemyNum || spawnCd > 0.f) {
-        loadBossLvl(seconds_elapsed);
+        //loadBossLvl(seconds_elapsed);
         if (this->currentDiff % 5)
             loadNewLvl(seconds_elapsed);
         else
