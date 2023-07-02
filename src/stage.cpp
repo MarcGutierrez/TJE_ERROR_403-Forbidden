@@ -248,6 +248,8 @@ PlayStage::PlayStage(){
 
     parseScene("data/scenes/test_room3.scene", model, World::get_instance()->root, NULL);
     
+    color = Vector4(1,1,1,1);
+    
     //mesh = Mesh::Get("data/enemy.obj");
     //texture = Texture::Get("data/textures/enemy_texture.tga");
     
@@ -255,6 +257,7 @@ PlayStage::PlayStage(){
     spawnCd = 5.f;
     enemyNum = 0;
     soundEffPlayed = false;
+    walkDown = true;
     //loadNewLvl(0.f);
     //loadBossLvl(0.f);
 }
@@ -282,7 +285,7 @@ void PlayStage::render(){
         shader->enable();
 
         //upload uniforms
-        //shader->setUniform("u_color", color);
+        shader->setUniform("u_color", color);
         shader->setUniform("u_viewprojection", camera->viewprojection_matrix );
         shader->setUniform("u_texture", texture, 0);
         shader->setUniform("u_model", m);
@@ -293,7 +296,7 @@ void PlayStage::render(){
         World::get_instance()->render();
         //drawText(2, 2, getGPUStats(), Vector3(1, 1, 1), 2);
         drawText(10, 10, "Enemies Killed: " + std::to_string(killCount), Vector3(1,1,1),3);
-        drawText(Game::instance->window_width-165, 10, "Wave: " + std::to_string(wave), Vector3(1,1,1),4);
+        drawText(Game::instance->window_width-200, 10, "Wave: " + std::to_string(wave), Vector3(1,1,1),4);
         //disable shader
         shader->disable();
     }
@@ -301,6 +304,24 @@ void PlayStage::render(){
 }
 
 void PlayStage::update(float seconds_elapsed){
+    //color = Vector4(0.95f, 0.21f, 0.67f, 1);
+    if(walkDown){
+        color.x -= 0.1 * seconds_elapsed;
+        if(color.x <= 0){
+            //bool turnAround = true;
+            walkDown = false;
+            //color.x += 0.1 * seconds_elapsed;
+        }
+    }
+    if(!walkDown){
+        color.x += 0.1 * seconds_elapsed;
+        if(color.x >= 1){
+            //bool turnAround = true;
+            walkDown = true;
+            //color.x += 0.1 * seconds_elapsed;
+        }
+    }
+    
     killCount = World::get_instance()->player->killCount;
     wave = this->currentDiff-1;
     if (!enemyNum || spawnCd > 0.f) {
@@ -431,32 +452,3 @@ stageId EndStage::getId()
 {
     return stageId::ENDING;
 }
-
-
-///TEST
-/*std::vector<Stage*> stages;
-
-stageId current_stage = stageId::TITLE;
-
-void initStages() {
-    stages.reserve(4);
-    stages.push_back(new TitleStage());
-    stages.push_back(new PlayStage());
-    stages.push_back(new MenuStage());
-    stages.push_back(new EndStage());
-
-}
-
-Stage* getStage(stageId stageID) {
-    return stages[stageID];
-}
-
-Stage* getCurrentStage() {
-    return getStage(current_stage);
-}
-
-void setCurrentStage(stageId stageID) {
-    current_stage = stageID;
-}
- */
-///TEST

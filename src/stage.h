@@ -58,11 +58,15 @@ public:
     EntityBoss* boss;
     Mesh* bossMesh = nullptr;
     Texture* bossTexture = nullptr;
-    Color* color;
+
     int enemyNum;
     int waveNum;
     float spawnCd;
     bool soundEffPlayed;
+    
+    //color test
+    Vector4 color;
+    bool walkDown;
 
     PlayStage();
     
