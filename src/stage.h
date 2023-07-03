@@ -39,6 +39,8 @@ public:
     
     int width;
     int height;
+    bool intermitent;
+    float th = 1.5f;
     
     TitleStage();
     

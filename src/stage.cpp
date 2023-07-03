@@ -43,6 +43,8 @@ TitleStage::TitleStage(){
     this->width = Game::instance->window_width;
     this->height = Game::instance->window_height;
     
+    this->intermitent = true;
+    
     camera->lookAt(Vector3(0.f,2.f, 10.f),Vector3(0.f,2.f,0.f), Vector3(0.f,1.f,0.f));
     
     texture = new Texture();
@@ -93,12 +95,28 @@ void TitleStage::render(){
         shader->disable();
     }
     drawText(150, height/2-150, "Error 403: Forbidden", Vector3(1,1,1),5);
-    drawText(200, height/2+250, "Press SPACE to start", Vector3(1,1,1),4);
+    if(intermitent)
+        drawText(200, height/2+250, "Press SPACE to start", Vector3(1,1,1),4);
     
 }
 
 void TitleStage::update(float elapsed_time){
     camera->move(Vector3(0.0f, 0.0f, 1)*elapsed_time);
+    if(intermitent){
+        th -= elapsed_time;
+        if(th <= 0.f)
+            th = 1;
+            intermitent = false;
+            
+        //th = 0.5f;
+    }
+    if(!intermitent){
+        th -= elapsed_time;
+        if(th <= 0.f)
+            th = 1;
+            intermitent = true;
+            //th = 0.5;
+    }
     if (Input::wasKeyPressed(SDL_SCANCODE_SPACE)) {
         fin = true;
         for (int i = 0; i < World::get_instance()->root->children.size(); i++) { //clean root
@@ -276,7 +294,7 @@ PlayStage::PlayStage(){
     gradientFactor = 0.1;
     //loadNewLvl(0.f);
     //loadBossLvl(0.f);
-    loadPowerUp(0.0);
+    //loadPowerUp(0.0);
 
 }
 
