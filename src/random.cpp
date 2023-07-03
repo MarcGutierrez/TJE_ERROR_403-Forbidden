@@ -62,15 +62,22 @@ float get_random_dispBoss()
 int get_random_bulletsBoss(int diff)
 {
     static std::default_random_engine e(time(0));
-    static std::uniform_int_distribution<int> dis(3, 5); // range [10, 20]
+    static std::uniform_int_distribution<int> dis(3, 5); // range [3, 5]
     return dis(e) + diff * 2;
 }
 
 int get_random_hpBoss(int diff)
 {
     static std::default_random_engine e(time(0));
-    static std::uniform_int_distribution<int> dis(35, 60); // range [3, 10]
+    static std::uniform_int_distribution<int> dis(35, 60); // range [35, 60]
     return dis(e) + diff; 
+}
+
+int get_random_powerUP()
+{
+    static std::default_random_engine e(time(0));
+    static std::uniform_int_distribution<int> dis(1, 3); // range [1, 3]
+    return dis(e);
 }
 
 float get_random_dir()

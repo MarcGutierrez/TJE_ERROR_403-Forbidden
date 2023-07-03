@@ -234,10 +234,10 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
 void PlayStage::loadPowerUp(float seconds_elapsed){
     Matrix44 model;
     
-    model.setTranslation(get_random_dist() * get_random_sign(), 0, get_random_dist() * get_random_sign());
+    model.setTranslation(get_random_dist() * get_random_sign(), 51.f, get_random_dist() * get_random_sign());
     float lifeTime = 10.f;
     
-    EntityPowerUp* powerUp = new EntityPowerUp(model, World::get_instance()->powerUpMesh, shader, World::get_instance()->powerUpTexture, lifeTime);
+    EntityPowerUp* powerUp = new EntityPowerUp(model, World::get_instance()->powerUpMesh, shader, World::get_instance()->powerUpTexture, lifeTime, (powerUps)get_random_powerUP());
     World::get_instance()->root->addChild(powerUp);
     
 }
@@ -292,6 +292,7 @@ PlayStage::PlayStage(){
     walkDownZ = false;
     gradient = true;
     gradientFactor = 0.1;
+    powerUpCd = 0.f;
     //loadNewLvl(0.f);
     //loadBossLvl(0.f);
     //loadPowerUp(0.0);
@@ -391,13 +392,19 @@ void PlayStage::update(float seconds_elapsed){
     wave = this->currentDiff-1;
     if (!enemyNum || spawnCd > 0.f) {
         //loadBossLvl(seconds_elapsed);
-        if (this->currentDiff % 5){
+        //if (this->currentDiff % 5){
             //loadNewLvl(seconds_elapsed);
             //loadPowerUp(seconds_elapsed);
-        }
+        //}
 
-        else
+        //else
             loadBossLvl(seconds_elapsed);
+    }
+    powerUpCd += seconds_elapsed;
+    if (powerUpCd > 8.f)
+    {
+        loadPowerUp(0.0);
+        powerUpCd = 0.f;
     }
     World::get_instance()->update(seconds_elapsed);
     if (Input::wasKeyPressed(SDL_SCANCODE_Q)) { //toggle freecam
