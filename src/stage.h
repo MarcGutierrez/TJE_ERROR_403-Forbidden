@@ -40,7 +40,7 @@ public:
     int width;
     int height;
     bool intermitent;
-    float th = 1.5f;
+    float th = 1.f;
     
     TitleStage();
     

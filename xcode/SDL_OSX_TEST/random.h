@@ -19,15 +19,19 @@ float get_random_dist();
 
 int get_random_enemy_num(int diff);
 
+int get_random_bulletsBoss(int diff);
+
+int get_random_hpBoss(int diff);
+
+int get_random_powerUP();
+
 float get_random_spd();
 
 float get_random_cdShot();
 
 float get_random_disp();
 
-float get_random_dispBullet(float val);
+float get_random_dispBoss();
 
-float get_random_cdShotBoss();
-
-int get_random_dir();
+float get_random_dir();
 
