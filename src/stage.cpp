@@ -102,20 +102,11 @@ void TitleStage::render(){
 
 void TitleStage::update(float elapsed_time){
     camera->move(Vector3(0.0f, 0.0f, 1)*elapsed_time);
-    if(intermitent){
-        th -= elapsed_time;
-        if(th <= 0.f)
-            th = 1;
-            intermitent = false;
-            
-        //th = 0.5f;
-    }
-    if(!intermitent){
-        th -= elapsed_time;
-        if(th <= 0.f)
-            th = 1;
-            intermitent = true;
-            //th = 0.5;
+    th -= elapsed_time;
+    if (th <= 0.f)
+    {
+        th = 1.f;
+        intermitent = !intermitent;
     }
     if (Input::wasKeyPressed(SDL_SCANCODE_SPACE)) {
         fin = true;
