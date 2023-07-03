@@ -718,6 +718,43 @@ void EntityProjectile::update(float elapsed_time){
     model.setTranslation(position.x, position.y, position.z);
 }
 
+EntityPowerUp::EntityPowerUp(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, float lifeTime):EntityCollider(model, mesh, shader, texture){
+    this->lifeTime = lifeTime;
+    this->angle = 0;
+    this->azimuth = 0;
+}
+
+void EntityPowerUp::render(){
+    model.setTranslation(model.getTranslation().x, 1+10*sin(azimuth), model.getTranslation().z);
+    model.rotate(angle*DEG2RAD, Vector3(0, 1, 0));
+    // Get the last camera that was activated
+    Camera* camera = Camera::current;
+
+    // Enable shader and pass uniforms
+    shader->enable();
+    shader->setUniform("u_color", Vector4(1, 1, 1, 1));
+    shader->setUniform("u_model", model);
+    shader->setUniform("u_viewproj", camera->viewprojection_matrix);
+    shader->setTexture("u_texture", texture, 0);
+
+
+    // Render the mesh using the shader
+    mesh->render(GL_TRIANGLES);
+
+    // Disable shader after finishing rendering
+    shader->disable();
+}
+
+void EntityPowerUp::update(float elapsed_time){
+    angle += (float)elapsed_time * 20;
+    azimuth += (float)elapsed_time * 0.8f;
+    /*this->lifeTime += elapsed_time;
+    if(elapsed_time > lifeTime){
+        this->inWorld = false;
+        World::get_instance()->root->removeChild(this);
+    }*/
+}
+
 /*void EntityProjectile::update(float elapsed_time){
     Vector3 velocity = dir * speed;
     Vector3 new_position = model.getTranslation() + velocity * elapsed_time;

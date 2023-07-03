@@ -171,8 +171,12 @@ class EntityProjectile : public EntityCollider{
 
 class EntityPowerUp : public EntityCollider{
     
+public:
+    
     float lifeTime;
     bool inWorld;
+    float angle;
+    float azimuth;
 
     EntityPowerUp(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, float lifeTime);
     void render();

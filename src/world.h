@@ -41,9 +41,11 @@ public:
     
     Mesh* playerMesh = nullptr;
     Mesh* projectileMesh = nullptr;
+    Mesh* powerUpMesh = nullptr;
     
     Texture* projectileTexture = nullptr;
     Texture* playerTexture = nullptr;
+    Texture* powerUpTexture = nullptr;
     
     Shader* shader = nullptr;
     

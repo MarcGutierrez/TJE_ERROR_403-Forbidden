@@ -17,9 +17,11 @@ World::World(){
     root = new Entity("root", this->model);
     playerMesh = Mesh::Get("data/box.ASE");
     projectileMesh = Mesh::Get("data/projectile.obj");
-    projectileTexture = Texture::Get("data/texture.tga");
+    projectileTexture = Texture::Get("data/textures/powerup_texture.tga");
     playerTexture = Texture::Get("data/texture.tga");
     shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+    powerUpMesh = Mesh::Get("data/powerUp.obj");
+    powerUpTexture = Texture::Get("data/textures/powerup_texture.tga");
     
 }
 

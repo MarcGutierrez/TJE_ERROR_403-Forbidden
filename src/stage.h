@@ -79,6 +79,7 @@ public:
 
     void loadNewLvl(float seconds_elapsed);
     void loadBossLvl(float seconds_elapsed);
+    void loadPowerUp(float seconds_elapsed);
 
     
     void render();

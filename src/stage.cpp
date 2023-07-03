@@ -21,7 +21,7 @@
 
 int killCount;
 int wave;
-
+    
 Stage::Stage(){
     fin = false;
     camera = Game::instance->camera;
@@ -213,6 +213,17 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
     }
 }
 
+void PlayStage::loadPowerUp(float seconds_elapsed){
+    Matrix44 model;
+    
+    model.setTranslation(get_random_dist() * get_random_sign(), 0, get_random_dist() * get_random_sign());
+    float lifeTime = 10.f;
+    
+    EntityPowerUp* powerUp = new EntityPowerUp(model, World::get_instance()->powerUpMesh, shader, World::get_instance()->powerUpTexture, lifeTime);
+    World::get_instance()->root->addChild(powerUp);
+    
+}
+
 PlayStage::PlayStage(){
     glEnable( GL_CULL_FACE ); //render both sides of every triangle
     glEnable( GL_DEPTH_TEST ); //check the occlusions using the Z buffer
@@ -265,6 +276,8 @@ PlayStage::PlayStage(){
     gradientFactor = 0.1;
     //loadNewLvl(0.f);
     //loadBossLvl(0.f);
+    loadPowerUp(0.0);
+
 }
 
 void PlayStage::render(){
@@ -325,7 +338,7 @@ void PlayStage::update(float seconds_elapsed){
         }
         if(!walkDownX){
             color.x += gradientFactor * seconds_elapsed;
-            if(color.x >= 0.96){
+            if(color.x >= 1){
                 walkUpZ = true;
             }
         }
@@ -360,8 +373,11 @@ void PlayStage::update(float seconds_elapsed){
     wave = this->currentDiff-1;
     if (!enemyNum || spawnCd > 0.f) {
         //loadBossLvl(seconds_elapsed);
-        if (this->currentDiff % 5)
-            loadNewLvl(seconds_elapsed);
+        if (this->currentDiff % 5){
+            //loadNewLvl(seconds_elapsed);
+            //loadPowerUp(seconds_elapsed);
+        }
+
         else
             loadBossLvl(seconds_elapsed);
     }
