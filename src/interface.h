@@ -6,7 +6,11 @@
 //  Copyright © 2023 manu. All rights reserved.
 //
 
-#ifndef interface_h
-#define interface_h
 
-#endif /* interface_h */
+class UI{
+public:
+    UI();
+    void render();
+    void update(float elapsed_time);
+    
+};

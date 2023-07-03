@@ -800,13 +800,15 @@ void EntityProjectile::update(float elapsed_time){
 
 EntityPowerUp::EntityPowerUp(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, float lifeTime, powerUps effect):EntityCollider(model, mesh, shader, texture){
     this->lifeTime = lifeTime;
+    this->lifeTimeTh = lifeTime/4;
     this->angle = 0;
     this->azimuth = 0;
     this->effect = effect;
+    this->intermitent = true;
 }
 
 void EntityPowerUp::render(){
-    model.setTranslation(model.getTranslation().x, 5+10*sin(azimuth), model.getTranslation().z);
+    model.setTranslation(model.getTranslation().x, 10*sin(azimuth), model.getTranslation().z);
     model.rotate(angle*DEG2RAD, Vector3(0, 1, 0));
     // Get the last camera that was activated
     Camera* camera = Camera::current;
@@ -820,7 +822,8 @@ void EntityPowerUp::render(){
 
 
     // Render the mesh using the shader
-    mesh->render(GL_TRIANGLES);
+    if(intermitent)
+        mesh->render(GL_TRIANGLES);
 
     // Disable shader after finishing rendering
     shader->disable();
@@ -829,7 +832,18 @@ void EntityPowerUp::render(){
 void EntityPowerUp::update(float elapsed_time){
     angle += (float)elapsed_time * 20;
     azimuth += (float)elapsed_time * 0.8f;
+
     this->lifeTime -= elapsed_time;
+    
+    if(lifeTime <= lifeTimeTh){
+        th -= elapsed_time;
+        if (th <= 0.f)
+        {
+            th = 0.15f;
+            intermitent = !intermitent;
+        }
+    }
+
     if(lifeTime <= 0.f){
         this->inWorld = false;
         World::get_instance()->root->removeChild(this);
