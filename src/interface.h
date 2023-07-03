@@ -6,3 +6,11 @@
 //  Copyright © 2023 manu. All rights reserved.
 //
 
+
+class UI{
+public:
+    UI();
+    void render();
+    void update(float elapsed_time);
+    
+};

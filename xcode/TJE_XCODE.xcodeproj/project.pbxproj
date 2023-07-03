@@ -43,6 +43,7 @@
 		3278DE572A4B456500F54205 /* random.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3278DE542A4B456500F54205 /* random.cpp */; };
 		3278DE582A4B456500F54205 /* audio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3278DE562A4B456500F54205 /* audio.cpp */; };
 		3278DE5B2A4B470600F54205 /* libbass.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3278DE5A2A4B470600F54205 /* libbass.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		327A74F02A53507F004BD189 /* interface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 327A74EF2A53507F004BD189 /* interface.cpp */; };
 		328C0BD62A1D403800AF891C /* world.h in Sources */ = {isa = PBXBuildFile; fileRef = 32A824BD2A14DCCD008898A2 /* world.h */; };
 		328C0BD72A1D7D4700AF891C /* world.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32A824C02A14E12E008898A2 /* world.cpp */; };
 		32C627372A216060002CAFC9 /* stage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32C627362A216060002CAFC9 /* stage.cpp */; };
@@ -115,6 +116,7 @@
 		3278DE552A4B456500F54205 /* random.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = random.h; sourceTree = "<group>"; };
 		3278DE562A4B456500F54205 /* audio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = audio.cpp; sourceTree = "<group>"; };
 		3278DE5A2A4B470600F54205 /* libbass.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libbass.dylib; sourceTree = "<group>"; };
+		327A74EF2A53507F004BD189 /* interface.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = interface.cpp; path = ../../src/interface.cpp; sourceTree = "<group>"; };
 		328C0BD82A1E217500AF891C /* interface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = interface.h; path = ../../src/interface.h; sourceTree = "<group>"; };
 		328C0BD92A1E2CAF00AF891C /* stage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = stage.h; path = ../../src/stage.h; sourceTree = "<group>"; };
 		328C0BDA2A1E358300AF891C /* audio.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = audio.h; path = ../../src/audio.h; sourceTree = "<group>"; };
@@ -229,6 +231,7 @@
 				32A824BD2A14DCCD008898A2 /* world.h */,
 				326FB5B82A1FE917003F60D3 /* entity.cpp */,
 				32E048E32A0D2DBD003F3DC2 /* entity.h */,
+				327A74EF2A53507F004BD189 /* interface.cpp */,
 				328C0BD82A1E217500AF891C /* interface.h */,
 				12BE84D51981D8180090DDBD /* Images.xcassets */,
 				12BE84C41981D8180090DDBD /* Supporting Files */,
@@ -322,6 +325,7 @@
 				1208AC8D2433FCC500BB6E8A /* coldet_bld.cpp in Sources */,
 				3278DE582A4B456500F54205 /* audio.cpp in Sources */,
 				1208AC8E2433FCC500BB6E8A /* tritri.c in Sources */,
+				327A74F02A53507F004BD189 /* interface.cpp in Sources */,
 				1208AC8F2433FCC500BB6E8A /* math3d.cpp in Sources */,
 				1208AC902433FCC500BB6E8A /* mytritri.cpp in Sources */,
 				1208AC912433FCC500BB6E8A /* box.cpp in Sources */,
