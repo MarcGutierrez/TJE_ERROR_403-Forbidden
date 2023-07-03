@@ -414,6 +414,7 @@ void EntityPlayer::update(float elapsed_time){
         if (immortalLife <= 0.f)
         {
             godMode = false;
+            std::cout << "God mode deactivated" << std::endl;
         }
     }
     

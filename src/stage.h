@@ -66,6 +66,7 @@ public:
     float spawnCd;
     float powerUpCd;
     bool soundEffPlayed;
+    int lastPowerup;
     
     //color test
     Vector4 color;

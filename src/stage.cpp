@@ -225,10 +225,15 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
 void PlayStage::loadPowerUp(float seconds_elapsed){
     Matrix44 model;
     
-    model.setTranslation(get_random_dist() * get_random_sign(), 51.f, get_random_dist() * get_random_sign());
+    model.setTranslation(get_random_dist() * get_random_sign(), 0.f, get_random_dist() * get_random_sign());
     float lifeTime = 10.f;
+
+    int power = get_random_powerUP();
+    if (lastPowerup == power)
+        power = ((power + 1) % 3) + 1;
+    lastPowerup = power;
     
-    EntityPowerUp* powerUp = new EntityPowerUp(model, World::get_instance()->powerUpMesh, shader, World::get_instance()->powerUpTexture, lifeTime, (powerUps)get_random_powerUP());
+    EntityPowerUp* powerUp = new EntityPowerUp(model, World::get_instance()->powerUpMesh, shader, World::get_instance()->powerUpTexture, lifeTime, (powerUps)power);
     World::get_instance()->root->addChild(powerUp);
     
 }
@@ -284,6 +289,7 @@ PlayStage::PlayStage(){
     gradient = true;
     gradientFactor = 0.1;
     powerUpCd = 0.f;
+    lastPowerup = 0;
     //loadNewLvl(0.f);
     //loadBossLvl(0.f);
     //loadPowerUp(0.0);
