@@ -389,8 +389,6 @@ void EntityPlayer::update(float elapsed_time){
     Vector3 position = model.getTranslation();
     std::vector <sCollisionData> collisions;
 
-    yaw += this->model.getYawRotationToAimTo(lookingAt());
-
     if (cdCadLife > 0.f)
     {
         cdCadLife -= elapsed_time;
@@ -420,25 +418,30 @@ void EntityPlayer::update(float elapsed_time){
     
     Vector3 move_dir = Vector3(0.0f, 0.0f, 0.0f);
     
-    if (Input::isKeyPressed(SDL_SCANCODE_W)) {
-        move_dir = Vector3(0.0f + move_dir.x, 0.0f, -1.0f + move_dir.z);
-    }
-    if (Input::isKeyPressed(SDL_SCANCODE_S)) {
-        move_dir = Vector3(0.0f + move_dir.x, 0.0f, 1.0f + move_dir.z);
-    }
-    if (Input::isKeyPressed(SDL_SCANCODE_A)) {
-        move_dir = Vector3(-1.0f + move_dir.x, 0.0f, 0.0f + move_dir.z);
-    }
-    if (Input::isKeyPressed(SDL_SCANCODE_D)) {
-        move_dir = Vector3(1.0f + move_dir.x, 0.0f, 0.0f + move_dir.z);
-    }
-    if (Input::wasKeyPressed(SDL_SCANCODE_X)) {
-        this->godMode = !this->godMode;
-        if (godMode)
-            std::cout << "God Mode Activated" << std::endl;
-        if (!godMode)
-            std::cout << "God Mode Deactivated" << std::endl;
-    }
+    
+        if (Input::isKeyPressed(SDL_SCANCODE_W)) {
+            move_dir = Vector3(0.0f + move_dir.x, 0.0f, -1.0f + move_dir.z);
+        }
+        if (Input::isKeyPressed(SDL_SCANCODE_S)) {
+            move_dir = Vector3(0.0f + move_dir.x, 0.0f, 1.0f + move_dir.z);
+        }
+        if (Input::isKeyPressed(SDL_SCANCODE_A)) {
+            move_dir = Vector3(-1.0f + move_dir.x, 0.0f, 0.0f + move_dir.z);
+        }
+        if (Input::isKeyPressed(SDL_SCANCODE_D)) {
+            move_dir = Vector3(1.0f + move_dir.x, 0.0f, 0.0f + move_dir.z);
+        }
+        if (Input::gamepads->axis[0] != 0.f || Input::gamepads->axis[1] != 0.f)
+        {
+            move_dir = Vector3(Input::gamepads->axis[0], 0, Input::gamepads->axis[1]);
+        }
+        if (Input::wasKeyPressed(SDL_SCANCODE_X) || Input::wasButtonPressed(8)) {
+            this->godMode = !this->godMode;
+            if (godMode)
+                std::cout << "God Mode Activated" << std::endl;
+            if (!godMode)
+                std::cout << "God Mode Deactivated" << std::endl;
+        }
     
     move_dir.normalize();
     velocity = move_dir * speed;
@@ -455,12 +458,20 @@ void EntityPlayer::update(float elapsed_time){
     velocity -= velocity * elapsed_time;
     
     model.setTranslation(position.x, position.y, position.z); // position.y = 51 harcoceado
-    
+
+    if (Input::gamepads->axis[2] != 0.f || Input::gamepads->axis[3] != 0.f)
+    {
+        yaw = this->model.getYawRotationToAimTo(Vector3(this->model.getTranslation().x + Input::gamepads->axis[2], 51.f, this->model.getTranslation().z + Input::gamepads->axis[3]));
+    }
+    else
+    {
+        yaw = this->model.getYawRotationToAimTo(lookingAt());
+    }
     model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
 
     shootCd += elapsed_time;
     //camera->lookAt(camera->eye, camera->center, camera->up);
-    if (Input::isKeyPressed(SDL_SCANCODE_SPACE)) {
+    if (Input::isKeyPressed(SDL_SCANCODE_SPACE) || Input::isButtonPressed(5)) {
         if (shootCd + cdPowerUp > .3f)
         {
             if (hasMultishot)
