@@ -682,6 +682,8 @@ bool checkImpacts(const Vector3& target_pos,
     for (int i = 0; i < World::world->get_instance()->root->children.size(); i++) {
         if (EntityProjectile* b = dynamic_cast<EntityProjectile*>(World::world->get_instance()->root->children[i]))
             if (b->isEnemy && isEnemy) continue;
+        if (EntityPowerUp* p = dynamic_cast<EntityPowerUp*>(World::world->get_instance()->root->children[i]))
+            continue;
         if (EntityCollider* e = dynamic_cast<EntityCollider*>(World::world->get_instance()->root->children[i])) {
             Mesh* mesh = e->mesh;
 
@@ -725,7 +727,7 @@ EntityPowerUp::EntityPowerUp(Matrix44 model, Mesh* mesh, Shader* shader, Texture
 }
 
 void EntityPowerUp::render(){
-    model.setTranslation(model.getTranslation().x, 1+10*sin(azimuth), model.getTranslation().z);
+    model.setTranslation(model.getTranslation().x, 5+10*sin(azimuth), model.getTranslation().z);
     model.rotate(angle*DEG2RAD, Vector3(0, 1, 0));
     // Get the last camera that was activated
     Camera* camera = Camera::current;
@@ -748,11 +750,11 @@ void EntityPowerUp::render(){
 void EntityPowerUp::update(float elapsed_time){
     angle += (float)elapsed_time * 20;
     azimuth += (float)elapsed_time * 0.8f;
-    /*this->lifeTime += elapsed_time;
-    if(elapsed_time > lifeTime){
+    this->lifeTime -= elapsed_time;
+    if(lifeTime <= 0.f){
         this->inWorld = false;
         World::get_instance()->root->removeChild(this);
-    }*/
+    }
 }
 
 /*void EntityProjectile::update(float elapsed_time){
