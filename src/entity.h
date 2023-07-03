@@ -102,9 +102,12 @@ class EntityPowerUp : public EntityCollider {
 public:
 
     float lifeTime;
+    float lifeTimeTh;
     bool inWorld;
     float angle;
     float azimuth;
+    float th = 0.5f;
+    bool intermitent;
     powerUps effect;
 
 

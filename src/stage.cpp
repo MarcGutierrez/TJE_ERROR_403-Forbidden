@@ -389,12 +389,12 @@ void PlayStage::update(float seconds_elapsed){
     wave = this->currentDiff-1;
     if (!enemyNum || spawnCd > 0.f) {
         //loadBossLvl(seconds_elapsed);
-        //if (this->currentDiff % 5){
-            //loadNewLvl(seconds_elapsed);
+        if (this->currentDiff % 5){
+            loadNewLvl(seconds_elapsed);
             //loadPowerUp(seconds_elapsed);
-        //}
+        }
 
-        //else
+        else
             loadBossLvl(seconds_elapsed);
     }
     powerUpCd += seconds_elapsed;
