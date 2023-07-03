@@ -164,6 +164,10 @@ EntityPlayer::EntityPlayer(Matrix44 model, Mesh* mesh, Shader* shader, Texture* 
     velocity = Vector3(0.0f, 0.0f, 0.0f);
     speed = 1500.0f;
     shootCd = 0.f;
+    hasMultishot = false;
+    cdPowerUp = 0.f;
+    cdCadLife = 0.f;
+    multiLife = 0.f;
 }
 
 void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
@@ -315,6 +319,28 @@ void EntityPlayer::render(){
 
 }
 
+void EntityPlayer::addPowerUp(EntityPowerUp* pu)
+{
+    switch (pu->effect)
+    {
+    case MORECADENCE:
+        cdPowerUp += 0.15f;
+        cdCadLife = 10.f;
+        break;
+    case MULTISHOT:
+        hasMultishot = true;
+        cdPowerUp -= 0.2f;
+        multiLife = 10.f;
+        break;
+    case IMMORTAL:
+        godMode = true;
+        immortalLife = 10.f;
+        break;
+    default:
+        break;
+    }
+}
+
 bool checkCollisions(const Vector3& target_pos, std::vector<sCollisionData>& collisions, EntityMesh* entity, float radiusSphere) {
     Vector3 center = target_pos + Vector3(0.f, 1.25f, 0.f);
     float sphereRadius = radiusSphere;
@@ -328,6 +354,16 @@ bool checkCollisions(const Vector3& target_pos, std::vector<sCollisionData>& col
             if (EntityProjectile* p = dynamic_cast<EntityProjectile*>(e)) {
                 if (mesh->testSphereCollision(e->model, center, sphereRadius, colPoint, colNormal)) {
                     youDie(entity, p);
+                }
+            }
+            else if (EntityPowerUp* pu = dynamic_cast<EntityPowerUp*>(e))
+            {
+                if (EntityPlayer* p = dynamic_cast<EntityPlayer*>(entity))
+                {
+                    if (mesh->testSphereCollision(e->model, center, sphereRadius, colPoint, colNormal)) {
+                        p->addPowerUp(pu);
+                        World::world->get_instance()->root->removeChild(pu);
+                    }
                 }
             }
             else
@@ -355,7 +391,31 @@ void EntityPlayer::update(float elapsed_time){
 
     yaw += this->model.getYawRotationToAimTo(lookingAt());
 
-
+    if (cdCadLife > 0.f)
+    {
+        cdCadLife -= elapsed_time;
+        if (cdCadLife <= 0.f)
+        {
+            cdPowerUp -= .15f;
+        }
+    }
+    if (multiLife > 0.f)
+    {
+        multiLife -= elapsed_time;
+        if (multiLife <= 0.f)
+        {
+            cdPowerUp += 0.2f;
+            hasMultishot = false;
+        }
+    }
+    if (immortalLife > 0.f)
+    {
+        immortalLife -= elapsed_time;
+        if (immortalLife <= 0.f)
+        {
+            godMode = false;
+        }
+    }
     
     Vector3 move_dir = Vector3(0.0f, 0.0f, 0.0f);
     
@@ -400,9 +460,12 @@ void EntityPlayer::update(float elapsed_time){
     shootCd += elapsed_time;
     //camera->lookAt(camera->eye, camera->center, camera->up);
     if (Input::isKeyPressed(SDL_SCANCODE_SPACE)) {
-        if (shootCd > .3f)
+        if (shootCd + cdPowerUp > .3f)
         {
-            shoot(model, 4000.0f, 0, false);
+            if (hasMultishot)
+                multishot(model, 2500.f, 5, 0.15f, false);
+            else
+                shoot(model, 4000.0f, 0, false);
             shootCd = 0.f;
         }
     }
@@ -681,7 +744,10 @@ bool checkImpacts(const Vector3& target_pos,
     //for(auto e:World::world->get_instance()->root->children){
     for (int i = 0; i < World::world->get_instance()->root->children.size(); i++) {
         if (EntityProjectile* b = dynamic_cast<EntityProjectile*>(World::world->get_instance()->root->children[i]))
+        {
             if (b->isEnemy && isEnemy) continue;
+            if (!b->isEnemy && !isEnemy) continue;
+        }
         if (EntityPowerUp* p = dynamic_cast<EntityPowerUp*>(World::world->get_instance()->root->children[i]))
             continue;
         if (EntityCollider* e = dynamic_cast<EntityCollider*>(World::world->get_instance()->root->children[i])) {
@@ -720,10 +786,11 @@ void EntityProjectile::update(float elapsed_time){
     model.setTranslation(position.x, position.y, position.z);
 }
 
-EntityPowerUp::EntityPowerUp(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, float lifeTime):EntityCollider(model, mesh, shader, texture){
+EntityPowerUp::EntityPowerUp(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, float lifeTime, powerUps effect):EntityCollider(model, mesh, shader, texture){
     this->lifeTime = lifeTime;
     this->angle = 0;
     this->azimuth = 0;
+    this->effect = effect;
 }
 
 void EntityPowerUp::render(){

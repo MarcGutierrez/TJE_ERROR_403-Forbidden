@@ -23,6 +23,8 @@ int get_random_bulletsBoss(int diff);
 
 int get_random_hpBoss(int diff);
 
+int get_random_powerUP();
+
 float get_random_spd();
 
 float get_random_cdShot();

@@ -20,6 +20,8 @@
 
 //#endif /* entity_h */
 
+enum powerUps { NONE, MULTISHOT, MORECADENCE, IMMORTAL };
+
 class Entity {
 
 public:
@@ -80,12 +82,44 @@ class InstancedEntityMesh : public EntityMesh {
     void update(float elapsed_time);
 };
 
+class EntityCollider : public EntityMesh {
+
+public:
+
+    bool isDynamic = false;
+
+    EntityCollider(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture);
+
+    // New methods
+    //bool checkPlayerCollisions(Vector3 position, Vector3 &colisions);
+    void render();
+    void update(float elapsed_time);
+};
+
+
+class EntityPowerUp : public EntityCollider {
+
+public:
+
+    float lifeTime;
+    bool inWorld;
+    float angle;
+    float azimuth;
+    powerUps effect;
+
+
+    EntityPowerUp(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, float lifeTime, powerUps effect);
+    void render();
+    void update(float elapsed_time);
+
+};
+
 class EntityPlayer : public EntityMesh{
     public:
         // Attributes of the derived class
         int hp, maxHP;
-        float speed, shootCd;
-        bool isDead;  
+        float speed, shootCd, cdPowerUp, cdCadLife, multiLife, immortalLife;
+        bool isDead, hasMultishot;
         int killCount;
         bool godMode;
         Vector3 velocity;
@@ -96,20 +130,7 @@ class EntityPlayer : public EntityMesh{
         EntityPlayer(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, Camera* camera);
         // Methods overwritten from base class
         //void shoot(Vector3 dir, float speed);
-        void render();
-        void update(float elapsed_time);
-};
-
-class EntityCollider : public EntityMesh{
-
-    public:
-
-        bool isDynamic = false;
-     
-        EntityCollider(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture);
-        
-        // New methods
-        //bool checkPlayerCollisions(Vector3 position, Vector3 &colisions);
+        void addPowerUp(EntityPowerUp* pu);
         void render();
         void update(float elapsed_time);
 };
@@ -167,21 +188,6 @@ class EntityProjectile : public EntityCollider{
         
         void render();
         void update(float elapsed_time);
-};
-
-class EntityPowerUp : public EntityCollider{
-    
-public:
-    
-    float lifeTime;
-    bool inWorld;
-    float angle;
-    float azimuth;
-
-    EntityPowerUp(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, float lifeTime);
-    void render();
-    void update(float elapsed_time);
-    
 };
 
 /*class EntityEnemy : public EntityMesh{

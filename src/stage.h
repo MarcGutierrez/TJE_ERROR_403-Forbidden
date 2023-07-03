@@ -62,6 +62,7 @@ public:
     int enemyNum;
     int waveNum;
     float spawnCd;
+    float powerUpCd;
     bool soundEffPlayed;
     
     //color test
