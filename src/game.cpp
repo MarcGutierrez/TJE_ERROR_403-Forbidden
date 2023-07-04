@@ -40,6 +40,7 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	frame = 0;
 	time = 0.0f;
 	elapsed_time = 0.0f;
+    cdGamepad = 0.f;
 	mouse_locked = false;
     
     camera = new Camera();
@@ -167,6 +168,12 @@ void Game::update(double seconds_elapsed)
 {
 	float speed = seconds_elapsed * mouse_speed; //the speed is defined by the seconds_elapsed so it goes constant
     //mouse input to rotate the cam
+    cdGamepad += seconds_elapsed;
+    if (cdGamepad > 1.f)
+    {
+        cdGamepad = 0.f;
+        updateGamepads();
+    }
 
     if(current_stage->free_cam == true){
         if ((Input::mouse_state & SDL_BUTTON_LEFT) || mouse_locked ) //is left button pressed?

@@ -19,6 +19,15 @@ SDL_Window* window = NULL;
 
 //************************************************
 
+void updateGamepads()
+{
+	for (int i = 0; i < 4; ++i)
+	{
+		_joy[i] = Input::openGamepadNoPrint(i);
+		Input::updateGamepadState(_joy[i], Input::gamepads[i]);
+	}
+}
+
 void Input::init( SDL_Window* _window )
 {
 	int x, y;
@@ -73,6 +82,19 @@ SDL_Joystick* Input::openGamepad(int index)
 
 	SDL_Joystick* j = SDL_JoystickOpen(index);
 	std::cout << " * Gamepad found: " << SDL_JoystickName(j) << " Axis: " << SDL_JoystickNumAxes(j) << "  Buttons: " << SDL_JoystickNumButtons(j) << std::endl;
+
+	// Open joystick and return it
+	return j;
+}
+
+SDL_Joystick* Input::openGamepadNoPrint(int index)
+{
+	// Check for number of joysticks available
+	if (SDL_NumJoysticks() <= index)
+		return NULL;
+
+	SDL_Joystick* j = SDL_JoystickOpen(index);
+	//std::cout << " * Gamepad found: " << SDL_JoystickName(j) << " Axis: " << SDL_JoystickNumAxes(j) << "  Buttons: " << SDL_JoystickNumButtons(j) << std::endl;
 
 	// Open joystick and return it
 	return j;

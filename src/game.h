@@ -24,6 +24,7 @@ public:
 	long frame;
     float time;
 	float elapsed_time;
+	float cdGamepad;
 	int fps;
 	bool must_exit;
 	float musicCd;
