@@ -6,7 +6,7 @@
 #include "texture.h"
 #include "shader.h"
 #include "audio.h"
-#include "interface.h"
+
 
 enum stageId { TITLE, GAME, MENU, ENDING};
 class UI;

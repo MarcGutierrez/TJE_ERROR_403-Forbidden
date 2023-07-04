@@ -7,12 +7,14 @@
 //
 
 #include <stdio.h>
+#include "game.h"
 #include "interface.h"
 
 UI::UI(Mesh* quad){
+    quad->createQuad(0, 0, 2, 2, true);
     this->quad = quad;
     shader = Shader::Get("data/shaders/ortoshader.vs", "data/shaders/texture.fs");
-    quad->createQuad(0, 0, 2, 2, true);
+
     
 }
 
