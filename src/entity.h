@@ -16,11 +16,13 @@
 #include "shader.h"
 #include "camera.h"
 #include "texture.h"
+#include "animation.h"
 
 
 //#endif /* entity_h */
 
 enum powerUps { NONE, MULTISHOT, MORECADENCE, IMMORTAL };
+enum animation {IDLE, WALK, WALK_BACK, WALK_LEFT, WALK_RIGHT, SHOOT, DIE};
 
 class Entity {
 
@@ -126,6 +128,16 @@ class EntityPlayer : public EntityMesh{
         int killCount;
         bool godMode;
         Vector3 velocity;
+        int anim;
+    
+        Animation* idle;
+        Animation* walk;
+        Animation* walkBack;
+        Animation* walkLeft;
+        Animation* walkRight;
+        Animation* shot;
+        Animation* die;
+    
    
         float yaw;
         Camera* camera = nullptr;

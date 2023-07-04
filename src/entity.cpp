@@ -12,6 +12,7 @@
 #include "game.h"
 #include "framework.h"
 
+
 #include "random.h"
 
 // Container to store EACH collision
@@ -160,6 +161,11 @@ EntityPlayer::EntityPlayer(Matrix44 model, Mesh* mesh, Shader* shader, Texture* 
     this->yaw = 0.f;
     this->isDead = false;
     this->godMode = false;
+    
+    
+    this->anim = IDLE;
+    idle = Animation::Get("data/animations/idle.skanim");
+    
     killCount = 0;
     velocity = Vector3(0.0f, 0.0f, 0.0f);
     speed = 1500.0f;
@@ -302,7 +308,7 @@ Vector3 getMouseToWorld(Vector3 mouse_pos){
 void EntityPlayer::render(){
     // Get the last camera that was activated
     Camera* camera = Camera::current;
-
+    
     // Enable shader and pass uniforms
     shader->enable();
     shader->setUniform("u_color", color);
@@ -312,7 +318,11 @@ void EntityPlayer::render(){
 
 
     // Render the mesh using the shader
-    mesh->render( GL_TRIANGLES );
+    if (anim == IDLE) {
+        idle->assignTime(Game::instance->time);
+        mesh->renderAnimated(GL_TRIANGLES, &idle->skeleton);
+    }
+    //mesh->render( GL_TRIANGLES );
 
     // Disable shader after finishing rendering
     shader->disable();
