@@ -124,7 +124,7 @@ class EntityPlayer : public EntityMesh{
         // Attributes of the derived class
         int hp, maxHP;
         float speed, shootCd, cdPowerUp, cdCadLife, multiLife, immortalLife;
-        bool isDead, hasMultishot;
+        bool isDead, hasMultishot, hasCdPower;
         int killCount;
         bool godMode;
         Vector3 velocity;

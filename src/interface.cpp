@@ -30,7 +30,7 @@ void UI::render(){
 
     shader->setUniform("u_viewprojection", camera2D.viewprojection_matrix);
     shader->setUniform("u_texture", World::get_instance()->powerUpTexture, 0);
-    //shader->setUniform("u_color", Vector4(1, 1, 1, 1));
+    shader->setUniform("u_color", Vector4(1, 1, 1, 1));
     
     quad->render(GL_TRIANGLES);
 

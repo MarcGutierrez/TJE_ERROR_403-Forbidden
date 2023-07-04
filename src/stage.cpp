@@ -282,7 +282,7 @@ PlayStage::PlayStage(){
 
     parseScene("data/scenes/test_room3.scene", model, World::get_instance()->root, NULL);
     
-    quad = Mesh::Get("data/cdPowerUpIcon.obj");
+    //quad = Mesh::Get("data/cdPowerUpIcon.obj");
     
     color = Vector4(0.95f,0.21f,0.67f,1);
     //color = Vector4(1,1,1,1);
@@ -305,7 +305,7 @@ PlayStage::PlayStage(){
     //loadBossLvl(0.f);
     //loadPowerUp(0.0);
     
-    powerUpUI = new UI(quad);
+    
 
 }
 
@@ -347,7 +347,23 @@ void PlayStage::render(){
         //disable shader
         shader->disable();
     }
-    powerUpUI->render();
+    if(World::get_instance()->player){
+        if(World::get_instance()->player->hasCdPower){
+            quad = Mesh::Get("data/cdPowerUpIcon.obj");
+            powerUpUI = new UI(quad);
+            powerUpUI->render();
+        }
+        if(World::get_instance()->player->hasMultishot){
+            quad = Mesh::Get("data/msPowerUpIcon.obj");
+            powerUpUI = new UI(quad);
+            powerUpUI->render();
+        }
+        if(World::get_instance()->player->godMode){
+            quad = Mesh::Get("data/gmPowerUpIcon.obj");
+            powerUpUI = new UI(quad);
+            powerUpUI->render();
+        }
+    }
 }
 
 /*void WalkDownColor(float seconds_elapsed, Vector4 color, float grad, float thresh){

@@ -171,6 +171,7 @@ EntityPlayer::EntityPlayer(Matrix44 model, Mesh* mesh, Shader* shader, Texture* 
     speed = 1500.0f;
     shootCd = 0.f;
     hasMultishot = false;
+    hasCdPower = false;
     cdPowerUp = 0.f;
     cdCadLife = 0.f;
     multiLife = 0.f;
@@ -334,6 +335,7 @@ void EntityPlayer::addPowerUp(EntityPowerUp* pu)
     switch (pu->effect)
     {
     case MORECADENCE:
+        hasCdPower = true;
         cdPowerUp += 0.15f;
         cdCadLife = 10.f;
         break;
@@ -405,6 +407,7 @@ void EntityPlayer::update(float elapsed_time){
         if (cdCadLife <= 0.f)
         {
             cdPowerUp -= .15f;
+            hasCdPower = false;
         }
     }
     if (multiLife > 0.f)
@@ -422,7 +425,6 @@ void EntityPlayer::update(float elapsed_time){
         if (immortalLife <= 0.f)
         {
             godMode = false;
-            std::cout << "God mode deactivated" << std::endl;
         }
     }
     
@@ -451,6 +453,20 @@ void EntityPlayer::update(float elapsed_time){
                 std::cout << "God Mode Activated" << std::endl;
             if (!godMode)
                 std::cout << "God Mode Deactivated" << std::endl;
+        }
+        if (Input::wasKeyPressed(SDL_SCANCODE_Z) || Input::wasButtonPressed(9)) {
+            this->hasMultishot = !this->hasMultishot;
+            if (hasMultishot)
+                std::cout << "Multishot Activated" << std::endl;
+            if (!hasMultishot)
+                std::cout << "Multishot Deactivated" << std::endl;
+        }
+        if (Input::wasKeyPressed(SDL_SCANCODE_C) || Input::wasButtonPressed(10)) {
+            this->hasCdPower = !this->hasCdPower;
+            if (hasCdPower)
+                std::cout << "Rapid Fire Activated" << std::endl;
+            if (!hasCdPower)
+                std::cout << "Rapid Fire Deactivated" << std::endl;
         }
     
     move_dir.normalize();
