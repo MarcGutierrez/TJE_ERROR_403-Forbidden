@@ -59,6 +59,7 @@ public:
     Texture* enemyTexture = nullptr;
     EntityBoss* boss;
     Mesh* bossMesh = nullptr;
+    Mesh* quad = nullptr;
     Texture* bossTexture = nullptr;
 
     int enemyNum;

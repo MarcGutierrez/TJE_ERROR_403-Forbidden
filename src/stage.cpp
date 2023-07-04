@@ -280,7 +280,7 @@ PlayStage::PlayStage(){
 
     parseScene("data/scenes/test_room3.scene", model, World::get_instance()->root, NULL);
     
-    Mesh* quad = Mesh::Get("data/cdPowerUpIcon.obj");
+    quad = Mesh::Get("data/cdPowerUpIcon.obj");
     
     color = Vector4(0.95f,0.21f,0.67f,1);
     //color = Vector4(1,1,1,1);
@@ -343,16 +343,7 @@ void PlayStage::render(){
         //disable shader
         shader->disable();
     }
-    /*shader = Shader::Get("data/shaders/ortoshader.vs", "data/shaders/texture.fs");
-    Camera camera2D;
-    camera2D.view_matrix = Matrix44(); // Set View to identity
-    camera2D.setOrthographic(0, Game::instance->window_width, 0, Game::instance->window_height, -1, 1 );
-    shader->setUniform("u_viewprojection", camera2D.viewprojection_matrix);
-    
-    glDisable( GL_DEPTH_TEST );
-    glDisable( GL_CULL_FACE );
-    glEnable( GL_BLEND );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );*/
+
 
 
 }
