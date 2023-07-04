@@ -9,6 +9,7 @@
 #include "interface.h"
 
 enum stageId { TITLE, GAME, MENU, ENDING};
+class UI;
 
 class Stage{
 public:
@@ -37,7 +38,6 @@ public:
 class TitleStage : public Stage {
     
 public:
-    
     int width;
     int height;
     bool intermitent;
@@ -63,7 +63,7 @@ public:
     Texture* bossTexture = nullptr;
     
     Mesh* quad = nullptr;
-    //UI powerUpUI;
+    UI* powerUpUI;
 
     int enemyNum;
     int waveNum;

@@ -18,9 +18,9 @@ public:
     Shader* shader;
     Mesh* quad = nullptr;
     
+    UI();
     UI(Mesh* quad);
 
     void render();
     void update(float elapsed_time);
-    
 };

@@ -145,6 +145,7 @@
     <ClCompile Include="..\..\src\framework.cpp" />
     <ClCompile Include="..\..\src\game.cpp" />
     <ClCompile Include="..\..\src\input.cpp" />
+    <ClCompile Include="..\..\src\interface.cpp" />
     <ClCompile Include="..\..\src\loadScene.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
     <ClCompile Include="..\..\src\mesh.cpp" />
