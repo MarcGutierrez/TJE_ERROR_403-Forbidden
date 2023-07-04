@@ -86,3 +86,10 @@ float get_random_dir()
     static std::uniform_real_distribution<float> dis(-0.5f, 0.5f); // range [-0.5, 0.5]
     return dis(e);
 }
+
+float get_random_cdBoss(){
+    static std::default_random_engine e(time(0));
+    static std::uniform_real_distribution<float> dis(0.5f, 1.5f); // range [min, max)
+    return dis(e);
+}
+

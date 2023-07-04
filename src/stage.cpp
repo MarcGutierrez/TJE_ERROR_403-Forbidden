@@ -273,6 +273,8 @@ PlayStage::PlayStage(){
 
     parseScene("data/scenes/test_room3.scene", model, World::get_instance()->root, NULL);
     
+    Mesh* quad = Mesh::Get("data/cdPowerUpIcon.obj");
+    
     color = Vector4(0.95f,0.21f,0.67f,1);
     //color = Vector4(1,1,1,1);
     
@@ -334,6 +336,17 @@ void PlayStage::render(){
         //disable shader
         shader->disable();
     }
+    /*shader = Shader::Get("data/shaders/ortoshader.vs", "data/shaders/texture.fs");
+    Camera camera2D;
+    camera2D.view_matrix = Matrix44(); // Set View to identity
+    camera2D.setOrthographic(0, Game::instance->window_width, 0, Game::instance->window_height, -1, 1 );
+    shader->setUniform("u_viewprojection", camera2D.viewprojection_matrix);
+    
+    glDisable( GL_DEPTH_TEST );
+    glDisable( GL_CULL_FACE );
+    glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );*/
+
 
 }
 
@@ -398,7 +411,7 @@ void PlayStage::update(float seconds_elapsed){
             loadBossLvl(seconds_elapsed);
     }
     powerUpCd += seconds_elapsed;
-    if (powerUpCd > 8.f)
+    if (powerUpCd > 12.f)
     {
         loadPowerUp(0.0);
         powerUpCd = 0.f;
@@ -406,6 +419,9 @@ void PlayStage::update(float seconds_elapsed){
     World::get_instance()->update(seconds_elapsed);
     if (Input::wasKeyPressed(SDL_SCANCODE_Q)) { //toggle freecam
         this->free_cam = !this->free_cam;
+    }
+    if(Input::wasKeyPressed(SDL_SCANCODE_R)){
+        camera->lookAt(Vector3(0.f,4500.f, 1),Vector3(0.f,0.f,0.f), Vector3(0.f,1.f,0.f)); //reset camera
     }
     if(World::get_instance()->player->isDead){
         std::cout << World::get_instance()->player->killCount << std::endl;

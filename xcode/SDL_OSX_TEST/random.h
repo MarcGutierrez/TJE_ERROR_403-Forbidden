@@ -35,3 +35,6 @@ float get_random_dispBoss();
 
 float get_random_dir();
 
+float get_random_cdBoss();
+
+
