@@ -5,6 +5,8 @@
 //  Created by manu on 24/5/23.
 //  Copyright © 2023 manu. All rights reserved.
 //
+
+#pragma once
 #include "camera.h"
 #include "game.h"
 #include "shader.h"

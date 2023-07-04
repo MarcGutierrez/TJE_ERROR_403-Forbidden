@@ -6,6 +6,7 @@
 #include "texture.h"
 #include "shader.h"
 #include "audio.h"
+#include "interface.h"
 
 enum stageId { TITLE, GAME, MENU, ENDING};
 
@@ -59,8 +60,10 @@ public:
     Texture* enemyTexture = nullptr;
     EntityBoss* boss;
     Mesh* bossMesh = nullptr;
-    Mesh* quad = nullptr;
     Texture* bossTexture = nullptr;
+    
+    Mesh* quad = nullptr;
+    //UI powerUpUI;
 
     int enemyNum;
     int waveNum;

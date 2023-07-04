@@ -19,6 +19,7 @@
 #include "loadScene.h"
 #include "random.h"
 
+
 int killCount;
 int wave;
     
@@ -302,6 +303,8 @@ PlayStage::PlayStage(){
     //loadNewLvl(0.f);
     //loadBossLvl(0.f);
     //loadPowerUp(0.0);
+    
+    //powerUpUI = new UI(quad);
 
 }
 
@@ -343,8 +346,8 @@ void PlayStage::render(){
         //disable shader
         shader->disable();
     }
-
-
+    //powerUpUI->render();
+    
 
 }
 
