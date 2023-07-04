@@ -8,18 +8,18 @@
 
 #pragma once
 #include "camera.h"
-#include "game.h"
 #include "shader.h"
 #include "mesh.h"
 
-class UI{
+class UI
+{
 public:
+    
     Camera camera2D;
     Shader* shader;
     Mesh* quad = nullptr;
-    
     UI(Mesh* quad);
-
+    
     void render();
     void update(float elapsed_time);
     

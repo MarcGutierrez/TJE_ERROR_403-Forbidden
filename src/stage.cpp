@@ -304,7 +304,7 @@ PlayStage::PlayStage(){
     //loadBossLvl(0.f);
     //loadPowerUp(0.0);
     
-    //powerUpUI = new UI(quad);
+    powerUpUI = new UI(quad);
 
 }
 
@@ -346,7 +346,7 @@ void PlayStage::render(){
         //disable shader
         shader->disable();
     }
-    //powerUpUI->render();
+    powerUpUI->render();
     
 
 }
