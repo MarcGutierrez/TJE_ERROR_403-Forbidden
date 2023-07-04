@@ -49,6 +49,8 @@ const char axis6[] = { LEFT_ANALOG_X,LEFT_ANALOG_Y,RIGHT_ANALOG_X,RIGHT_ANALOG_Y
 const char buttons_old[] = { A_BUTTON, B_BUTTON, X_BUTTON, Y_BUTTON, LB_BUTTON, RB_BUTTON, BACK_BUTTON, START_BUTTON, LEFT_ANALOG_BUTTON, RIGHT_ANALOG_BUTTON };
 const char buttons_15[] = { PAD_LEFT, PAD_UP, PAD_RIGHT, PAD_DOWN, START_BUTTON, BACK_BUTTON, LEFT_ANALOG_BUTTON, RIGHT_ANALOG_BUTTON, LB_BUTTON, RB_BUTTON, A_BUTTON, B_BUTTON, X_BUTTON, Y_BUTTON, -1, -1, -1, -1 };
 
+void updateGamepads();
+
 struct GamepadState
 {
 	bool connected;		//true if connected
@@ -99,6 +101,7 @@ public:
 	static void update();
 
 	static SDL_Joystick* openGamepad(int index);
+	static SDL_Joystick* openGamepadNoPrint(int index);
 	static void updateGamepadState(SDL_Joystick* joystick, GamepadState& state);
 };
 

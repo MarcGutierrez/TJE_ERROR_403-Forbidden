@@ -95,8 +95,15 @@ void TitleStage::render(){
         shader->disable();
     }
     drawText(150, height/2-150, "Error 403: Forbidden", Vector3(1,1,1),5);
-    if(intermitent)
-        drawText(200, height/2+250, "Press SPACE to start", Vector3(1,1,1),4);
+    if (intermitent)
+    {
+        if (Input::gamepads->connected)
+            drawText(200, height / 2 + 250, "Press START to start", Vector3(1, 1, 1), 4);
+
+        else
+            drawText(200, height / 2 + 250, "Press SPACE to start", Vector3(1, 1, 1), 4);
+    }
+        
     
 }
 
@@ -108,7 +115,7 @@ void TitleStage::update(float elapsed_time){
         th = 1.f;
         intermitent = !intermitent;
     }
-    if (Input::wasKeyPressed(SDL_SCANCODE_SPACE)) {
+    if (Input::wasKeyPressed(SDL_SCANCODE_SPACE) || Input::wasButtonPressed(7)) {
         fin = true;
         for (int i = 0; i < World::get_instance()->root->children.size(); i++) { //clean root
             World::get_instance()->root->removeChild(World::get_instance()->root->children[i]);
@@ -518,18 +525,26 @@ void EndStage::render(){
     drawText(Game::instance->window_width/2-130, Game::instance->window_height/2-125, "YOU DIED", Vector3(1,0,0),6);
     drawText(Game::instance->window_width/2-150, Game::instance->window_width/2-75, "Enemies Killed: " + std::to_string(killCount), Vector3(1,0,0),4);
     drawText(Game::instance->window_width/2-250, Game::instance->window_width/2-125, "You survived for: " + std::to_string(wave - 1) + " rounds", Vector3(1,0,0),4);
-    drawText(175, Game::instance->window_height/2+200, "Press R to play again", Vector3(1,1,1),4);
-    drawText(135, Game::instance->window_height/2+250, "Or press F to exit to title screen", Vector3(1,1,1),3);
+    if (Input::gamepads->connected)
+    {
+        drawText(175, Game::instance->window_height / 2 + 200, "Press START to play again", Vector3(1, 1, 1), 4);
+        drawText(135, Game::instance->window_height / 2 + 250, "Or press BACK to exit to title screen", Vector3(1, 1, 1), 3);
+    }
+    else
+    {
+        drawText(175, Game::instance->window_height / 2 + 200, "Press R to play again", Vector3(1, 1, 1), 4);
+        drawText(135, Game::instance->window_height / 2 + 250, "Or press F to exit to title screen", Vector3(1, 1, 1), 3);
+    }
 }
 
 void EndStage::update(float elapsed_time){
     camera->move(Vector3(0.0f, 0.0f, 1)*elapsed_time);
-    if (Input::wasKeyPressed(SDL_SCANCODE_R))
+    if (Input::wasKeyPressed(SDL_SCANCODE_R) || Input::wasButtonPressed(7))
     {
         World::get_instance()->cleanRoot();
         retry = true;
     }
-    if (Input::wasKeyPressed(SDL_SCANCODE_F))
+    if (Input::wasKeyPressed(SDL_SCANCODE_F) || Input::wasButtonPressed(6))
     {
         World::get_instance()->cleanRoot();
         restart = true;
