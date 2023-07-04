@@ -18,6 +18,7 @@
 #include "stage.h"
 #include "loadScene.h"
 #include "random.h"
+#include "interface.h"
 
 
 int killCount;
