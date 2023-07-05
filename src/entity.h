@@ -129,6 +129,7 @@ class EntityPlayer : public EntityMesh{
         bool godMode;
         Vector3 velocity;
         int anim;
+        int puNum;
     
         Animation* idle;
         Animation* walk;

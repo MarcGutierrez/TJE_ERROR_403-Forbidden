@@ -175,6 +175,7 @@ EntityPlayer::EntityPlayer(Matrix44 model, Mesh* mesh, Shader* shader, Texture* 
     cdPowerUp = 0.f;
     cdCadLife = 0.f;
     multiLife = 0.f;
+    puNum = 0;
 }
 
 void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
@@ -338,15 +339,18 @@ void EntityPlayer::addPowerUp(EntityPowerUp* pu)
         hasCdPower = true;
         cdPowerUp += 0.15f;
         cdCadLife = 10.f;
+        puNum += 1;
         break;
     case MULTISHOT:
         hasMultishot = true;
         cdPowerUp -= 0.2f;
         multiLife = 10.f;
+        puNum += 1;
         break;
     case IMMORTAL:
         godMode = true;
         immortalLife = 10.f;
+        puNum += 1;
         break;
     default:
         break;
@@ -408,6 +412,7 @@ void EntityPlayer::update(float elapsed_time){
         {
             cdPowerUp -= .15f;
             hasCdPower = false;
+            puNum -= 1;
         }
     }
     if (multiLife > 0.f)
@@ -417,6 +422,7 @@ void EntityPlayer::update(float elapsed_time){
         {
             cdPowerUp += 0.2f;
             hasMultishot = false;
+            puNum -= 1;
         }
     }
     if (immortalLife > 0.f)
@@ -425,6 +431,7 @@ void EntityPlayer::update(float elapsed_time){
         if (immortalLife <= 0.f)
         {
             godMode = false;
+            puNum -= 1;
         }
     }
     

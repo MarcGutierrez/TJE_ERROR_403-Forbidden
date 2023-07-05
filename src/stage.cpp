@@ -307,6 +307,16 @@ PlayStage::PlayStage(){
     
     this->intermitent = false;
     this->lifeTimeTh = 10.0f/4;
+    
+    slot1InUse = false;
+    slot2InUse = false;
+    slot3InUse = false;
+
+    slot1 = Vector2(25, 35);
+    slot2 = Vector2(70, 35);
+    slot3 = Vector2(125, 35);
+    
+    currentSlot = slot1;
 }
 
 void PlayStage::render(){
@@ -347,31 +357,66 @@ void PlayStage::render(){
         //disable shader
         shader->disable();
     }
-    if(World::get_instance()->player){
+    Vector4 grayColor = Vector4(0.2f, 0.2f, 0.2f, 1);
+    cdSlot = new UI(quad, World::get_instance()->cdPowerUpTexture, slot1.x, slot1.y, grayColor);
+    msSlot = new UI(quad, World::get_instance()->msPowerUpTexture, slot2.x, slot2.y, grayColor);
+    gmSlot = new UI(quad, World::get_instance()->gmPowerUpTexture, slot3.x, slot3.y, grayColor);
+    cdSlot->render();
+    msSlot->render();
+    gmSlot->render();
+    
+    if(World::get_instance()->player && World::get_instance()->player->hasCdPower){
+        this->lifeTime = World::get_instance()->player->cdCadLife;
+        cdSlot->color = Vector4(1, 1, 0, 1);
+        if(intermitent)
+            cdSlot->render();
+    }
+    //else
+    //    cdSlot->render();
+    if(World::get_instance()->player && World::get_instance()->player->hasMultishot){
+        this->lifeTime = World::get_instance()->player->multiLife;
+        msSlot->color = Vector4(1, 1, 0, 1);
+        if(intermitent)
+            msSlot->render();
+        
+    }
+    //else
+    //    msSlot->render();
+    if(World::get_instance()->player && World::get_instance()->player->godMode){
+        this->lifeTime = World::get_instance()->player->immortalLife;
+        gmSlot->color = Vector4(1, 1, 0, 1);
+        if(intermitent)
+            gmSlot->render();
+    }
+    //else
+    //    gmSlot->render();
+    
+    
+    /*if(World::get_instance()->player){
         if(World::get_instance()->player->hasCdPower){
+            //quad.createQuad(0+currentSlot.x, 0+currentSlot.y, 114, 75, true);
             this->lifeTime = World::get_instance()->player->cdCadLife;
-            powerUpUI = new UI(quad, World::get_instance()->cdPowerUpTexture);
-            if(intermitent)
-                powerUpUI->render();
+            powerUpUI = new UI(quad, World::get_instance()->cdPowerUpTexture, currentSlot.x, currentSlot.y);
+            //if(intermitent)
+            powerUpUI->render();
         }
         if(World::get_instance()->player->hasMultishot){
+            //quad.createQuad(0+currentSlot.x, 0+currentSlot.y, 114, 75, true);
             this->lifeTime = World::get_instance()->player->multiLife;
-            powerUpUI = new UI(quad, World::get_instance()->msPowerUpTexture);
-            if(intermitent)
-                powerUpUI->render();
+            powerUpUI = new UI(quad, World::get_instance()->msPowerUpTexture,currentSlot.x, currentSlot.y);
+            //if(intermitent)
+            powerUpUI->render();
         }
         if(World::get_instance()->player->godMode){
+            //quad.createQuad(0+currentSlot.x, 0+currentSlot.y, 114, 75, true);
             this->lifeTime = World::get_instance()->player->immortalLife;
-            powerUpUI = new UI(quad, World::get_instance()->gmPowerUpTexture);
-            if(intermitent)
-                powerUpUI->render();
+            powerUpUI = new UI(quad, World::get_instance()->gmPowerUpTexture,currentSlot.x, currentSlot.y);
+            //if(intermitent)
+            powerUpUI->render();
         }
     }
+     */
 }
-
-/*void WalkDownColor(float seconds_elapsed, Vector4 color, float grad, float thresh){
-    
-}*/
 
 void PlayStage::update(float seconds_elapsed){
     //color = Vector4(0.95f, 0.21f, 0.67f, 1);
@@ -457,6 +502,15 @@ void PlayStage::update(float seconds_elapsed){
             intermitent = !intermitent;
         }
     }
+    /*if(World::get_instance()->player){
+        if(World::get_instance()->player->puNum == 0)
+            currentSlot = slot1;
+        if(World::get_instance()->player->puNum == 1)
+            currentSlot = slot2;
+        if(World::get_instance()->player->puNum == 2)
+            currentSlot = slot3;
+    }
+     */
     /*
     if (Input::isKeyPressed(SDL_SCANCODE_P)) { //debug boton suicidio
         fin = true;

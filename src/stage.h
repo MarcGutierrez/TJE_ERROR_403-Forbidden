@@ -63,7 +63,9 @@ public:
     Texture* bossTexture = nullptr;
     
     Mesh quad;
-    UI* powerUpUI;
+    UI* cdSlot;
+    UI* msSlot;
+    UI* gmSlot;
 
     int enemyNum;
     int waveNum;
@@ -72,10 +74,19 @@ public:
     bool soundEffPlayed;
     int lastPowerup;
     
+    //UI stuff
     float th = 0.5f;
     float lifeTime;
     float lifeTimeTh;
     bool intermitent;
+    Vector2 slot1;
+    Vector2 slot2;
+    Vector2 slot3;
+    Vector2 currentSlot;
+    bool slot1InUse;
+    bool slot2InUse;
+    bool slot3InUse;
+
     
     //color test
     Vector4 color;
