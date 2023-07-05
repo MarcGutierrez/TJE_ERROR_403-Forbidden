@@ -22,6 +22,9 @@ World::World(){
     shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
     powerUpMesh = Mesh::Get("data/powerUp.obj");
     powerUpTexture = Texture::Get("data/textures/powerup_texture.tga");
+    cdPowerUpTexture = Texture::Get("data/textures/cdPowerUpIcon.png");
+    msPowerUpTexture = Texture::Get("data/textures/msPowerUpIcon.png");
+    gmPowerUpTexture = Texture::Get("data/textures/gmPowerUpIcon.png");
     
 }
 

@@ -17,8 +17,9 @@ public:
     
     Camera camera2D;
     Shader* shader;
-    Mesh* quad = nullptr;
-    UI(Mesh* quad);
+    Mesh quad;
+    Texture* texture;
+    UI(Mesh quad, Texture* texture);
     
     void render();
     void update(float elapsed_time);

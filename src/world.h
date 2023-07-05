@@ -46,6 +46,9 @@ public:
     Texture* projectileTexture = nullptr;
     Texture* playerTexture = nullptr;
     Texture* powerUpTexture = nullptr;
+    Texture* cdPowerUpTexture = nullptr;
+    Texture* msPowerUpTexture = nullptr;
+    Texture* gmPowerUpTexture = nullptr;
     
     Shader* shader = nullptr;
     

@@ -62,7 +62,7 @@ public:
     Mesh* bossMesh = nullptr;
     Texture* bossTexture = nullptr;
     
-    Mesh* quad = nullptr;
+    Mesh quad;
     UI* powerUpUI;
 
     int enemyNum;

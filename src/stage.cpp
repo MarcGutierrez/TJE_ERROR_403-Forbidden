@@ -152,7 +152,7 @@ void PlayStage::loadNewLvl(float seconds_elapsed)
             entityMesh = enemyMesh;
             spd = get_random_spd();
 
-            model.setTranslation(get_random_dist() * get_random_sign(), 51.f, get_random_dist() * get_random_sign());
+            model.setTranslation(get_random_dist() * get_random_sign(), 0, get_random_dist() * get_random_sign());
             cdShot = get_random_cdShot();
             dispersion = get_random_disp();
             if (enemies.size() <= i)
@@ -200,7 +200,7 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
         entityMesh = bossMesh;
         spd = get_random_spd() / 10;
 
-        model.setTranslation(get_random_dist() * get_random_sign(), 51.f, get_random_dist() * get_random_sign());
+        model.setTranslation(get_random_dist() * get_random_sign(), 0, get_random_dist() * get_random_sign());
         cdShot = get_random_cdShot(); // MIRAR FUNCION BOSS
         bulletsShoot = get_random_bulletsBoss(currentDiff);
         bulletsShoot = (bulletsShoot > 5) ? 5 : bulletsShoot;
@@ -268,7 +268,7 @@ PlayStage::PlayStage(){
     
     EntityPlayer* player = new EntityPlayer(model, mesh, shader, texture, camera);
     
-    player->model.translate(0.0f, 51.0f, 0.0f);
+    //player->model.translate(0.0f, 51.0f, 0.0f);
     
     World::get_instance()->player = player;
 
@@ -349,18 +349,19 @@ void PlayStage::render(){
     }
     if(World::get_instance()->player){
         if(World::get_instance()->player->hasCdPower){
-            quad = Mesh::Get("data/cdPowerUpIcon.obj");
-            powerUpUI = new UI(quad);
+            //quad = Mesh::Get("data/cdPowerUpIcon.obj");
+            powerUpUI = new UI(quad, World::get_instance()->cdPowerUpTexture);
             powerUpUI->render();
         }
         if(World::get_instance()->player->hasMultishot){
-            quad = Mesh::Get("data/msPowerUpIcon.obj");
-            powerUpUI = new UI(quad);
+            
+            //quad = Mesh::Get("data/msPowerUpIcon.obj");
+            powerUpUI = new UI(quad, World::get_instance()->msPowerUpTexture);
             powerUpUI->render();
         }
         if(World::get_instance()->player->godMode){
-            quad = Mesh::Get("data/gmPowerUpIcon.obj");
-            powerUpUI = new UI(quad);
+            //quad = Mesh::Get("data/gmPowerUpIcon.obj");
+            powerUpUI = new UI(quad, World::get_instance()->gmPowerUpTexture);
             powerUpUI->render();
         }
     }

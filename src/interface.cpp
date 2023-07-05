@@ -10,9 +10,10 @@
 #include "game.h"
 #include "interface.h"
 
-UI::UI(Mesh* quad){
-    quad->createQuad(0, 0, 2, 2, true);
+UI::UI(Mesh quad, Texture* texture){
+    quad.createQuad(0+25, 0+25, 50, 50, true);
     this->quad = quad;
+    this->texture = texture;
     shader = Shader::Get("data/shaders/ortoshader.vs", "data/shaders/texture.fs");
 
     
@@ -29,10 +30,10 @@ void UI::render(){
     shader->enable();
 
     shader->setUniform("u_viewprojection", camera2D.viewprojection_matrix);
-    shader->setUniform("u_texture", World::get_instance()->powerUpTexture, 0);
+    shader->setUniform("u_texture", texture, 0);
     shader->setUniform("u_color", Vector4(1, 1, 1, 1));
     
-    quad->render(GL_TRIANGLES);
+    quad.render(GL_TRIANGLES);
 
     shader->disable();
 }
