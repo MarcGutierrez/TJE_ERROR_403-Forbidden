@@ -14,14 +14,18 @@
 World* World::world;
 
 World::World(){
+    
     root = new Entity("root", this->model);
+    
     playerMesh = Mesh::Get("data/export.MESH");
     projectileMesh = Mesh::Get("data/projectile.obj");
     projectileTexture = Texture::Get("data/textures/powerup_texture.tga");
     playerTexture = Texture::Get("data/textures/vanguard_diffuse1.tga");
     shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+    
     powerUpMesh = Mesh::Get("data/powerUp.obj");
     powerUpTexture = Texture::Get("data/textures/powerup_texture.tga");
+    
     cdPowerUpTexture = Texture::Get("data/textures/cdPowerUpIcon.png");
     msPowerUpTexture = Texture::Get("data/textures/msPowerUpIcon.png");
     gmPowerUpTexture = Texture::Get("data/textures/gmPowerUpIcon.png");

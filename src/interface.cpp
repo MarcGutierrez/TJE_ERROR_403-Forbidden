@@ -11,7 +11,7 @@
 #include "interface.h"
 
 UI::UI(Mesh quad, Texture* texture){
-    quad.createQuad(0+25, 0+25, 50, 50, true);
+    quad.createQuad(0+25, 0+35, 114, 75, true);
     this->quad = quad;
     this->texture = texture;
     shader = Shader::Get("data/shaders/ortoshader.vs", "data/shaders/texture.fs");
@@ -26,12 +26,13 @@ void UI::render(){
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
     glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     shader->enable();
 
     shader->setUniform("u_viewprojection", camera2D.viewprojection_matrix);
     shader->setUniform("u_texture", texture, 0);
-    shader->setUniform("u_color", Vector4(1, 1, 1, 1));
+    shader->setUniform("u_color", Vector4(1, 1, 0, 1));
     
     quad.render(GL_TRIANGLES);
 
