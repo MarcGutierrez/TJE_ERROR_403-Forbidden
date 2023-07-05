@@ -72,6 +72,11 @@ public:
     bool soundEffPlayed;
     int lastPowerup;
     
+    float th = 0.5f;
+    float lifeTime;
+    float lifeTimeTh;
+    bool intermitent;
+    
     //color test
     Vector4 color;
     bool gradient;

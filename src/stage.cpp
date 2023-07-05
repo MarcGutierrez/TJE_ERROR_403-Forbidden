@@ -305,8 +305,8 @@ PlayStage::PlayStage(){
     //loadBossLvl(0.f);
     //loadPowerUp(0.0);
     
-    
-
+    this->intermitent = false;
+    this->lifeTimeTh = 10.0f/4;
 }
 
 void PlayStage::render(){
@@ -349,20 +349,22 @@ void PlayStage::render(){
     }
     if(World::get_instance()->player){
         if(World::get_instance()->player->hasCdPower){
-            //quad = Mesh::Get("data/cdPowerUpIcon.obj");
+            this->lifeTime = World::get_instance()->player->cdCadLife;
             powerUpUI = new UI(quad, World::get_instance()->cdPowerUpTexture);
-            powerUpUI->render();
+            if(intermitent)
+                powerUpUI->render();
         }
         if(World::get_instance()->player->hasMultishot){
-            
-            //quad = Mesh::Get("data/msPowerUpIcon.obj");
+            this->lifeTime = World::get_instance()->player->multiLife;
             powerUpUI = new UI(quad, World::get_instance()->msPowerUpTexture);
-            powerUpUI->render();
+            if(intermitent)
+                powerUpUI->render();
         }
         if(World::get_instance()->player->godMode){
-            //quad = Mesh::Get("data/gmPowerUpIcon.obj");
+            this->lifeTime = World::get_instance()->player->immortalLife;
             powerUpUI = new UI(quad, World::get_instance()->gmPowerUpTexture);
-            powerUpUI->render();
+            if(intermitent)
+                powerUpUI->render();
         }
     }
 }
@@ -446,6 +448,14 @@ void PlayStage::update(float seconds_elapsed){
 
         World::get_instance()->player = nullptr;
         fin = true;
+    }
+    if(lifeTime <= lifeTimeTh){
+        th -= seconds_elapsed;
+        if (th <= 0.f)
+        {
+            th = 0.15f;
+            intermitent = !intermitent;
+        }
     }
     /*
     if (Input::isKeyPressed(SDL_SCANCODE_P)) { //debug boton suicidio
