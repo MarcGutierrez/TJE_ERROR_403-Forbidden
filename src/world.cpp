@@ -30,6 +30,9 @@ World::World(){
     msPowerUpTexture = Texture::Get("data/textures/msPowerUpIcon.png");
     gmPowerUpTexture = Texture::Get("data/textures/gmPowerUpIcon.png");
     
+    HPBBTexture = Texture::Get("data/textures/Border_Style_1.png");
+    HPTexture = Texture::Get("data/textures/Style_1.png");
+    
 }
 
 void World::render(){

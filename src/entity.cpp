@@ -266,6 +266,7 @@ void youDie(Entity* entity, EntityProjectile* p){
         if (EntityBoss* b = dynamic_cast<EntityBoss*>(entity))
         {
             b->hp--;
+
             b->hasBeenAttacked = true;
             b->isHurt = true;
             b->color = Vector4(1, 0, 0, 1);
@@ -278,10 +279,12 @@ void youDie(Entity* entity, EntityProjectile* p){
                 PlayStage* stage = ((PlayStage*)Game::instance->current_stage);
                 stage->enemyNum--;
                 World::get_instance()->player->killCount++;
+                b->HPbar = 0;
                 //Audio::Play("data/audio/expl6.wav");
             }
             else{
                 //Audio::Play("data/audio/hitmarker_2.mp3");
+                b->HPbar -= 500/b->maxhp;
             }
         }
         else
@@ -692,6 +695,8 @@ EntityBoss::EntityBoss(Matrix44 model, Mesh* mesh, Shader* shader, Texture* text
     color = Vector4(1, 1, 1, 1);
     this->isHurt = false;
     this->hurtFrames = 0.f;
+    this->maxhp = hp;
+    this->HPbar = 500;
 }
 
 void EntityBoss::render(){

@@ -66,6 +66,8 @@ public:
     UI* cdSlot;
     UI* msSlot;
     UI* gmSlot;
+    UI* HPBar;
+    UI* HP;
 
     int enemyNum;
     int waveNum;
@@ -91,6 +93,9 @@ public:
     bool slot1InUse;
     bool slot2InUse;
     bool slot3InUse;
+    bool bossLvl;
+    float HPtoUI;
+    
 
     
     //color test

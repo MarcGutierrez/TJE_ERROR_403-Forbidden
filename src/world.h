@@ -49,6 +49,8 @@ public:
     Texture* cdPowerUpTexture = nullptr;
     Texture* msPowerUpTexture = nullptr;
     Texture* gmPowerUpTexture = nullptr;
+    Texture* HPBBTexture = nullptr;
+    Texture* HPTexture = nullptr;
     
     Shader* shader = nullptr;
     

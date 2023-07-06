@@ -182,6 +182,7 @@ public:
     int numBulletsShoot;
     bool isHurt;
     float hurtFrames;
+    float HPbar;
 
     EntityBoss(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, int hp, float speed, float cdShot, float dispersion, int numBulletsShoot );
     

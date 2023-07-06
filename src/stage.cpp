@@ -180,6 +180,7 @@ void PlayStage::loadNewLvl(float seconds_elapsed)
     }
     else if (!enemyNum) {
         spawnCd -= seconds_elapsed;
+        bossLvl = false;
     }
 }
 
@@ -214,12 +215,16 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
         boss->cdShot = cdShot;
         boss->dispersion = dispersion;
         boss->numBulletsShoot = bulletsShoot;
+        boss->HPbar = 500;
 
         root->addChild(boss);
 
         currentDiff++;
         spawnCd = 5.f;
         soundEffPlayed = false;
+        
+
+
     }
     else if (!enemyNum){
         spawnCd -= seconds_elapsed;
@@ -227,6 +232,7 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
         {
             //Audio::Play("data/audio/boss_wave_alarm.wav");
             soundEffPlayed = true;
+            bossLvl = true;
         }
     }
 }
@@ -305,6 +311,7 @@ PlayStage::PlayStage(){
     //loadBossLvl(0.f);
     //loadPowerUp(0.0);
     
+    //UI STUFF
     this->cdIntermitent = true;
     this->msIntermitent = true;
     this->gmIntermitent = true;
@@ -319,6 +326,12 @@ PlayStage::PlayStage(){
     slot3 = Vector2(125, 35);
     
     currentSlot = slot1;
+    Vector4 grayColor = Vector4(0.2f, 0.2f, 0.2f, 1);
+    
+    cdSlot = new UI(quad, World::get_instance()->cdPowerUpTexture, slot1.x, slot1.y, 114, 75, grayColor);
+    msSlot = new UI(quad, World::get_instance()->msPowerUpTexture, slot2.x, slot2.y, 114, 75, grayColor);
+    gmSlot = new UI(quad, World::get_instance()->gmPowerUpTexture, slot3.x, slot3.y, 114, 75, grayColor);
+
 }
 
 void PlayStage::render(){
@@ -359,10 +372,14 @@ void PlayStage::render(){
         //disable shader
         shader->disable();
     }
-    Vector4 grayColor = Vector4(0.2f, 0.2f, 0.2f, 1);
-    cdSlot = new UI(quad, World::get_instance()->cdPowerUpTexture, slot1.x, slot1.y, 114, 75, grayColor);
-    msSlot = new UI(quad, World::get_instance()->msPowerUpTexture, slot2.x, slot2.y, 114, 75, grayColor);
-    gmSlot = new UI(quad, World::get_instance()->gmPowerUpTexture, slot3.x, slot3.y, 114, 75, grayColor);
+    cdSlot->color = Vector4(0.2f, 0.2f, 0.2f, 1);
+    msSlot->color = Vector4(0.2f, 0.2f, 0.2f, 1);
+    gmSlot->color = Vector4(0.2f, 0.2f, 0.2f, 1);
+    
+    
+    HPBar = new UI(quad, World::get_instance()->HPBBTexture, Game::instance->window_width/2 + 25, 35, 500, 20, Vector4(1,1,1,1));
+    HP = new UI(quad, World::get_instance()->HPTexture, Game::instance->window_width/2 + 25, 35, HPtoUI, 20, Vector4(1,1,1,1));
+
     cdSlot->render();
     msSlot->render();
     gmSlot->render();
@@ -375,8 +392,7 @@ void PlayStage::render(){
         if(cdIntermitent)
             cdSlot->render();
     }
-    //else
-    //    cdSlot->render();
+
     if(World::get_instance()->player && World::get_instance()->player->hasMultishot){
         this->msLifeTime = World::get_instance()->player->multiLife;
         msSlot->color = Vector4(1, 1, 0, 1);
@@ -386,8 +402,7 @@ void PlayStage::render(){
             msSlot->render();
         
     }
-    //else
-    //    msSlot->render();
+
     if(World::get_instance()->player && World::get_instance()->player->godMode){
         this->gmLifeTime = World::get_instance()->player->immortalLife;
         gmSlot->color = Vector4(1, 1, 0, 1);
@@ -396,8 +411,11 @@ void PlayStage::render(){
         if(msIntermitent)
             gmSlot->render();
     }
-    //else
-    //    gmSlot->render();
+    if(bossLvl){
+        HPBar->render();
+        HP->render();
+    }
+
     
     
     /*if(World::get_instance()->player){
@@ -469,6 +487,7 @@ void PlayStage::update(float seconds_elapsed){
             }
         }
     }
+    HPtoUI = this->boss->HPbar;
     
     killCount = World::get_instance()->player->killCount;
     wave = this->currentDiff-1;
@@ -476,11 +495,10 @@ void PlayStage::update(float seconds_elapsed){
         //loadBossLvl(seconds_elapsed);
         if (this->currentDiff % 5){
             loadNewLvl(seconds_elapsed);
-            //loadPowerUp(seconds_elapsed);
         }
-
         else
             loadBossLvl(seconds_elapsed);
+            
     }
     powerUpCd += seconds_elapsed;
     if (powerUpCd > 12.f)
