@@ -608,7 +608,7 @@ void takeAction(EntityAI* entity, Vector3 position, float elapsed_time)
              World::get_instance()->player->model.getTranslation()
              );
         }
-        //std::cout << entity->move_dir.length() << std::endl;
+        //
         if (isBoss)
         {
             //if (entity->move_dir.length() < 4000.f)

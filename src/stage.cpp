@@ -389,6 +389,9 @@ void PlayStage::render(){
         cdSlot->color = Vector4(1, 1, 0, 1);
         if(cdLifeTime <= lifeTimeTh)
             cdIntermitent = !cdIntermitent;
+        if(cdLifeTime <= 0.0019f){
+            cdIntermitent = true;
+        }
         if(cdIntermitent)
             cdSlot->render();
     }
@@ -398,6 +401,9 @@ void PlayStage::render(){
         msSlot->color = Vector4(1, 1, 0, 1);
         if(msLifeTime <= lifeTimeTh)
             msIntermitent = !msIntermitent;
+        if(msLifeTime <= 0.0019f){
+            msIntermitent = true;
+        }
         if(msIntermitent)
             msSlot->render();
         
@@ -408,7 +414,10 @@ void PlayStage::render(){
         gmSlot->color = Vector4(1, 1, 0, 1);
         if(gmLifeTime <= lifeTimeTh)
             gmIntermitent = !gmIntermitent;
-        if(msIntermitent)
+        if(gmLifeTime <= 0.0019f){
+            gmIntermitent = true;
+        }
+        if(gmIntermitent)
             gmSlot->render();
     }
     if(bossLvl){
@@ -492,12 +501,12 @@ void PlayStage::update(float seconds_elapsed){
     killCount = World::get_instance()->player->killCount;
     wave = this->currentDiff-1;
     if (!enemyNum || spawnCd > 0.f) {
-        loadBossLvl(seconds_elapsed);
-        /*if (this->currentDiff % 5){
+        //loadBossLvl(seconds_elapsed);
+        if (this->currentDiff % 5){
             loadNewLvl(seconds_elapsed);
         }
         else
-            loadBossLvl(seconds_elapsed);*/
+            loadBossLvl(seconds_elapsed);
             
     }
     powerUpCd += seconds_elapsed;
