@@ -599,7 +599,7 @@ void takeAction(EntityAI* entity, Vector3 position, float elapsed_time)
 
             entity->yaw += entity->model.getYawRotationToAimTo
             (
-             World::get_instance()->player->model.getTranslation() + World::get_instance()->player->velocity * normDist
+             World::get_instance()->player->model.getTranslation() + (World::get_instance()->player->velocity*0.5) * normDist
              );
         }
         else{
