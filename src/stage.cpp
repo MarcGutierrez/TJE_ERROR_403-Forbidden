@@ -305,7 +305,9 @@ PlayStage::PlayStage(){
     //loadBossLvl(0.f);
     //loadPowerUp(0.0);
     
-    this->intermitent = false;
+    this->cdIntermitent = true;
+    this->msIntermitent = true;
+    this->gmIntermitent = true;
     this->lifeTimeTh = 10.0f/4;
     
     slot1InUse = false;
@@ -358,34 +360,40 @@ void PlayStage::render(){
         shader->disable();
     }
     Vector4 grayColor = Vector4(0.2f, 0.2f, 0.2f, 1);
-    cdSlot = new UI(quad, World::get_instance()->cdPowerUpTexture, slot1.x, slot1.y, grayColor);
-    msSlot = new UI(quad, World::get_instance()->msPowerUpTexture, slot2.x, slot2.y, grayColor);
-    gmSlot = new UI(quad, World::get_instance()->gmPowerUpTexture, slot3.x, slot3.y, grayColor);
+    cdSlot = new UI(quad, World::get_instance()->cdPowerUpTexture, slot1.x, slot1.y, 114, 75, grayColor);
+    msSlot = new UI(quad, World::get_instance()->msPowerUpTexture, slot2.x, slot2.y, 114, 75, grayColor);
+    gmSlot = new UI(quad, World::get_instance()->gmPowerUpTexture, slot3.x, slot3.y, 114, 75, grayColor);
     cdSlot->render();
     msSlot->render();
     gmSlot->render();
     
     if(World::get_instance()->player && World::get_instance()->player->hasCdPower){
-        this->lifeTime = World::get_instance()->player->cdCadLife;
+        this->cdLifeTime = World::get_instance()->player->cdCadLife;
         cdSlot->color = Vector4(1, 1, 0, 1);
-        if(intermitent)
+        if(cdLifeTime <= lifeTimeTh)
+            cdIntermitent = !cdIntermitent;
+        if(cdIntermitent)
             cdSlot->render();
     }
     //else
     //    cdSlot->render();
     if(World::get_instance()->player && World::get_instance()->player->hasMultishot){
-        this->lifeTime = World::get_instance()->player->multiLife;
+        this->msLifeTime = World::get_instance()->player->multiLife;
         msSlot->color = Vector4(1, 1, 0, 1);
-        if(intermitent)
+        if(msLifeTime <= lifeTimeTh)
+            msIntermitent = !msIntermitent;
+        if(msIntermitent)
             msSlot->render();
         
     }
     //else
     //    msSlot->render();
     if(World::get_instance()->player && World::get_instance()->player->godMode){
-        this->lifeTime = World::get_instance()->player->immortalLife;
+        this->gmLifeTime = World::get_instance()->player->immortalLife;
         gmSlot->color = Vector4(1, 1, 0, 1);
-        if(intermitent)
+        if(gmLifeTime <= lifeTimeTh)
+            gmIntermitent = !gmIntermitent;
+        if(msIntermitent)
             gmSlot->render();
     }
     //else
@@ -494,14 +502,14 @@ void PlayStage::update(float seconds_elapsed){
         World::get_instance()->player = nullptr;
         fin = true;
     }
-    if(lifeTime <= lifeTimeTh){
+    /*if(cdLifeTime <= lifeTimeTh){
         th -= seconds_elapsed;
         if (th <= 0.f)
         {
             th = 0.15f;
-            intermitent = !intermitent;
+            cdIntermitent = !cdIntermitent;
         }
-    }
+    }*/
     /*if(World::get_instance()->player){
         if(World::get_instance()->player->puNum == 0)
             currentSlot = slot1;

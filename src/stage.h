@@ -77,8 +77,13 @@ public:
     //UI stuff
     float th = 0.5f;
     float lifeTime;
+    float cdLifeTime;
+    float msLifeTime;
+    float gmLifeTime;
     float lifeTimeTh;
-    bool intermitent;
+    bool cdIntermitent;
+    bool msIntermitent;
+    bool gmIntermitent;
     Vector2 slot1;
     Vector2 slot2;
     Vector2 slot3;

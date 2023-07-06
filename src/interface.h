@@ -20,7 +20,7 @@ public:
     Mesh quad;
     Texture* texture;
     Vector4 color;
-    UI(Mesh quad, Texture* texture, float x, float y, Vector4 color);
+    UI(Mesh quad, Texture* texture, float x, float y, float w, float h, Vector4 color);
     
     void render();
     void update(float elapsed_time);
