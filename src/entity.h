@@ -17,6 +17,7 @@
 #include "camera.h"
 #include "texture.h"
 #include "animation.h"
+#include "framework.h"
 
 
 //#endif /* entity_h */
@@ -99,7 +100,7 @@ public:
 };
 
 
-class EntityPowerUp : public EntityCollider {
+class EntityPowerUp : public EntityMesh {
 
 public:
 
@@ -116,7 +117,6 @@ public:
     EntityPowerUp(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, float lifeTime, powerUps effect);
     void render();
     void update(float elapsed_time);
-
 };
 
 class EntityPlayer : public EntityMesh{

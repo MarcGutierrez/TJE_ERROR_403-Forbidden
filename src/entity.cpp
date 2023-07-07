@@ -10,8 +10,6 @@
 #include "input.h"
 #include "world.h"
 #include "game.h"
-#include "framework.h"
-
 
 #include "random.h"
 
@@ -201,7 +199,7 @@ void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
         dir.x += random(dispersion, -dispersion / 2);
         dir.z += random(dispersion, -dispersion / 2);
     }
-    model.translate(0.0f, 0.0f, 51.f);
+    model.translate(0.0f, 51.0f, 51.f);
     
     EntityProjectile* bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, dir, isEnemy);
     World::world->get_instance()->root->addChild(bullet);
@@ -234,7 +232,7 @@ void multishot(Matrix44 model, float speed, int bulletsShoot, float dispersion, 
         dir.x += random(dispersion, -dispersion / 2);
         dir.z += random(dispersion, -dispersion / 2);
     }*/
-    model.translate(0.0f, 0.0f, 51.f);
+    model.translate(0.0f, 51.0f, 51.f);
     int range = bulletsShoot / 2;
     
     for (int i = -range; i <= range; i++)
@@ -361,7 +359,7 @@ void EntityPlayer::addPowerUp(EntityPowerUp* pu)
 }
 
 bool checkCollisions(const Vector3& target_pos, std::vector<sCollisionData>& collisions, EntityMesh* entity, float radiusSphere) {
-    Vector3 center = target_pos + Vector3(0.f, 1.25f, 0.f);
+    Vector3 center = target_pos + Vector3(0.f, 51.25f, 0.f);
     float sphereRadius = radiusSphere;
     Vector3 colPoint, colNormal;
 
@@ -373,16 +371,6 @@ bool checkCollisions(const Vector3& target_pos, std::vector<sCollisionData>& col
             if (EntityProjectile* p = dynamic_cast<EntityProjectile*>(e)) {
                 if (mesh->testSphereCollision(e->model, center, sphereRadius, colPoint, colNormal)) {
                     youDie(entity, p);
-                }
-            }
-            else if (EntityPowerUp* pu = dynamic_cast<EntityPowerUp*>(e))
-            {
-                if (EntityPlayer* p = dynamic_cast<EntityPlayer*>(entity))
-                {
-                    if (mesh->testSphereCollision(e->model, center, sphereRadius, colPoint, colNormal)) {
-                        p->addPowerUp(pu);
-                        World::world->get_instance()->root->removeChild(pu);
-                    }
                 }
             }
             else
@@ -481,7 +469,7 @@ void EntityPlayer::update(float elapsed_time){
     
     move_dir.normalize();
     velocity = move_dir * speed;
-    position.y = 51.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
+    position.y = 0.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
     if (checkCollisions(position + velocity * elapsed_time, collisions, this, 12.5f)) {
         for (const sCollisionData& collisions : collisions) {
             Vector3 newDir = Vector3(collisions.colNormal.x, 0.f, collisions.colNormal.z).normalize();
@@ -493,7 +481,7 @@ void EntityPlayer::update(float elapsed_time){
     
     velocity -= velocity * elapsed_time;
     
-    model.setTranslation(position.x, position.y, position.z); // position.y = 51 harcoceado
+    model.setTranslation(position.x, position.y, position.z); // position.y = 0 harcoceado
 
     if (Input::gamepads->axis[2] != 0.f || Input::gamepads->axis[3] != 0.f)
     {
@@ -674,7 +662,7 @@ void EntityAI::update(float elapsed_time)
     takeAction(this, position, elapsed_time);
 
     velocity = move_dir * speed;
-    position.y = 51.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
+    position.y = 0.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
 
     checkCollisions(this, position, elapsed_time);
     
@@ -836,7 +824,7 @@ void EntityProjectile::update(float elapsed_time){
     model.setTranslation(position.x, position.y, position.z);
 }
 
-EntityPowerUp::EntityPowerUp(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, float lifeTime, powerUps effect):EntityCollider(model, mesh, shader, texture){
+EntityPowerUp::EntityPowerUp(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, float lifeTime, powerUps effect):EntityMesh(model, mesh, shader, texture){
     this->lifeTime = lifeTime;
     this->lifeTimeTh = lifeTime/4;
     this->angle = 0;
@@ -867,6 +855,21 @@ void EntityPowerUp::render(){
     shader->disable();
 }
 
+void checkCollisionsPowerUp(const Vector3& target_pos, EntityPowerUp* entity)
+{
+    Vector3 center = target_pos + Vector3(0.f, 51.25f, 0.f);
+    float sphereRadius = 51.5f;
+    Vector3 colPoint, colNormal;
+
+    EntityPlayer* player = World::world->get_instance()->player;
+
+    if (player->mesh->testSphereCollision(player->model, center, sphereRadius, colPoint, colNormal))
+    {
+        player->addPowerUp(entity);
+        World::world->get_instance()->root->removeChild(entity);
+    }
+}
+
 void EntityPowerUp::update(float elapsed_time){
     angle += (float)elapsed_time * 20;
     azimuth += (float)elapsed_time * 0.8f;
@@ -886,6 +889,7 @@ void EntityPowerUp::update(float elapsed_time){
         this->inWorld = false;
         World::get_instance()->root->removeChild(this);
     }
+    checkCollisionsPowerUp(this->model.getTranslation(), this);
 }
 
 /*void EntityProjectile::update(float elapsed_time){
