@@ -501,12 +501,12 @@ void PlayStage::update(float seconds_elapsed){
     killCount = World::get_instance()->player->killCount;
     wave = this->currentDiff-1;
     if (!enemyNum || spawnCd > 0.f) {
-        loadBossLvl(seconds_elapsed);
-        /*if (this->currentDiff % 5){
+        //loadBossLvl(seconds_elapsed);
+        if (this->currentDiff % 5){
             loadNewLvl(seconds_elapsed);
         }
         else
-            loadBossLvl(seconds_elapsed);*/
+            loadBossLvl(seconds_elapsed);
             
     }
     powerUpCd += seconds_elapsed;
