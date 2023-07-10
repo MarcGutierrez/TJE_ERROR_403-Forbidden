@@ -640,8 +640,23 @@ void checkCollisions(EntityAI* entity, Vector3 position, float elapsed_time)
             }
         }
     }
-    else if(entity == dynamic_cast<EntityBoss*>(entity)){
+    /*else if(entity == dynamic_cast<EntityBoss*>(entity)){
         if (checkCollisions(position + entity->velocity * elapsed_time, collisions, entity, 62.5f)) {
+            //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+            for (const sCollisionData& collisions : collisions) {
+                //Vector3& velocity = velocity;
+                Vector3 newDir = Vector3(collisions.colNormal.x, 0.f, collisions.colNormal.z).normalize();
+                entity->velocity.x += newDir.x * entity->speed;
+                entity->velocity.z += newDir.z * entity->speed;
+            }
+        }
+    }*/
+}
+
+void checkBossCollisions(EntityBoss* entity, Vector3 position, float elapsed_time){
+    std::vector <sCollisionData> collisions;
+    if(entity == dynamic_cast<EntityBoss*>(entity)){
+        if (checkCollisions(position + entity->velocity * elapsed_time, collisions, entity, 80.f)) {
             //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
             for (const sCollisionData& collisions : collisions) {
                 //Vector3& velocity = velocity;
@@ -713,6 +728,28 @@ void EntityBoss::render(){
 
     // Disable shader after finishing rendering
     shader->disable();
+}
+
+void EntityBoss::update(float elapsed_time)
+{
+    wanderChange += elapsed_time;
+    Vector3 position = model.getTranslation();
+    // yaw = degree between player and enemy; acos or asin? but that's inneficient
+    behaviourUpdate();
+    takeAction(this, position, elapsed_time);
+
+    velocity = move_dir * speed;
+    position.y = 0.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
+
+    checkBossCollisions(this, position, elapsed_time);
+    
+    position = position + velocity * elapsed_time;
+    
+    velocity -= velocity * elapsed_time;
+
+    model.setTranslation(position.x, position.y, position.z); // position.y = 51 harcoceado
+    model.rotate(yaw, Vector3(0.0f, 1.0f, 0.0f));
+    //color = Vector4(1, 1, 1, 1);
 }
 
 EntityCollider::EntityCollider(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture):EntityMesh(model,mesh,shader,texture){
