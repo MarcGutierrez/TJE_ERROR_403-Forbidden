@@ -445,6 +445,9 @@ void EntityPlayer::update(float elapsed_time){
         {
             move_dir = Vector3(Input::gamepads->axis[0], 0, Input::gamepads->axis[1]);
         }
+    
+        //Debug hotkeys disabled
+
         //if (Input::wasKeyPressed(SDL_SCANCODE_X) || Input::wasButtonPressed(8)) {
         //    this->godMode = !this->godMode;
         //    if (godMode)
@@ -452,7 +455,7 @@ void EntityPlayer::update(float elapsed_time){
         //    if (!godMode)
         //        std::cout << "God Mode Deactivated" << std::endl;
         //}
-        if (Input::wasKeyPressed(SDL_SCANCODE_Z) || Input::wasButtonPressed(9)) {
+        /*if (Input::wasKeyPressed(SDL_SCANCODE_Z) || Input::wasButtonPressed(9)) {
             this->hasMultishot = !this->hasMultishot;
             if (hasMultishot)
                 std::cout << "Multishot Activated" << std::endl;
@@ -465,7 +468,7 @@ void EntityPlayer::update(float elapsed_time){
                 std::cout << "Rapid Fire Activated" << std::endl;
             if (!hasCdPower)
                 std::cout << "Rapid Fire Deactivated" << std::endl;
-        }
+        }*/
     
     move_dir.normalize();
     velocity = move_dir * speed;
