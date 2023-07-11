@@ -45,6 +45,13 @@ float get_random_cdShot()
     return dis(e);
 }
 
+float get_random_cdShotBoss()
+{
+    static std::default_random_engine e(time(0));
+    static std::uniform_real_distribution<float> dis(0.5f, .95f); // range [min, max)
+    return dis(e);
+}
+
 float get_random_disp()
 {
     static std::default_random_engine e(time(0));

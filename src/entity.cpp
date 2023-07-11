@@ -203,8 +203,8 @@ void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
     
     EntityProjectile* bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, dir, isEnemy);
     World::world->get_instance()->root->addChild(bullet);
-    //if (random() > 0.5f) Audio::PlayS("data/audio/363698__jofae__retro-gun-shot.mp3");
-    //else Audio::PlayS("data/audio/mixkit-game-gun-shot-1662.mp3");
+    if (random() > 0.5f) Audio::PlayS("data/audio/363698__jofae__retro-gun-shot.mp3");
+    else Audio::PlayS("data/audio/mixkit-game-gun-shot-1662.mp3");
 }
 
 void multishot(Matrix44 model, float speed, int bulletsShoot, float dispersion, bool isEnemy){
@@ -242,8 +242,8 @@ void multishot(Matrix44 model, float speed, int bulletsShoot, float dispersion, 
         EntityProjectile* bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, newDir, isEnemy);
         World::world->get_instance()->root->addChild(bullet);
     }
-    //if (random() > 0.5f) Audio::PlayS("data/audio/363698__jofae__retro-gun-shot.mp3");
-    //else Audio::PlayS("data/audio/mixkit-game-gun-shot-1662.mp3");
+    if (random() > 0.5f) Audio::PlayS("data/audio/363698__jofae__retro-gun-shot.mp3");
+    else Audio::PlayS("data/audio/mixkit-game-gun-shot-1662.mp3");
 }
 
 void youDie(Entity* entity, EntityProjectile* p){
@@ -251,7 +251,7 @@ void youDie(Entity* entity, EntityProjectile* p){
         if(EntityPlayer* e = dynamic_cast<EntityPlayer*>(entity)){
             if (!e->godMode){
                 e->isDead = true;
-                //Audio::Play("data/audio/videogame-death-sound-43894.mp3");
+                Audio::Play("data/audio/videogame-death-sound-43894.mp3");
             }
                 
             //std::cout << "u suck" << std::endl;
@@ -269,7 +269,7 @@ void youDie(Entity* entity, EntityProjectile* p){
             b->isHurt = true;
             b->color = Vector4(1, 0, 0, 1);
             World::get_instance()->root->removeChild(p);
-            std::cout << b->hp << std::endl;
+            //std::cout << b->hp << std::endl;
             if (b->hp == 0)
             {
                 b->color = Vector4(1, 1, 1, 1);
@@ -278,10 +278,10 @@ void youDie(Entity* entity, EntityProjectile* p){
                 stage->enemyNum--;
                 World::get_instance()->player->killCount++;
                 b->HPbar = 0;
-                //Audio::Play("data/audio/expl6.wav");
+                Audio::Play("data/audio/expl6.wav");
             }
             else{
-                //Audio::Play("data/audio/hitmarker_2.mp3");
+                Audio::Play("data/audio/hitmarker_2.mp3");
                 b->HPbar -= 500/b->maxhp;
             }
         }
@@ -292,7 +292,7 @@ void youDie(Entity* entity, EntityProjectile* p){
             PlayStage* stage = ((PlayStage*)Game::instance->current_stage);
             stage->enemyNum--;
             World::get_instance()->player->killCount++;
-            //Audio::Play("data/audio/expl6.wav");
+            Audio::Play("data/audio/expl6.wav");
         }
         
     }
@@ -445,13 +445,13 @@ void EntityPlayer::update(float elapsed_time){
         {
             move_dir = Vector3(Input::gamepads->axis[0], 0, Input::gamepads->axis[1]);
         }
-        if (Input::wasKeyPressed(SDL_SCANCODE_X) || Input::wasButtonPressed(8)) {
-            this->godMode = !this->godMode;
-            if (godMode)
-                std::cout << "God Mode Activated" << std::endl;
-            if (!godMode)
-                std::cout << "God Mode Deactivated" << std::endl;
-        }
+        //if (Input::wasKeyPressed(SDL_SCANCODE_X) || Input::wasButtonPressed(8)) {
+        //    this->godMode = !this->godMode;
+        //    if (godMode)
+        //        std::cout << "God Mode Activated" << std::endl;
+        //    if (!godMode)
+        //        std::cout << "God Mode Deactivated" << std::endl;
+        //}
         if (Input::wasKeyPressed(SDL_SCANCODE_Z) || Input::wasButtonPressed(9)) {
             this->hasMultishot = !this->hasMultishot;
             if (hasMultishot)
