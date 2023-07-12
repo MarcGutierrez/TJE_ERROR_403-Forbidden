@@ -45,8 +45,12 @@ void Entity::removeChild(Entity* child){
 }
 
 void Entity::render(){
-    for(int i = 0; i < children.size(); i++)
+    for (int i = 0; i < children.size(); i++)
+    {
+        if (dynamic_cast<EntityProjectile*>(children[i])) continue;
+        if (dynamic_cast<EntityAI*>(children[i])) continue;
         children[i]->render();
+    }
 }
 void Entity::update(float elapsed_time){
     for(int i = 0; i < children.size(); i++)
@@ -201,10 +205,41 @@ void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
     }
     model.translate(0.0f, 51.0f, 51.f);
     
-    EntityProjectile* bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, dir, isEnemy);
+    EntityProjectile* bullet;
+
+    PlayStage* stage = ((PlayStage*)Game::instance->current_stage);
+    if (stage->projectiles.size() < 100)
+    {
+        bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, dir, isEnemy);
+        stage->projectiles.push_back(bullet);
+    }
+    else
+    {
+        for (EntityProjectile* p : stage->projectiles)
+        {
+            if (p->lifeTime <= 0.f)
+            {
+                p->model = model;
+                p->mesh = mesh;
+                p->shader = shader;
+                p->texture = texture;
+                p->speed = speed;
+                p->dmg = dmg;
+                p->dir = dir;
+                p->isEnemy = isEnemy;
+                p->lifeTime = 4.f;
+
+                bullet = p;
+                break;
+            }
+        }
+    }
+
     World::world->get_instance()->root->addChild(bullet);
     if (random() > 0.5f) Audio::PlayS("data/audio/363698__jofae__retro-gun-shot.mp3");
     else Audio::PlayS("data/audio/mixkit-game-gun-shot-1662.mp3");
+
+    std::cout << stage->projectiles.size() << std::endl;
 }
 
 void multishot(Matrix44 model, float speed, int bulletsShoot, float dispersion, bool isEnemy){
@@ -239,7 +274,35 @@ void multishot(Matrix44 model, float speed, int bulletsShoot, float dispersion, 
     {
         Vector3 newDir = dir - Vector3(i * dispersion, 0, i * dispersion);
         newDir.normalize();
-        EntityProjectile* bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, newDir, isEnemy);
+        EntityProjectile* bullet;
+
+        PlayStage* stage = ((PlayStage*)Game::instance->current_stage);
+        if (stage->projectiles.size() < 100)
+        {
+            bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, newDir, isEnemy);
+            stage->projectiles.push_back(bullet);
+        }
+        else
+        {
+            for (EntityProjectile* p : stage->projectiles)
+            {
+                if (p->lifeTime <= 0.f)
+                {
+                    p->model = model;
+                    p->mesh = mesh;
+                    p->shader = shader;
+                    p->texture = texture;
+                    p->speed = speed;
+                    p->dmg = dmg;
+                    p->dir = newDir;
+                    p->isEnemy = isEnemy;
+                    p->lifeTime = 4.f;
+
+                    bullet = p;
+                    break;
+                }
+            }
+        }
         World::world->get_instance()->root->addChild(bullet);
     }
     if (random() > 0.5f) Audio::PlayS("data/audio/363698__jofae__retro-gun-shot.mp3");
@@ -253,11 +316,7 @@ void youDie(Entity* entity, EntityProjectile* p){
                 e->isDead = true;
                 Audio::Play("data/audio/videogame-death-sound-43894.mp3");
             }
-                
             //std::cout << "u suck" << std::endl;
-            else{
-
-            }
         }
     }
     else{
@@ -268,6 +327,8 @@ void youDie(Entity* entity, EntityProjectile* p){
             b->hasBeenAttacked = true;
             b->isHurt = true;
             b->color = Vector4(1, 0, 0, 1);
+
+            p->lifeTime = 0.f;
             World::get_instance()->root->removeChild(p);
             //std::cout << b->hp << std::endl;
             if (b->hp == 0)
@@ -287,7 +348,9 @@ void youDie(Entity* entity, EntityProjectile* p){
         }
         else
         {
+            ((EntityAI*)entity)->hp = 0;
             World::get_instance()->root->removeChild(entity);
+            p->lifeTime = 0.f;
             World::get_instance()->root->removeChild(p);
             PlayStage* stage = ((PlayStage*)Game::instance->current_stage);
             stage->enemyNum--;
@@ -852,7 +915,7 @@ void EntityProjectile::update(float elapsed_time){
     
     std::vector<sImpactData> impacts;
     if (checkImpacts(position + velocity * elapsed_time, impacts, this->isEnemy)) {
-        
+        this->lifeTime = 0.f;
         World::world->get_instance()->root->removeChild(this);
         
     } else {

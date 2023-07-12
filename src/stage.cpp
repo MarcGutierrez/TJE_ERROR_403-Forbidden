@@ -227,7 +227,7 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
         spawnCd -= seconds_elapsed;
         if (spawnCd < 1.f && !soundEffPlayed)
         {
-            Audio::Play("data/audio/boss_wave_alarm.wav");
+            Audio::PlayM("data/audio/boss_wave_alarm.wav");
             soundEffPlayed = true;
             bossLvl = true;
         }
@@ -284,7 +284,7 @@ PlayStage::PlayStage(){
     boss = new EntityBoss(model, bossMesh, shader, bossTexture, 0, 0.f, 0.f, 0.f, 0);
 
     parseScene("data/scenes/test_room3.scene", model, World::get_instance()->root, NULL);
-    
+
     //quad = Mesh::Get("data/cdPowerUpIcon.obj");
     
     color = Vector4(0.95f,0.21f,0.67f,1);
@@ -361,14 +361,77 @@ void PlayStage::render(){
         shader->setUniform("u_time", time);
         
         //render stage here
-
         World::get_instance()->render();
+
+        Mesh* nMesh = NULL;
+        Shader* nShader = NULL;
+        if (!projectiles.empty())
+        {
+            nShader = projectiles.at(0)->shader;
+        }
+        if (nShader)
+        {
+            //enable shader
+            nShader->enable();
+
+            //upload uniforms
+
+            for (int i = 0; i < projectiles.size(); i++)
+            {
+                if (projectiles.at(i)->lifeTime > 0.f)
+                {
+                    nShader->setUniform("u_color", projectiles.at(i)->color);
+                    nShader->setUniform("u_viewprojection", camera->viewprojection_matrix);
+                    nShader->setUniform("u_texture", projectiles.at(i)->texture, 0);
+                    nShader->setUniform("u_model", projectiles.at(i)->model);
+                    nMesh = projectiles.at(i)->mesh;
+                    nMesh->render(GL_TRIANGLES);
+                }
+            }
+            nShader->disable();
+        }
+
+        if (!enemies.empty())
+        {
+            nShader = enemies.at(0)->shader;
+        }
+        else
+        {
+            nShader = NULL;
+        }
+        if (nShader)
+        {
+            nShader->enable();
+            for (int i = 0; i < enemies.size(); i++)
+            {
+                //enable shader
+
+                //upload uniforms
+                nShader->setUniform("u_color", Vector4(1, 1, 1, 1));
+                nShader->setUniform("u_viewprojection", camera->viewprojection_matrix);
+                nShader->setUniform("u_texture", enemies.at(i)->texture, 0);
+                nShader->setUniform("u_model", enemies.at(i)->model);
+                if (enemies.at(i)->hp > 0)
+                {
+                    nMesh = enemies.at(i)->mesh;
+                    nMesh->render(GL_TRIANGLES);
+                }
+            }
+            nShader->disable();
+        }
+
+        if (boss->hp > 0)
+        {
+            boss->render();
+        }
+
         //drawText(2, 2, getGPUStats(), Vector3(1, 1, 1), 2);
         drawText(10, 10, "Enemies Killed: " + std::to_string(killCount), Vector3(1,1,1),3);
         drawText(Game::instance->window_width-200, 10, "Wave: " + std::to_string(wave), Vector3(1,1,1),4);
         //disable shader
         shader->disable();
     }
+
     cdSlot->color = Vector4(0.2f, 0.2f, 0.2f, 1);
     msSlot->color = Vector4(0.2f, 0.2f, 0.2f, 1);
     gmSlot->color = Vector4(0.2f, 0.2f, 0.2f, 1);
@@ -540,9 +603,9 @@ void PlayStage::update(float seconds_elapsed){
         powerUpCd = 0.f;
     }
     World::get_instance()->update(seconds_elapsed);
-    if (Input::wasKeyPressed(SDL_SCANCODE_Q)) { //toggle freecam
-        this->free_cam = !this->free_cam;
-    }
+    //if (Input::wasKeyPressed(SDL_SCANCODE_Q)) { //toggle freecam
+    //    this->free_cam = !this->free_cam;
+    //}
     if(Input::wasKeyPressed(SDL_SCANCODE_R)){
         camera->lookAt(Vector3(0.f,4500.f, 1),Vector3(0.f,0.f,0.f), Vector3(0.f,1.f,0.f)); //reset camera
     }
