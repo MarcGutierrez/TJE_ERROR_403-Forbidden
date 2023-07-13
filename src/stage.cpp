@@ -643,24 +643,6 @@ void MenuStage::render(){
 
     Matrix44 m;
     
-    if(shader)
-    {
-        //enable shader
-        shader->enable();
-
-        //upload uniforms
-        shader->setUniform("u_color", Vector4(1,1,1,1));
-        shader->setUniform("u_viewprojection", camera->viewprojection_matrix );
-        shader->setUniform("u_texture", texture, 0);
-        shader->setUniform("u_model", m);
-        shader->setUniform("u_time", time);
-        
-        //render stage here
-        World::get_instance()->render();
-        
-        //disable shader
-        shader->disable();
-    }
     drawText(Game::instance->window_width/2-130, Game::instance->window_height/2-125, "hola", Vector3(1,0,0),6);
 }
 
