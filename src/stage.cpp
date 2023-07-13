@@ -365,7 +365,7 @@ void PlayStage::render(){
 
         Mesh* nMesh = NULL;
         Shader* nShader = NULL;
-        if (!projectiles.empty())
+        if (!projectiles.empty()) // check if there r no projectiles to not try and get smth from nothing
         {
             nShader = projectiles.at(0)->shader;
         }
@@ -374,18 +374,18 @@ void PlayStage::render(){
             //enable shader
             nShader->enable();
 
-            //upload uniforms
 
             for (int i = 0; i < projectiles.size(); i++)
             {
                 if (projectiles.at(i)->lifeTime > 0.f)
                 {
+                    //upload uniforms per bullet
                     nShader->setUniform("u_color", projectiles.at(i)->color);
                     nShader->setUniform("u_viewprojection", camera->viewprojection_matrix);
                     nShader->setUniform("u_texture", projectiles.at(i)->texture, 0);
                     nShader->setUniform("u_model", projectiles.at(i)->model);
                     nMesh = projectiles.at(i)->mesh;
-                    nMesh->render(GL_TRIANGLES);
+                    nMesh->render(GL_TRIANGLES); // render the bullet
                 }
             }
             nShader->disable();
@@ -393,7 +393,7 @@ void PlayStage::render(){
 
         if (!enemies.empty())
         {
-            nShader = enemies.at(0)->shader;
+            nShader = enemies.at(0)->shader; // check if there r no enemies to not try and get smth from nothing
         }
         else
         {
@@ -401,12 +401,12 @@ void PlayStage::render(){
         }
         if (nShader)
         {
+            //enable shader
             nShader->enable();
             for (int i = 0; i < enemies.size(); i++)
             {
-                //enable shader
 
-                //upload uniforms
+                //upload uniforms per enemy
                 nShader->setUniform("u_color", Vector4(1, 1, 1, 1));
                 nShader->setUniform("u_viewprojection", camera->viewprojection_matrix);
                 nShader->setUniform("u_texture", enemies.at(i)->texture, 0);
@@ -414,7 +414,7 @@ void PlayStage::render(){
                 if (enemies.at(i)->hp > 0)
                 {
                     nMesh = enemies.at(i)->mesh;
-                    nMesh->render(GL_TRIANGLES);
+                    nMesh->render(GL_TRIANGLES); // render enemy
                 }
             }
             nShader->disable();
@@ -422,7 +422,7 @@ void PlayStage::render(){
 
         if (boss->hp > 0)
         {
-            boss->render();
+            boss->render(); // render boss
         }
 
         //drawText(2, 2, getGPUStats(), Vector3(1, 1, 1), 2);
@@ -515,42 +515,30 @@ void PlayStage::render(){
 
 void PlayStage::update(float seconds_elapsed){
     //color = Vector4(0.95f, 0.21f, 0.67f, 1);
-    if(gradient){
-        if(walkDownX){
+    if (gradient) {
+        if (walkDownX) {
             color.x -= gradientFactor * seconds_elapsed;
-            if(color.x <= 0){
+            if (color.x <= 0) {
                 //walkDownZ = true;
                 walkDownX = false;
                 walkDownZ = true;
             }
         }
-        if(!walkDownX){
+        if (!walkDownX) {
             color.x += gradientFactor * seconds_elapsed;
-            if(color.x >= 1){
+            if (color.x >= 0.7) {
                 walkUpZ = true;
             }
         }
-        /*if(walkDownY){
-            color.y -= gradientFactor * seconds_elapsed;
-            if(color.y <= 0){
-                walkDownY = false;
-            }
-        }
-        if(!walkDownY){
-            color.y += gradientFactor * seconds_elapsed;
-            if(color.y >= 1){
-                walkDownY = true;
-            }
-        }*/
-        if(walkDownZ){
+        if (walkDownZ) {
             color.z -= gradientFactor * seconds_elapsed;
-            if(color.z <= 0.1){
+            if (color.z <= 0.2) {
                 walkDownZ = false;
             }
         }
-        if(walkUpZ){
+        if (walkUpZ) {
             color.z += gradientFactor * seconds_elapsed;
-            if(color.z >= 1){
+            if (color.z >= 1) {
                 walkDownX = true;
                 walkUpZ = false;
             }

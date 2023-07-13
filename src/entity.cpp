@@ -208,8 +208,9 @@ void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
     EntityProjectile* bullet;
 
     PlayStage* stage = ((PlayStage*)Game::instance->current_stage);
-    if (stage->projectiles.size() < 100)
+    if (stage->projectiles.size() < 100) // to check max of bullets in array
     {
+        // generates and expands the bullet array if not fully grown
         bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, dir, isEnemy);
         stage->projectiles.push_back(bullet);
     }
@@ -219,6 +220,7 @@ void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
         {
             if (p->lifeTime <= 0.f)
             {
+                // regenerats a bullet if array at full size
                 p->model = model;
                 p->mesh = mesh;
                 p->shader = shader;
@@ -235,11 +237,11 @@ void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
         }
     }
 
-    World::world->get_instance()->root->addChild(bullet);
+    World::world->get_instance()->root->addChild(bullet); // add bullet to root to interact with other entities
     if (random() > 0.5f) Audio::PlayS("data/audio/363698__jofae__retro-gun-shot.mp3");
     else Audio::PlayS("data/audio/mixkit-game-gun-shot-1662.mp3");
 
-    std::cout << stage->projectiles.size() << std::endl;
+    //std::cout << stage->projectiles.size() << std::endl;
 }
 
 void multishot(Matrix44 model, float speed, int bulletsShoot, float dispersion, bool isEnemy){
@@ -270,15 +272,16 @@ void multishot(Matrix44 model, float speed, int bulletsShoot, float dispersion, 
     model.translate(0.0f, 51.0f, 51.f);
     int range = bulletsShoot / 2;
     
-    for (int i = -range; i <= range; i++)
+    for (int i = -range; i <= range; i++) // para generar el numero de balas adecuado
     {
-        Vector3 newDir = dir - Vector3(i * dispersion, 0, i * dispersion);
-        newDir.normalize();
+        Vector3 newDir = dir - Vector3(i * dispersion, 0, i * dispersion); // nueva direccion con dispersion de bala aplicado
+        newDir.normalize(); // normaliza la direccion para que las balas vayan a la misma velocidad
         EntityProjectile* bullet;
 
         PlayStage* stage = ((PlayStage*)Game::instance->current_stage);
-        if (stage->projectiles.size() < 100)
+        if (stage->projectiles.size() < 100) // to check that we have a maximum of bullets
         {
+            // to fill the array with the new entities
             bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, newDir, isEnemy);
             stage->projectiles.push_back(bullet);
         }
@@ -288,6 +291,7 @@ void multishot(Matrix44 model, float speed, int bulletsShoot, float dispersion, 
             {
                 if (p->lifeTime <= 0.f)
                 {
+                    // reloads the bullet entities
                     p->model = model;
                     p->mesh = mesh;
                     p->shader = shader;
@@ -303,7 +307,7 @@ void multishot(Matrix44 model, float speed, int bulletsShoot, float dispersion, 
                 }
             }
         }
-        World::world->get_instance()->root->addChild(bullet);
+        World::world->get_instance()->root->addChild(bullet); // add bullet to root to interact with other entities
     }
     if (random() > 0.5f) Audio::PlayS("data/audio/363698__jofae__retro-gun-shot.mp3");
     else Audio::PlayS("data/audio/mixkit-game-gun-shot-1662.mp3");
@@ -891,6 +895,8 @@ bool checkImpacts(const Vector3& target_pos,
         }
         if (EntityPowerUp* p = dynamic_cast<EntityPowerUp*>(World::world->get_instance()->root->children[i]))
             continue;
+        if (EntityAI* ai = dynamic_cast<EntityAI*>(World::world->get_instance()->root->children[i]))
+            if (isEnemy) continue;
         if (EntityCollider* e = dynamic_cast<EntityCollider*>(World::world->get_instance()->root->children[i])) {
             Mesh* mesh = e->mesh;
 
