@@ -33,10 +33,13 @@ std::vector <sCollisionData> collisions;
 Entity::Entity(std::string name, Matrix44 model){
     this->name = name;
     this->model = model;
-};
+}
+
 Entity::~Entity() {
-    
-};
+    delete parent;
+    children.clear();
+    children.shrink_to_fit();
+}
 
 
 void Entity::addChild(Entity* child){
@@ -94,6 +97,13 @@ EntityMesh::EntityMesh(Matrix44 model, Mesh* mesh, Shader* shader, Texture* text
     this->shader = shader;
 }
 
+EntityMesh::~EntityMesh()
+{
+    delete mesh;
+    delete texture;
+    delete shader;
+}
+
 /*EntityMesh::EntityMesh(std::string name, Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture) : Entity(name, Matrix44())
 {
     this->mesh = mesh;
@@ -133,6 +143,15 @@ void EntityMesh::update(float elapsed_time){
 InstancedEntityMesh::InstancedEntityMesh(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture):EntityMesh(model, mesh, shader, texture)
 {
     models = std::vector<Matrix44>();
+}
+
+InstancedEntityMesh::~InstancedEntityMesh()
+{
+    delete mesh;
+    delete texture;
+    delete shader;
+    models.clear();
+    models.shrink_to_fit();
 }
 
 void InstancedEntityMesh::render(){
@@ -181,6 +200,17 @@ EntityPlayer::EntityPlayer(Matrix44 model, Mesh* mesh, Shader* shader, Texture* 
     cdCadLife = 0.f;
     multiLife = 0.f;
     puNum = 0;
+}
+
+EntityPlayer::~EntityPlayer()
+{
+    delete idle;
+    delete walk;
+    delete walkBack;
+    delete walkLeft;
+    delete walkRight;
+    delete shot;
+    delete die;
 }
 
 void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
@@ -538,6 +568,8 @@ EntityAI::EntityAI(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture,
     this->hasBeenAttacked = false;
 }
 
+EntityAI::~EntityAI() {}
+
 void EntityAI::render()
 {
     // Enable shader and pass uniforms
@@ -712,6 +744,8 @@ EntityBoss::EntityBoss(Matrix44 model, Mesh* mesh, Shader* shader, Texture* text
     this->HPbar = 500;
 }
 
+EntityBoss::~EntityBoss(){}
+
 void EntityBoss::render(){
     // Enable shader and pass uniforms
     shader->enable();
@@ -763,6 +797,8 @@ void EntityBoss::update(float elapsed_time)
 EntityCollider::EntityCollider(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture):EntityMesh(model,mesh,shader,texture){
 }
 
+EntityCollider::~EntityCollider() {}
+
 void EntityCollider::render(){
     // Enable shader and pass uniforms
     shader->enable();
@@ -788,6 +824,8 @@ EntityProjectile::EntityProjectile(Matrix44 model, Mesh* mesh, Shader* shader, T
     this->dir = dir;
     this->isEnemy = isEnemy;
 }
+
+EntityProjectile::~EntityProjectile(){}
 
 void EntityProjectile::render(){
     // Enable shader and pass uniforms
@@ -864,6 +902,8 @@ EntityPowerUp::EntityPowerUp(Matrix44 model, Mesh* mesh, Shader* shader, Texture
     this->effect = effect;
     this->intermitent = true;
 }
+
+EntityPowerUp::~EntityPowerUp() {}
 
 void EntityPowerUp::render(){
     model.setTranslation(model.getTranslation().x, 10*sin(azimuth), model.getTranslation().z);

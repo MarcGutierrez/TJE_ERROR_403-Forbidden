@@ -29,7 +29,7 @@ class Entity {
 
 public:
     Entity(std::string name, Matrix44 model);         // Constructor
-    virtual ~Entity();     // Destructor
+    ~Entity();     // Destructor
     
     // Some attributes
     std::string name;
@@ -62,6 +62,7 @@ public:
     Vector4 color = Vector4(1, 1, 1, 1);
     //EntityMesh(std::string name, Matrix44 model, Mesh* mesh, Texture* texture, Shader* shader, Vector4 color);
     EntityMesh(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture);
+    ~EntityMesh();
     //EntityMesh(std::string name, Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture);
 
     // Methods overwritten from base class
@@ -79,6 +80,7 @@ class InstancedEntityMesh : public EntityMesh {
 
     //InstancedEntityMesh(std::string name, Matrix44 model, Mesh* mesh, Texture* texture, Shader* shader, Vector4 color);
     InstancedEntityMesh(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture);
+    ~InstancedEntityMesh();
 
     // Methods overwritten from base class
     void render();
@@ -92,6 +94,7 @@ public:
     bool isDynamic = false;
 
     EntityCollider(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture);
+    ~EntityCollider();
 
     // New methods
     //bool checkPlayerCollisions(Vector3 position, Vector3 &colisions);
@@ -115,6 +118,7 @@ public:
 
 
     EntityPowerUp(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, float lifeTime, powerUps effect);
+    ~EntityPowerUp();
     void render();
     void update(float elapsed_time);
 };
@@ -144,6 +148,7 @@ class EntityPlayer : public EntityMesh{
         Camera* camera = nullptr;
         //EntityPlayer(std::string name, Matrix44 model, Mesh* mesh, Texture* texture, Shader* shader, Vector4 color, Camera* camera);
         EntityPlayer(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, Camera* camera);
+        ~EntityPlayer();
         // Methods overwritten from base class
         //void shoot(Vector3 dir, float speed);
         void addPowerUp(EntityPowerUp* pu);
@@ -168,6 +173,7 @@ public:
     float yaw;
     //EntityAI(std::string name, Matrix44 model, Mesh* mesh, Texture* texture, Shader* shader, Vector4 color, Camera* camera);
     EntityAI(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, int hp, float speed, float cdShot, float dispersion);
+    ~EntityAI();
     // Methods overwritten from base class
     //void shoot(Vector3 dir, float speed);
     void render();
@@ -185,6 +191,7 @@ public:
     float HPbar;
 
     EntityBoss(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, int hp, float speed, float cdShot, float dispersion, int numBulletsShoot );
+    ~EntityBoss();
     
     void render();
     void update(float elapsed_time);
@@ -203,6 +210,7 @@ class EntityProjectile : public EntityCollider{
         Vector3 velocity = Vector3(0.0f,0.0f,0.0f);
         
         EntityProjectile(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture, float speed, float dmg, Vector3 dir, bool isEnemy);
+        ~EntityProjectile();
         
         void render();
         void update(float elapsed_time);
