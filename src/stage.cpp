@@ -168,10 +168,10 @@ void TitleStage::update(float elapsed_time){
     if (currentSlot == slot3 && ((Input::wasKeyPressed(SDL_SCANCODE_RETURN)) || Input::wasButtonPressed(A_BUTTON))){
         Game::instance->isHard = !Game::instance->isHard;
     }
-    if(Input::wasKeyPressed(SDL_SCANCODE_DOWN)||Input::wasButtonPressed(PAD_DOWN)){
+    if(Input::wasKeyPressed(SDL_SCANCODE_DOWN)||Input::wasKeyPressed(SDL_SCANCODE_S)||Input::wasButtonPressed(PAD_DOWN)){
         currentSlot += 1;
     }
-    if(Input::wasKeyPressed(SDL_SCANCODE_UP)||Input::wasButtonPressed(PAD_UP)){
+    if(Input::wasKeyPressed(SDL_SCANCODE_UP)||Input::wasKeyPressed(SDL_SCANCODE_W)||Input::wasButtonPressed(PAD_UP)){
         currentSlot -= 1;
     }
 }
