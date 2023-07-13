@@ -44,6 +44,14 @@ public:
     float th = 1.f;
     bool tutorial;
     
+    //Menu Stuff
+    //bool slot1;
+    //bool slot2;
+    //bool slot3;
+    //std::vector<bool> slots;
+    enum slots { slot1, slot2, slot3};
+    int currentSlot;
+    
     TitleStage();
     
     stageId getId();

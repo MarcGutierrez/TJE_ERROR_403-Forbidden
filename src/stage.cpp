@@ -62,6 +62,16 @@ TitleStage::TitleStage(){
     model.rotate(-PI/2, Vector3(0,1,0));
     EntityMesh* background = new EntityMesh(model, mesh, shader, texture);
     World::world->get_instance()->root->addChild(background);
+    
+    //Menu Stuff
+    currentSlot = slot1;
+    //slot1 = true;
+    //slot2 = false;
+    //slot3 = false;
+    
+    //slots.push_back(slot1);
+    //slots.push_back(slot2);
+    //slots.push_back(slot3);
 }
 
 void TitleStage::render(){
@@ -95,20 +105,48 @@ void TitleStage::render(){
         //disable shader
         shader->disable();
     }
-    drawText(150, height/2-150, "Error 403: Forbidden", Vector3(1,1,1),5);
+    //drawText(150, height/2-150, "Error 403: Forbidden", Vector3(1,1,1),5);
+    drawText(Game::instance->window_width/2 - 250, height/2-150, "Error 403: Forbidden", Vector3(1,1,1),5);
+    
+    if(currentSlot == slot1)
+        drawText(Game::instance->window_width/2-115, Game::instance->window_height/2, "Start Game", Vector3(1,0,0),4);
+    else
+        drawText(Game::instance->window_width/2-115, Game::instance->window_height/2, "Start Game", Vector3(1,1,1),4);
+    if(currentSlot == slot2)
+        drawText(Game::instance->window_width/2-120, Game::instance->window_height/2 + 50, "How to Play", Vector3(1,0,0),4);
+    else
+        drawText(Game::instance->window_width/2-120, Game::instance->window_height/2 + 50, "How to Play", Vector3(1,1,1),4);
+    
+    if(Game::instance->isHard)
+        if(currentSlot == slot3)
+            drawText(Game::instance->window_width/2-150, Game::instance->window_height/2 + 100, "Difficulty: Hard", Vector3(1,0,0),4);
+        else
+            drawText(Game::instance->window_width/2-150, Game::instance->window_height/2 + 100, "Difficulty: Hard", Vector3(1,1,1),4);
+    else
+        if(currentSlot == slot3)
+            drawText(Game::instance->window_width/2-150, Game::instance->window_height/2 + 100, "Difficulty: Easy", Vector3(1,0,0),4);
+        else
+            drawText(Game::instance->window_width/2-150, Game::instance->window_height/2 + 100, "Difficulty: Easy", Vector3(1,1,1),4);
+    
     if (intermitent)
     {
-        if (Input::gamepads->connected)
+        drawText(Game::instance->window_width/2-165, Game::instance->window_height/ 2 + 250, "Instert credit(s)", Vector3(1, 1, 1), 4);
+        /*if (Input::gamepads->connected)
             drawText(200, height / 2 + 250, "Press START to start", Vector3(1, 1, 1), 4);
 
         else
-            drawText(200, height / 2 + 250, "Press SPACE to start", Vector3(1, 1, 1), 4);
+            drawText(200, height / 2 + 250, "Press SPACE to start", Vector3(1, 1, 1), 4);*/
+        
     }
         
     
 }
 
 void TitleStage::update(float elapsed_time){
+    if (currentSlot > 2)
+        currentSlot = slot1;
+    if (currentSlot < 0)
+        currentSlot = slot3;
     camera->move(Vector3(0.0f, 0.0f, 1)*elapsed_time);
     th -= elapsed_time;
     if (th <= 0.f)
@@ -116,16 +154,25 @@ void TitleStage::update(float elapsed_time){
         th = 1.f;
         intermitent = !intermitent;
     }
-    if (Input::wasKeyPressed(SDL_SCANCODE_SPACE) || Input::wasButtonPressed(7)) {
+    if (currentSlot == slot1 && Input::wasKeyPressed(SDL_SCANCODE_RETURN)) {
         fin = true;
         for (int i = 0; i < World::get_instance()->root->children.size(); i++) { //clean root
             World::get_instance()->root->removeChild(World::get_instance()->root->children[i]);
             
         }
     }
-    if (Input::wasKeyPressed(SDL_SCANCODE_T)) {
+    if (currentSlot == slot2 && Input::wasKeyPressed(SDL_SCANCODE_RETURN)) {
         World::get_instance()->cleanRoot();
         tutorial = true;
+    }
+    if (currentSlot == slot3 && Input::wasKeyPressed(SDL_SCANCODE_RETURN)){
+        Game::instance->isHard = !Game::instance->isHard;
+    }
+    if(Input::wasKeyPressed(SDL_SCANCODE_DOWN)){
+        currentSlot += 1;
+    }
+    if(Input::wasKeyPressed(SDL_SCANCODE_UP)){
+        currentSlot -= 1;
     }
 }
 
@@ -561,9 +608,9 @@ void PlayStage::update(float seconds_elapsed){
         powerUpCd = 0.f;
     }
     World::get_instance()->update(seconds_elapsed);
-    //if (Input::wasKeyPressed(SDL_SCANCODE_Q)) { //toggle freecam
-    //    this->free_cam = !this->free_cam;
-    //}
+    if (Input::wasKeyPressed(SDL_SCANCODE_Q)) { //toggle freecam
+        this->free_cam = !this->free_cam;
+    }
     if(Input::wasKeyPressed(SDL_SCANCODE_R)){
         camera->lookAt(Vector3(0.f,4500.f, 1),Vector3(0.f,0.f,0.f), Vector3(0.f,1.f,0.f)); //reset camera
     }
@@ -625,10 +672,12 @@ void MenuStage::render(){
     glDisable(GL_CULL_FACE);
 
     drawText(Game::instance->window_width/2-130, Game::instance->window_height/2-125, "hola", Vector3(1,0,0),6);
+    drawText(135, Game::instance->window_height / 2 + 250, "Press RETURN to exit to title screen", Vector3(1, 1, 1), 3);
+    
 }
 
 void MenuStage::update(float elapsed_time){
-    if (Input::wasKeyPressed(SDL_SCANCODE_T))
+    if (Input::wasKeyPressed(SDL_SCANCODE_RETURN))
     {
         //World::get_instance()->cleanRoot();
         fin = true;
