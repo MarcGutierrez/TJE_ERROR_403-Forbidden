@@ -626,6 +626,7 @@ stageId PlayStage::getId()
 
 MenuStage::MenuStage(){
     fin = false;
+    shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
 }
 
 void MenuStage::render(){
