@@ -637,6 +637,9 @@ void takeAction(EntityAI* entity, Vector3 position, float elapsed_time)
     bool isBoss = (dynamic_cast<EntityBoss*>(entity) ? true : false);
     int multiShootSpd = 2500.f, normalShootSpd = 3000.f;
     if (EntityBoss* b = dynamic_cast<EntityBoss*>(entity)) if(b->isHurt) b->hurtFrames += elapsed_time;
+
+    float normDist;
+
     switch (entity->currentBehaviour)
     {
     case ATTACK:
@@ -652,20 +655,12 @@ void takeAction(EntityAI* entity, Vector3 position, float elapsed_time)
                 shoot(entity->model, normalShootSpd, entity->dispersion, true);
             entity->shotCdTime = 0.f;
         }
-        if(isBoss){
-            float normDist = entity->model.getTranslation().distance(World::get_instance()->player->model.getTranslation())/multiShootSpd;
+        normDist = entity->model.getTranslation().distance(World::get_instance()->player->model.getTranslation())/multiShootSpd;
 
-            entity->yaw += entity->model.getYawRotationToAimTo
-            (
-             World::get_instance()->player->model.getTranslation() + (World::get_instance()->player->velocity*0.5) * normDist
-             );
-        }
-        else{
-            entity->yaw += entity->model.getYawRotationToAimTo
-            (
-             World::get_instance()->player->model.getTranslation()
-             );
-        }
+        entity->yaw += entity->model.getYawRotationToAimTo
+        (
+            World::get_instance()->player->model.getTranslation() + (World::get_instance()->player->velocity*0.5) * normDist
+            );
         //
         if (isBoss)
         {

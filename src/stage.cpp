@@ -137,7 +137,7 @@ void PlayStage::loadNewLvl(float seconds_elapsed)
     //texture = Texture::Get("data/textures/enemy_texture.tga");
     if (spawnCd <= 0.f){
         int rand = get_random_enemy_num(currentDiff);
-        enemyNum = (rand > 20) ? 20 : rand;
+        enemyNum = (rand > 15) ? 15 : rand;
         // this code is for if we want to use it to change things via randomness or other factors like difficulty and position and to not destroy enemies on death
         for (int i = 0; i < enemyNum; i++)
         {
@@ -365,10 +365,7 @@ void PlayStage::render(){
 
         Mesh* nMesh = NULL;
         Shader* nShader = NULL;
-        if (!projectiles.empty()) // check if there r no projectiles to not try and get smth from nothing
-        {
-            nShader = projectiles.at(0)->shader;
-        }
+        nShader = World::get_instance()->shader;
         if (nShader)
         {
             //enable shader
@@ -388,21 +385,7 @@ void PlayStage::render(){
                     nMesh->render(GL_TRIANGLES); // render the bullet
                 }
             }
-            nShader->disable();
-        }
 
-        if (!enemies.empty())
-        {
-            nShader = enemies.at(0)->shader; // check if there r no enemies to not try and get smth from nothing
-        }
-        else
-        {
-            nShader = NULL;
-        }
-        if (nShader)
-        {
-            //enable shader
-            nShader->enable();
             for (int i = 0; i < enemies.size(); i++)
             {
 

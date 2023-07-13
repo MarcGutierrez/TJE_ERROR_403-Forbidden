@@ -27,7 +27,7 @@ float get_random_dist()
 int get_random_enemy_num(int diff)
 {
     static std::default_random_engine e(time(0));
-    static std::uniform_int_distribution<int> dis(10, 20); // range [1, 20]
+    static std::uniform_int_distribution<int> dis(5, 10); // range [1, 20]
     return dis(e) + diff; // in essence a gaussian area surrounding the spawn square to distribute enemies evenly
 }
 
