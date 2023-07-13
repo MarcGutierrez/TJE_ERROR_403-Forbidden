@@ -16,7 +16,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "646"
             endingLineNumber = "646"
-            landmarkName = "takeAction(entity, position, elapsed_time)"
+            landmarkName = "checkCollisions(entity, position, elapsed_time)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -32,7 +32,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "555"
             endingLineNumber = "555"
-            landmarkName = "TitleStage::update(elapsed_time)"
+            landmarkName = "PlayStage::update(seconds_elapsed)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -48,7 +48,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "553"
             endingLineNumber = "553"
-            landmarkName = "TitleStage::update(elapsed_time)"
+            landmarkName = "PlayStage::update(seconds_elapsed)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
