@@ -130,7 +130,7 @@ void TitleStage::render(){
     
     if (intermitent)
     {
-        drawText(Game::instance->window_width/2-165, Game::instance->window_height/ 2 + 250, "Instert credit(s)", Vector3(1, 1, 1), 4);
+        drawText(Game::instance->window_width/2-165, Game::instance->window_height/ 2 + 250, "Insert credit(s)", Vector3(1, 1, 1), 4);
         /*if (Input::gamepads->connected)
             drawText(200, height / 2 + 250, "Press START to start", Vector3(1, 1, 1), 4);
 
@@ -366,6 +366,24 @@ PlayStage::PlayStage(){
     msSlot = new UI(quad, World::get_instance()->msPowerUpTexture, slot2.x, slot2.y, 114, 75, grayColor);
     gmSlot = new UI(quad, World::get_instance()->gmPowerUpTexture, slot3.x, slot3.y, 114, 75, grayColor);
 
+}
+
+PlayStage::~PlayStage()
+{
+    delete entityMesh;
+    delete root;
+    delete newEnemy;
+    delete nMesh;
+    delete nShader;
+    delete powerUp;
+    delete enemyTexture;
+    delete boss;
+    delete bossTexture;
+    delete cdSlot;
+    delete msSlot;
+    delete gmSlot;
+    delete HPBar;
+    delete HP;
 }
 
 void PlayStage::render(){

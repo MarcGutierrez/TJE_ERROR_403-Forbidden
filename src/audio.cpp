@@ -8,6 +8,10 @@
 
 #include "audio.h"
 
+HCHANNEL channel;
+std::string key;
+Audio* audio;
+
 std::map<std::string, Audio*> Audio::sAudiosLoaded;
 
 Audio::Audio()
@@ -26,7 +30,7 @@ Audio::~Audio()
 
 HCHANNEL Audio::play(float volume)
 {
-    HCHANNEL channel = BASS_SampleGetChannel(sample, FALSE);
+    channel = BASS_SampleGetChannel(sample, FALSE);
     BASS_ChannelSetAttribute(channel, BASS_ATTRIB_VOL, volume);
     BASS_ChannelPlay(channel, TRUE);
     return channel;
@@ -41,14 +45,11 @@ bool Audio::Init()
 
 Audio* Audio::Get(const char* filename)
 {
-    std::string key(filename);
+    key = (std::string)filename;
     if (sAudiosLoaded.find(key) != sAudiosLoaded.end()) {
         return sAudiosLoaded[key];
     }
-
-    HCHANNEL hSampleChannel; // Handler to store one channel
-
-    Audio* audio = new Audio();
+    audio = new Audio();
 
     // Load sample from disk
     // flags: BASS_SAMPLE_LOOP, BASS_SAMPLE_3D, ...
@@ -71,7 +72,7 @@ Audio* Audio::Get(const char* filename)
 
 HCHANNEL Audio::Play(const char* filename)
 {
-    Audio* audio = Get(filename);
+    audio = Get(filename);
     //printf("getting audio");
     if (audio != NULL) {
         return audio->play(1.0f);
@@ -81,7 +82,7 @@ HCHANNEL Audio::Play(const char* filename)
 
 HCHANNEL Audio::PlayS(const char* filename)
 {
-    Audio* audio = Get(filename);
+    audio = Get(filename);
     //printf("getting audio");
     if (audio != NULL) {
         return audio->play(0.15f);
@@ -91,7 +92,7 @@ HCHANNEL Audio::PlayS(const char* filename)
 
 HCHANNEL Audio::PlayM(const char* filename)
 {
-    Audio* audio = Get(filename);
+    audio = Get(filename);
     //printf("getting audio");
     if (audio != NULL) {
         return audio->play(0.65f);

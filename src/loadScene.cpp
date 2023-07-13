@@ -6,6 +6,10 @@ struct sRenderData {
 	std::vector<Matrix44> models;
 };
 
+Shader* shaderM;
+Texture* textureM;
+Texture* texture2M;
+Matrix44 modelM;
 std::map<std::string, sRenderData> meshes_to_load;
 
 /*
@@ -38,7 +42,7 @@ bool parseScene(const char* filename, Matrix44 model, Entity* root, int mapId)
 		std::vector<std::string> tokens = tokenize(model_data, ",");
 
 		// Fill matrix converting chars to floats
-		Matrix44 model;
+		model;
 		for (int t = 0; t < tokens.size(); ++t) {
 			model.m[t] = (float)atof(tokens[t].c_str());
 		}
@@ -49,14 +53,11 @@ bool parseScene(const char* filename, Matrix44 model, Entity* root, int mapId)
 		mesh_count++;
 	}
 
-	Shader* shader;
-	Texture* texture;
-    Texture* texture2;
 	if (!mapId)
 	{
-		shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
-		texture = Texture::Get("data/textures/texture4_white2.tga");
-        texture2 = Texture::Get("data/textures/texture4_white2.tga");
+		shaderM = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+		textureM = Texture::Get("data/textures/texture4_white2.tga");
+        texture2M = Texture::Get("data/textures/texture4_white2.tga");
 	}
 
 	// Iterate through meshes loaded and create corresponding entities
@@ -64,11 +65,11 @@ bool parseScene(const char* filename, Matrix44 model, Entity* root, int mapId)
 
 		mesh_name = "data/" + data.first;
 		sRenderData& render_data = data.second;
-		render_data.shader = shader;
+		render_data.shader = shaderM;
         if(mesh_name == "data/meshes/Plane.obj")
-            render_data.texture = texture;
+            render_data.texture = textureM;
         else
-            render_data.texture = texture2;
+            render_data.texture = texture2M;
 		// No transforms, anything to do here
 		if (render_data.models.empty())
 			continue;

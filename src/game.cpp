@@ -22,6 +22,7 @@ float mouse_speed = 100.0f;
 FBO* fbo = NULL;
 
 Game* Game::instance = NULL;
+float speed;
 //World* World::world = NULL;
 
 Matrix44 model;
@@ -167,7 +168,7 @@ void Game::render(void)
 
 void Game::update(double seconds_elapsed)
 {
-	float speed = seconds_elapsed * mouse_speed; //the speed is defined by the seconds_elapsed so it goes constant
+	speed = seconds_elapsed * mouse_speed; //the speed is defined by the seconds_elapsed so it goes constant
     //mouse input to rotate the cam
     cdGamepad += seconds_elapsed;
     if (cdGamepad > 1.f)
@@ -198,6 +199,7 @@ void Game::update(double seconds_elapsed)
 
     if(TitleStage* s = dynamic_cast<TitleStage*>(current_stage)){
         if (current_stage->fin == true){
+            delete current_stage;
             current_stage = new PlayStage();
             Audio::Stop(audioChannel);
             musicCd = 160.f;
@@ -208,15 +210,22 @@ void Game::update(double seconds_elapsed)
             musicCd = 0.f;
         }
         if(s->tutorial){
+            delete current_stage;
             current_stage = new MenuStage();
         }
     }
     if(MenuStage* s = dynamic_cast<MenuStage*>(current_stage)){
         if(current_stage->fin == true)
+        {
+            delete current_stage;
             current_stage = new TitleStage();
+        }
     }
     if(PlayStage* s = dynamic_cast<PlayStage*>(current_stage)){
         if (current_stage->fin == true){
+            ((PlayStage*)current_stage)->enemies.clear();
+            ((PlayStage*)current_stage)->projectiles.clear();
+            delete current_stage;
             current_stage = new EndStage();
             Audio::Stop(audioChannel);
             musicCd = 64.f;
@@ -224,11 +233,13 @@ void Game::update(double seconds_elapsed)
     }
     if(EndStage* s = dynamic_cast<EndStage*>(current_stage)){
         if(s->restart){
+            delete current_stage;
             current_stage = new TitleStage();
             Audio::Stop(audioChannel);
             musicCd = 64.f;
         }
         if(s->retry){
+            delete current_stage;
             current_stage = new PlayStage();
             Audio::Stop(audioChannel);
             musicCd = 160.f;

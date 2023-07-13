@@ -384,7 +384,7 @@ bool checkCollisions(const Vector3& target_pos, std::vector<sCollisionData>& col
     for (int i = 0; i < World::world->get_instance()->root->children.size(); i++) {
         if (c = dynamic_cast<EntityCollider*>(World::world->get_instance()->root->children[i])) {
             if (p = dynamic_cast<EntityProjectile*>(c)) {
-                if (e->mesh->testSphereCollision(c->model, center, sphereRadius, colPoint, colNormal)) {
+                if (c->mesh->testSphereCollision(c->model, center, sphereRadius, colPoint, colNormal)) {
                     youDie(entity, p);
                 }
             }
@@ -485,6 +485,7 @@ void EntityPlayer::update(float elapsed_time){
     
     move_dir.normalize();
     velocity = move_dir * speed;
+    collisions = std::vector <sCollisionData>();
     position.y = 0.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
     if (checkCollisions(position + velocity * elapsed_time, collisions, this, 12.5f)) {
         for (const sCollisionData& collisions : collisions) {
@@ -641,15 +642,14 @@ void takeAction(EntityAI* entity, Vector3 position, float elapsed_time)
 
 void checkCollisions(EntityAI* entity, Vector3 position, float elapsed_time)
 {
-    if(entity == dynamic_cast<EntityAI*>(entity)){
-        if (checkCollisions(position + entity->velocity * elapsed_time, collisions, entity, 12.5f)) {
-            //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
-            for (const sCollisionData& collisions : collisions) {
-                //Vector3& velocity = velocity;
-                newDir = Vector3(collisions.colNormal.x, 0.f, collisions.colNormal.z).normalize();
-                entity->velocity.x += newDir.x * entity->speed;
-                entity->velocity.z += newDir.z * entity->speed;
-            }
+    collisions = std::vector <sCollisionData>();
+    if (checkCollisions(position + entity->velocity * elapsed_time, collisions, entity, 20.f)) {
+        //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+        for (const sCollisionData& collisions : collisions) {
+            //Vector3& velocity = velocity;
+            newDir = Vector3(collisions.colNormal.x, 0.f, collisions.colNormal.z).normalize();
+            entity->velocity.x += newDir.x * entity->speed;
+            entity->velocity.z += newDir.z * entity->speed;
         }
     }
     /*else if(entity == dynamic_cast<EntityBoss*>(entity)){
@@ -666,15 +666,13 @@ void checkCollisions(EntityAI* entity, Vector3 position, float elapsed_time)
 }
 
 void checkBossCollisions(EntityBoss* entity, Vector3 position, float elapsed_time){
-    if(entity == dynamic_cast<EntityBoss*>(entity)){
-        if (checkCollisions(position + entity->velocity * elapsed_time, collisions, entity, 80.f)) {
-            //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
-            for (const sCollisionData& collisions : collisions) {
-                //Vector3& velocity = velocity;
-                newDir = Vector3(collisions.colNormal.x, 0.f, collisions.colNormal.z).normalize();
-                entity->velocity.x += newDir.x * entity->speed;
-                entity->velocity.z += newDir.z * entity->speed;
-            }
+    if (checkCollisions(position + entity->velocity * elapsed_time, collisions, entity, 80.f)) {
+        //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+        for (const sCollisionData& collisions : collisions) {
+            //Vector3& velocity = velocity;
+            newDir = Vector3(collisions.colNormal.x, 0.f, collisions.colNormal.z).normalize();
+            entity->velocity.x += newDir.x * entity->speed;
+            entity->velocity.z += newDir.z * entity->speed;
         }
     }
 }
@@ -682,12 +680,13 @@ void checkBossCollisions(EntityBoss* entity, Vector3 position, float elapsed_tim
 void EntityAI::update(float elapsed_time)
 {
     wanderChange += elapsed_time;
-    Vector3 position = model.getTranslation();
+    position = model.getTranslation();
     // yaw = degree between player and enemy; acos or asin? but that's inneficient
     behaviourUpdate();
     takeAction(this, position, elapsed_time);
 
     velocity = move_dir * speed;
+    position = model.getTranslation();
     position.y = 0.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
 
     checkCollisions(this, position, elapsed_time);
@@ -747,6 +746,7 @@ void EntityBoss::update(float elapsed_time)
     takeAction(this, position, elapsed_time);
 
     velocity = move_dir * speed;
+    position = model.getTranslation();
     position.y = 0.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
 
     checkBossCollisions(this, position, elapsed_time);

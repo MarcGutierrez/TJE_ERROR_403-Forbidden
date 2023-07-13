@@ -134,6 +134,7 @@ public:
     Shader* nShader;
 
     PlayStage();
+    ~PlayStage();
     
     stageId getId();
 
