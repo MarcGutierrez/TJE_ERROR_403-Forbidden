@@ -154,24 +154,24 @@ void TitleStage::update(float elapsed_time){
         th = 1.f;
         intermitent = !intermitent;
     }
-    if (currentSlot == slot1 && Input::wasKeyPressed(SDL_SCANCODE_RETURN)) {
+    if (currentSlot == slot1 && ((Input::wasKeyPressed(SDL_SCANCODE_RETURN)) || Input::wasButtonPressed(A_BUTTON))) {
         fin = true;
         for (int i = 0; i < World::get_instance()->root->children.size(); i++) { //clean root
             World::get_instance()->root->removeChild(World::get_instance()->root->children[i]);
             
         }
     }
-    if (currentSlot == slot2 && Input::wasKeyPressed(SDL_SCANCODE_RETURN)) {
+    if (currentSlot == slot2 && ((Input::wasKeyPressed(SDL_SCANCODE_RETURN)) || Input::wasButtonPressed(A_BUTTON))) {
         World::get_instance()->cleanRoot();
         tutorial = true;
     }
-    if (currentSlot == slot3 && Input::wasKeyPressed(SDL_SCANCODE_RETURN)){
+    if (currentSlot == slot3 && ((Input::wasKeyPressed(SDL_SCANCODE_RETURN)) || Input::wasButtonPressed(A_BUTTON))){
         Game::instance->isHard = !Game::instance->isHard;
     }
-    if(Input::wasKeyPressed(SDL_SCANCODE_DOWN)){
+    if(Input::wasKeyPressed(SDL_SCANCODE_DOWN)||Input::wasButtonPressed(PAD_DOWN)){
         currentSlot += 1;
     }
-    if(Input::wasKeyPressed(SDL_SCANCODE_UP)){
+    if(Input::wasKeyPressed(SDL_SCANCODE_UP)||Input::wasButtonPressed(PAD_UP)){
         currentSlot -= 1;
     }
 }
@@ -689,7 +689,7 @@ void MenuStage::render(){
 }
 
 void MenuStage::update(float elapsed_time){
-    if (Input::wasKeyPressed(SDL_SCANCODE_RETURN))
+    if (Input::wasKeyPressed(SDL_SCANCODE_RETURN)||Input::wasButtonPressed(B_BUTTON))
     {
         //World::get_instance()->cleanRoot();
         fin = true;
