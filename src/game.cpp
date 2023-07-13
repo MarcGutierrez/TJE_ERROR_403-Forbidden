@@ -61,7 +61,7 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
     musicCd = 64.f;
     audioChannel = NULL;
     isHard = false;
-    //Audio::Init();
+    Audio::Init();
     
 
 	/*//OpenGL flags
@@ -201,12 +201,12 @@ void Game::update(double seconds_elapsed)
         if (current_stage->fin == true){
             delete current_stage;
             current_stage = new PlayStage();
-            //Audio::Stop(audioChannel);
+            Audio::Stop(audioChannel);
             musicCd = 160.f;
         }
         else if (musicCd >= 64.f)
         {
-            //audioChannel = Audio::PlayM("data/audio/forbidden_theme_test.wav");
+            audioChannel = Audio::PlayM("data/audio/forbidden_theme_test.wav");
             musicCd = 0.f;
         }
         if(s->tutorial){
@@ -229,7 +229,7 @@ void Game::update(double seconds_elapsed)
             ((PlayStage*)current_stage)->projectiles.shrink_to_fit();
             delete current_stage;
             current_stage = new EndStage();
-            //Audio::Stop(audioChannel);
+            Audio::Stop(audioChannel);
             musicCd = 64.f;
         }
     }
@@ -237,18 +237,18 @@ void Game::update(double seconds_elapsed)
         if(s->restart){
             delete current_stage;
             current_stage = new TitleStage();
-            //Audio::Stop(audioChannel);
+            Audio::Stop(audioChannel);
             musicCd = 64.f;
         }
         if(s->retry){
             delete current_stage;
             current_stage = new PlayStage();
-            //Audio::Stop(audioChannel);
+            Audio::Stop(audioChannel);
             musicCd = 160.f;
         }
         else if (musicCd >= 64.f)
         {
-            //audioChannel = Audio::PlayM("data/audio/forbidden_theme_test.wav");
+            audioChannel = Audio::PlayM("data/audio/forbidden_theme_test.wav");
             musicCd = 0.f;
         }
     }

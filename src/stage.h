@@ -104,6 +104,7 @@ public:
     bool slot2InUse;
     bool slot3InUse;
     int bossLvl;
+    bool isBossLvl;
     float HPtoUI;
     
 
