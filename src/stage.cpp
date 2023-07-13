@@ -225,7 +225,6 @@ void PlayStage::loadNewLvl(float seconds_elapsed)
     }
     else if (!enemyNum) {
         spawnCd -= seconds_elapsed;
-        bossLvl = false;
     }
 }
 
@@ -268,7 +267,6 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
         {
             //Audio::PlayM("data/audio/boss_wave_alarm.wav");
             soundEffPlayed = true;
-            bossLvl = true;
         }
     }
 }
@@ -515,7 +513,7 @@ void PlayStage::render(){
         if(gmIntermitent)
             gmSlot->render();
     }
-    if(bossLvl){
+    if(!this->bossLvl){
         HPBar->render();
         HP->render();
     }
@@ -583,7 +581,7 @@ void PlayStage::update(float seconds_elapsed){
     
     killCount = World::get_instance()->player->killCount;
     wave = this->currentDiff-1;
-    bossLvl = this->currentDiff % 5;
+    this->bossLvl = this->currentDiff % 5;
     if (!enemyNum) {
         //loadBossLvl(seconds_elapsed);
         if (!(bossLvl == 0)){
