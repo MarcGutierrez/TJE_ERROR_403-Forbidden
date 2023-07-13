@@ -117,7 +117,24 @@ public:
     bool walkDownZ;
     bool walkUpZ;
 
+    // Enemy Stats
+    int hp, rand, bulletsShoot;
+    float spd, cdShot, dispersion;
+    Matrix44 model;
+    Mesh* entityMesh;
+    Entity* root;
+    EntityAI* newEnemy;
+
+    // Powerup
+    int power;
+    EntityPowerUp* powerUp;
+
+    // render
+    Mesh* nMesh;
+    Shader* nShader;
+
     PlayStage();
+    ~PlayStage();
     
     stageId getId();
 

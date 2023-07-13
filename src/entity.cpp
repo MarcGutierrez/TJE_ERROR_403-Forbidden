@@ -13,11 +13,22 @@
 
 #include "random.h"
 
+Vector3 dirShoot, newDir, center, colPoint, colNormal, position, move_dir;
+float sphereRadius, normalShootSpd, multiShootSpd, normDist;
+Vector2 mouse_pos;
+bool isBoss;
+EntityPlayer* e;
+EntityBoss* b;
+EntityCollider* c;
+EntityProjectile* p;
+
 // Container to store EACH collision
 struct sCollisionData {
     Vector3 colPoint;
     Vector3 colNormal;
 };
+
+std::vector <sCollisionData> collisions;
 
 Entity::Entity(std::string name, Matrix44 model){
     this->name = name;
@@ -91,13 +102,10 @@ EntityMesh::EntityMesh(Matrix44 model, Mesh* mesh, Shader* shader, Texture* text
 }*/
 
 void EntityMesh::render(){
-    // Get the last camera that was activated
-    Camera* camera = Camera::current;
-
     // Enable shader and pass uniforms
     shader->enable();
     shader->setUniform("u_model", model);
-    shader->setUniform("u_viewproj", camera->viewprojection_matrix);
+    shader->setUniform("u_viewproj", Camera::current->viewprojection_matrix);
     shader->setTexture("u_texture", texture, 0);
 
 
@@ -128,24 +136,19 @@ InstancedEntityMesh::InstancedEntityMesh(Matrix44 model, Mesh* mesh, Shader* sha
 }
 
 void InstancedEntityMesh::render(){
-    // Get the last camera that was activated
-    Camera* camera = Camera::current;
-
     // Enable shader and pass uniforms
     shader->enable();
     for(int i = 0; i < this->models.size(); i++){
         shader->setUniform("u_model", this->models[i]);
-        shader->setUniform("u_viewproj", camera->viewprojection_matrix);
+        shader->setUniform("u_viewproj", Camera::current->viewprojection_matrix);
         shader->setTexture("u_texture", texture, 0);
         
         // Render the mesh using the shader
         mesh->render( GL_TRIANGLES );
     }
 
-
     // Disable shader after finishing rendering
     shader->disable();
-
 }
 
 void InstancedEntityMesh::update(float elapsed_time){
@@ -181,63 +184,45 @@ EntityPlayer::EntityPlayer(Matrix44 model, Mesh* mesh, Shader* shader, Texture* 
 }
 
 void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
-    Mesh* mesh;
-    Shader* shader;
-    Texture* texture;
-
-    //texture = Texture::Get("data/texture.tga");
-    texture = World::get_instance()->projectileTexture;
-
-    // example of loading Mesh from Mesh Manager
-    //mesh = Mesh::Get("data/projectile.obj");
-    mesh = World::get_instance()->projectileMesh;
-
-    // example of shader loading using the shaders manager
-    //shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
-    shader = World::get_instance()->shader;
-    
-    float dmg = 0.0f;
-    Vector3 dir = model.frontVector();
+    dirShoot = model.frontVector();
     if (dispersion)
     {
-        dir.x += random(dispersion, -dispersion / 2);
-        dir.z += random(dispersion, -dispersion / 2);
+        dirShoot.x += random(dispersion, -dispersion / 2);
+        dirShoot.z += random(dispersion, -dispersion / 2);
     }
     model.translate(0.0f, 51.0f, 51.f);
-    
-    EntityProjectile* bullet;
 
-    PlayStage* stage = ((PlayStage*)Game::instance->current_stage);
-    if (stage->projectiles.size() < 100) // to check max of bullets in array
+    if (((PlayStage*)Game::instance->current_stage)->projectiles.size() < 50) // to check max of bullets in array
     {
         // generates and expands the bullet array if not fully grown
-        bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, dir, isEnemy);
-        stage->projectiles.push_back(bullet);
+        EntityProjectile* bullet = new EntityProjectile(model, World::get_instance()->projectileMesh,
+            World::get_instance()->shader, World::get_instance()->projectileTexture, speed, 0.f, dirShoot, isEnemy);
+        ((PlayStage*)Game::instance->current_stage)->projectiles.push_back(bullet);
+        World::world->get_instance()->root->addChild(bullet);
     }
     else
     {
-        for (EntityProjectile* p : stage->projectiles)
+        for (EntityProjectile* p : ((PlayStage*)Game::instance->current_stage)->projectiles)
         {
             if (p->lifeTime <= 0.f)
             {
                 // regenerats a bullet if array at full size
                 p->model = model;
-                p->mesh = mesh;
-                p->shader = shader;
-                p->texture = texture;
+                p->mesh = World::get_instance()->projectileMesh;
+                p->shader =
+                    World::get_instance()->shader;
+                p->texture = World::get_instance()->projectileTexture;
                 p->speed = speed;
-                p->dmg = dmg;
-                p->dir = dir;
+                p->dir = dirShoot;
                 p->isEnemy = isEnemy;
                 p->lifeTime = 4.f;
 
-                bullet = p;
+                World::world->get_instance()->root->addChild(p);
                 break;
             }
         }
     }
 
-    World::world->get_instance()->root->addChild(bullet); // add bullet to root to interact with other entities
     if (random() > 0.5f) Audio::PlayS("data/audio/363698__jofae__retro-gun-shot.mp3");
     else Audio::PlayS("data/audio/mixkit-game-gun-shot-1662.mp3");
 
@@ -246,23 +231,7 @@ void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
 
 void multishot(Matrix44 model, float speed, int bulletsShoot, float dispersion, bool isEnemy){
     
-    Mesh* mesh;
-    Shader* shader;
-    Texture* texture;
-
-    //texture = Texture::Get("data/texture.tga");
-    texture = World::get_instance()->projectileTexture;
-
-    // example of loading Mesh from Mesh Manager
-    //mesh = Mesh::Get("data/projectile.obj");
-    mesh = World::get_instance()->projectileMesh;
-
-    // example of shader loading using the shaders manager
-    //shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
-    shader = World::get_instance()->shader;
-    
-    float dmg = 0.0f;
-    Vector3 dir = model.frontVector();
+    dirShoot = model.frontVector();
 
     /*if (dispersion) //multishot sin dispersion
     {
@@ -271,43 +240,39 @@ void multishot(Matrix44 model, float speed, int bulletsShoot, float dispersion, 
     }*/
     model.translate(0.0f, 51.0f, 51.f);
     int range = bulletsShoot / 2;
-    
     for (int i = -range; i <= range; i++) // para generar el numero de balas adecuado
     {
-        Vector3 newDir = dir - Vector3(i * dispersion, 0, i * dispersion); // nueva direccion con dispersion de bala aplicado
+        newDir = dirShoot - Vector3(i * dispersion, 0, i * dispersion); // nueva direccion con dispersion de bala aplicado
         newDir.normalize(); // normaliza la direccion para que las balas vayan a la misma velocidad
-        EntityProjectile* bullet;
 
-        PlayStage* stage = ((PlayStage*)Game::instance->current_stage);
-        if (stage->projectiles.size() < 100) // to check that we have a maximum of bullets
+        if (((PlayStage*)Game::instance->current_stage)->projectiles.size() < 50) // to check that we have a maximum of bullets
         {
             // to fill the array with the new entities
-            bullet = new EntityProjectile(model, mesh, shader, texture, speed, dmg, newDir, isEnemy);
-            stage->projectiles.push_back(bullet);
+            EntityProjectile* newBullet;
+            newBullet = new EntityProjectile(model, World::get_instance()->projectileMesh, World::get_instance()->shader, World::get_instance()->projectileTexture, speed, 0.f, newDir, isEnemy);
+            ((PlayStage*)Game::instance->current_stage)->projectiles.push_back(newBullet);
+            World::world->get_instance()->root->addChild(newBullet);
         }
         else
         {
-            for (EntityProjectile* p : stage->projectiles)
+            for (EntityProjectile* p : ((PlayStage*)Game::instance->current_stage)->projectiles)
             {
                 if (p->lifeTime <= 0.f)
                 {
                     // reloads the bullet entities
                     p->model = model;
-                    p->mesh = mesh;
-                    p->shader = shader;
-                    p->texture = texture;
+                    p->mesh = World::get_instance()->projectileMesh;
+                    p->shader = World::get_instance()->shader;
+                    p->texture = World::get_instance()->projectileTexture;
                     p->speed = speed;
-                    p->dmg = dmg;
                     p->dir = newDir;
                     p->isEnemy = isEnemy;
                     p->lifeTime = 4.f;
-
-                    bullet = p;
+                    World::world->get_instance()->root->addChild(p);
                     break;
                 }
             }
         }
-        World::world->get_instance()->root->addChild(bullet); // add bullet to root to interact with other entities
     }
     if (random() > 0.5f) Audio::PlayS("data/audio/363698__jofae__retro-gun-shot.mp3");
     else Audio::PlayS("data/audio/mixkit-game-gun-shot-1662.mp3");
@@ -315,7 +280,7 @@ void multishot(Matrix44 model, float speed, int bulletsShoot, float dispersion, 
 
 void youDie(Entity* entity, EntityProjectile* p){
     if (p->isEnemy){
-        if(EntityPlayer* e = dynamic_cast<EntityPlayer*>(entity)){
+        if(e = dynamic_cast<EntityPlayer*>(entity)){
             if (!e->godMode){
                 e->isDead = true;
                 Audio::Play("data/audio/videogame-death-sound-43894.mp3");
@@ -324,7 +289,7 @@ void youDie(Entity* entity, EntityProjectile* p){
         }
     }
     else{
-        if (EntityBoss* b = dynamic_cast<EntityBoss*>(entity))
+        if (b = dynamic_cast<EntityBoss*>(entity))
         {
             b->hp--;
 
@@ -339,8 +304,7 @@ void youDie(Entity* entity, EntityProjectile* p){
             {
                 b->color = Vector4(1, 1, 1, 1);
                 World::get_instance()->root->removeChild(entity);
-                PlayStage* stage = ((PlayStage*)Game::instance->current_stage);
-                stage->enemyNum--;
+                ((PlayStage*)Game::instance->current_stage)->enemyNum--;
                 World::get_instance()->player->killCount++;
                 b->HPbar = 0;
                 Audio::Play("data/audio/expl6.wav");
@@ -356,34 +320,20 @@ void youDie(Entity* entity, EntityProjectile* p){
             World::get_instance()->root->removeChild(entity);
             p->lifeTime = 0.f;
             World::get_instance()->root->removeChild(p);
-            PlayStage* stage = ((PlayStage*)Game::instance->current_stage);
-            stage->enemyNum--;
+            ((PlayStage*)Game::instance->current_stage)->enemyNum--;
             World::get_instance()->player->killCount++;
             Audio::Play("data/audio/expl6.wav");
         }
-        
     }
 }
 
-Vector3 getMouseToWorld(Vector3 mouse_pos){
-    //get floor plane
-    Entity* plane = World::get_instance()->root->children[4];
-    EntityMesh* e = dynamic_cast<EntityMesh*>(plane);
-    //e->mesh->collision_model->rayCollision();//testRayCollision(e->model, Vector3 (0,0,0), Vector3 (0,0,0), Vector3 (0,0,0), Vector3 (0,0,0));
-
-    Vector3 up = Vector3(0, 1, 0);
-    return up;
-}
-
 void EntityPlayer::render(){
-    // Get the last camera that was activated
-    Camera* camera = Camera::current;
     
     // Enable shader and pass uniforms
     shader->enable();
     shader->setUniform("u_color", color);
     shader->setUniform("u_model", model);
-    shader->setUniform("u_viewproj", camera->viewprojection_matrix);
+    shader->setUniform("u_viewproj", Camera::current->viewprojection_matrix);
     shader->setTexture("u_texture", texture, 0);
 
 
@@ -426,23 +376,21 @@ void EntityPlayer::addPowerUp(EntityPowerUp* pu)
 }
 
 bool checkCollisions(const Vector3& target_pos, std::vector<sCollisionData>& collisions, EntityMesh* entity, float radiusSphere) {
-    Vector3 center = target_pos + Vector3(0.f, 51.25f, 0.f);
-    float sphereRadius = radiusSphere;
-    Vector3 colPoint, colNormal;
+    center = target_pos + Vector3(0.f, 51.25f, 0.f);
+    sphereRadius = radiusSphere;
 
     // For each collider entity “e” in root:
     //for(auto e:World::world->get_instance()->root->children){
     for (int i = 0; i < World::world->get_instance()->root->children.size(); i++) {
-        if (EntityCollider* e = dynamic_cast<EntityCollider*>(World::world->get_instance()->root->children[i])) {
-            Mesh* mesh = e->mesh;
-            if (EntityProjectile* p = dynamic_cast<EntityProjectile*>(e)) {
-                if (mesh->testSphereCollision(e->model, center, sphereRadius, colPoint, colNormal)) {
+        if (c = dynamic_cast<EntityCollider*>(World::world->get_instance()->root->children[i])) {
+            if (p = dynamic_cast<EntityProjectile*>(c)) {
+                if (c->mesh->testSphereCollision(c->model, center, sphereRadius, colPoint, colNormal)) {
                     youDie(entity, p);
                 }
             }
             else
             {
-                if (mesh->testSphereCollision(e->model, center, sphereRadius, colPoint, colNormal)) {
+                if (c->mesh->testSphereCollision(c->model, center, sphereRadius, colPoint, colNormal)) {
                     if (colNormal.x != 0.f || colNormal.z != 0.f)
                         collisions.push_back({ colPoint, colNormal.normalize() });
                 }
@@ -455,13 +403,12 @@ bool checkCollisions(const Vector3& target_pos, std::vector<sCollisionData>& col
 
 Vector3 lookingAt()
 {
-    Vector2 mouse_pos = Input::mouse_position;
+    mouse_pos = Input::mouse_position;
     return Vector3((mouse_pos.x / Game::instance->window_width) * 8200 - 4100, 51.f, (mouse_pos.y / Game::instance->window_height) * 6000 - 3000);;
 }
 
 void EntityPlayer::update(float elapsed_time){
-    Vector3 position = model.getTranslation();
-    std::vector <sCollisionData> collisions;
+    position = model.getTranslation();
 
     if (cdCadLife > 0.f)
     {
@@ -493,25 +440,24 @@ void EntityPlayer::update(float elapsed_time){
         }
     }
     
-    Vector3 move_dir = Vector3(0.0f, 0.0f, 0.0f);
+    move_dir = Vector3(0.0f, 0.0f, 0.0f);
     
-    
-        if (Input::isKeyPressed(SDL_SCANCODE_W)) {
-            move_dir = Vector3(0.0f + move_dir.x, 0.0f, -1.0f + move_dir.z);
-        }
-        if (Input::isKeyPressed(SDL_SCANCODE_S)) {
-            move_dir = Vector3(0.0f + move_dir.x, 0.0f, 1.0f + move_dir.z);
-        }
-        if (Input::isKeyPressed(SDL_SCANCODE_A)) {
-            move_dir = Vector3(-1.0f + move_dir.x, 0.0f, 0.0f + move_dir.z);
-        }
-        if (Input::isKeyPressed(SDL_SCANCODE_D)) {
-            move_dir = Vector3(1.0f + move_dir.x, 0.0f, 0.0f + move_dir.z);
-        }
-        if (Input::gamepads->axis[0] != 0.f || Input::gamepads->axis[1] != 0.f)
-        {
-            move_dir = Vector3(Input::gamepads->axis[0], 0, Input::gamepads->axis[1]);
-        }
+    if (Input::isKeyPressed(SDL_SCANCODE_W)) {
+        move_dir = Vector3(0.0f + move_dir.x, 0.0f, -1.0f + move_dir.z);
+    }
+    if (Input::isKeyPressed(SDL_SCANCODE_S)) {
+        move_dir = Vector3(0.0f + move_dir.x, 0.0f, 1.0f + move_dir.z);
+    }
+    if (Input::isKeyPressed(SDL_SCANCODE_A)) {
+        move_dir = Vector3(-1.0f + move_dir.x, 0.0f, 0.0f + move_dir.z);
+    }
+    if (Input::isKeyPressed(SDL_SCANCODE_D)) {
+        move_dir = Vector3(1.0f + move_dir.x, 0.0f, 0.0f + move_dir.z);
+    }
+    if (Input::gamepads->axis[0] != 0.f || Input::gamepads->axis[1] != 0.f)
+    {
+        move_dir = Vector3(Input::gamepads->axis[0], 0, Input::gamepads->axis[1]);
+    }
     
         //Debug hotkeys disabled
 
@@ -539,10 +485,11 @@ void EntityPlayer::update(float elapsed_time){
     
     move_dir.normalize();
     velocity = move_dir * speed;
+    collisions = std::vector <sCollisionData>();
     position.y = 0.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
     if (checkCollisions(position + velocity * elapsed_time, collisions, this, 12.5f)) {
         for (const sCollisionData& collisions : collisions) {
-            Vector3 newDir = Vector3(collisions.colNormal.x, 0.f, collisions.colNormal.z).normalize();
+            newDir = Vector3(collisions.colNormal.x, 0.f, collisions.colNormal.z).normalize();
             velocity.x += newDir.x * speed;
             velocity.z += newDir.z * speed;
         }
@@ -593,14 +540,11 @@ EntityAI::EntityAI(Matrix44 model, Mesh* mesh, Shader* shader, Texture* texture,
 
 void EntityAI::render()
 {
-    // Get the last camera that was activated
-    Camera* camera = Camera::current;
-
     // Enable shader and pass uniforms
     shader->enable();
     shader->setUniform("u_color", Vector4(1, 1, 1, 1));
     shader->setUniform("u_model", model);
-    shader->setUniform("u_viewproj", camera->viewprojection_matrix);
+    shader->setUniform("u_viewproj", Camera::current->viewprojection_matrix);
     shader->setTexture("u_texture", texture, 0);
 
 
@@ -613,11 +557,11 @@ void EntityAI::render()
 
 bool EntityAI::canSeePlayer()
 {
-    Vector3 target = World::get_instance()->player->model.getTranslation() - this->model.getTranslation();
-    target = target.normalize();
-    Vector3 eye = this->model.frontVector();
-    eye = eye.normalize();
-    return (eye.dot(target) >= .5f) ? true : false;
+    position = World::get_instance()->player->model.getTranslation() - this->model.getTranslation();
+    position = position.normalize();
+    dirShoot = this->model.frontVector();
+    dirShoot = dirShoot.normalize();
+    return (dirShoot.dot(position) >= .5f) ? true : false;
 }
 
 void EntityAI::behaviourUpdate()
@@ -634,11 +578,10 @@ Vector3 get_center_dir(Vector3 pos)
 
 void takeAction(EntityAI* entity, Vector3 position, float elapsed_time)
 {
-    bool isBoss = (dynamic_cast<EntityBoss*>(entity) ? true : false);
-    int multiShootSpd = 2500.f, normalShootSpd = 3000.f;
-    if (EntityBoss* b = dynamic_cast<EntityBoss*>(entity)) if(b->isHurt) b->hurtFrames += elapsed_time;
-
-    float normDist;
+    isBoss = (dynamic_cast<EntityBoss*>(entity) ? true : false);
+    multiShootSpd = 2500.f;
+    normalShootSpd = 3000.f;
+    if (b = dynamic_cast<EntityBoss*>(entity)) if(b->isHurt) b->hurtFrames += elapsed_time;
 
     switch (entity->currentBehaviour)
     {
@@ -647,7 +590,7 @@ void takeAction(EntityAI* entity, Vector3 position, float elapsed_time)
         entity->shotCdTime += elapsed_time;
         if (entity->shotCdTime > entity->cdShot)
         {
-            if (EntityBoss* b = dynamic_cast<EntityBoss*>(entity))
+            if (b = dynamic_cast<EntityBoss*>(entity))
             {
                 multishot(b->model, multiShootSpd, b->numBulletsShoot, b->dispersion, true);
             }
@@ -684,8 +627,8 @@ void takeAction(EntityAI* entity, Vector3 position, float elapsed_time)
         //entity->speed = entity->speed - 800;
         if (entity->wanderChange > 2.f)
         {
-            Vector3 centerDir = get_center_dir(entity->model.getTranslation());
-            entity->move_dir = Vector3(centerDir.x + get_random_dir(), 0.f, centerDir.y + get_random_dir());
+            center = get_center_dir(entity->model.getTranslation());
+            entity->move_dir = Vector3(center.x + get_random_dir(), 0.f, center.y + get_random_dir());
             entity->wanderChange = .0f;
         }
         entity->yaw += entity->model.getYawRotationToAimTo(position + entity->move_dir);
@@ -699,16 +642,14 @@ void takeAction(EntityAI* entity, Vector3 position, float elapsed_time)
 
 void checkCollisions(EntityAI* entity, Vector3 position, float elapsed_time)
 {
-    std::vector <sCollisionData> collisions;
-    if(entity == dynamic_cast<EntityAI*>(entity)){
-        if (checkCollisions(position + entity->velocity * elapsed_time, collisions, entity, 12.5f)) {
-            //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
-            for (const sCollisionData& collisions : collisions) {
-                //Vector3& velocity = velocity;
-                Vector3 newDir = Vector3(collisions.colNormal.x, 0.f, collisions.colNormal.z).normalize();
-                entity->velocity.x += newDir.x * entity->speed;
-                entity->velocity.z += newDir.z * entity->speed;
-            }
+    collisions = std::vector <sCollisionData>();
+    if (checkCollisions(position + entity->velocity * elapsed_time, collisions, entity, 20.f)) {
+        //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+        for (const sCollisionData& collisions : collisions) {
+            //Vector3& velocity = velocity;
+            newDir = Vector3(collisions.colNormal.x, 0.f, collisions.colNormal.z).normalize();
+            entity->velocity.x += newDir.x * entity->speed;
+            entity->velocity.z += newDir.z * entity->speed;
         }
     }
     /*else if(entity == dynamic_cast<EntityBoss*>(entity)){
@@ -725,16 +666,13 @@ void checkCollisions(EntityAI* entity, Vector3 position, float elapsed_time)
 }
 
 void checkBossCollisions(EntityBoss* entity, Vector3 position, float elapsed_time){
-    std::vector <sCollisionData> collisions;
-    if(entity == dynamic_cast<EntityBoss*>(entity)){
-        if (checkCollisions(position + entity->velocity * elapsed_time, collisions, entity, 80.f)) {
-            //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
-            for (const sCollisionData& collisions : collisions) {
-                //Vector3& velocity = velocity;
-                Vector3 newDir = Vector3(collisions.colNormal.x, 0.f, collisions.colNormal.z).normalize();
-                entity->velocity.x += newDir.x * entity->speed;
-                entity->velocity.z += newDir.z * entity->speed;
-            }
+    if (checkCollisions(position + entity->velocity * elapsed_time, collisions, entity, 80.f)) {
+        //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+        for (const sCollisionData& collisions : collisions) {
+            //Vector3& velocity = velocity;
+            newDir = Vector3(collisions.colNormal.x, 0.f, collisions.colNormal.z).normalize();
+            entity->velocity.x += newDir.x * entity->speed;
+            entity->velocity.z += newDir.z * entity->speed;
         }
     }
 }
@@ -742,12 +680,13 @@ void checkBossCollisions(EntityBoss* entity, Vector3 position, float elapsed_tim
 void EntityAI::update(float elapsed_time)
 {
     wanderChange += elapsed_time;
-    Vector3 position = model.getTranslation();
+    position = model.getTranslation();
     // yaw = degree between player and enemy; acos or asin? but that's inneficient
     behaviourUpdate();
     takeAction(this, position, elapsed_time);
 
     velocity = move_dir * speed;
+    position = model.getTranslation();
     position.y = 0.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
 
     checkCollisions(this, position, elapsed_time);
@@ -774,9 +713,6 @@ EntityBoss::EntityBoss(Matrix44 model, Mesh* mesh, Shader* shader, Texture* text
 }
 
 void EntityBoss::render(){
-    // Get the last camera that was activated
-    Camera* camera = Camera::current;
-
     // Enable shader and pass uniforms
     shader->enable();
     if (isHurt)
@@ -790,7 +726,7 @@ void EntityBoss::render(){
     }
     shader->setUniform("u_color", color);
     shader->setUniform("u_model", model);
-    shader->setUniform("u_viewproj", camera->viewprojection_matrix);
+    shader->setUniform("u_viewproj", Camera::current->viewprojection_matrix);
     shader->setTexture("u_texture", texture, 0);
 
 
@@ -804,12 +740,13 @@ void EntityBoss::render(){
 void EntityBoss::update(float elapsed_time)
 {
     wanderChange += elapsed_time;
-    Vector3 position = model.getTranslation();
+    position = model.getTranslation();
     // yaw = degree between player and enemy; acos or asin? but that's inneficient
     behaviourUpdate();
     takeAction(this, position, elapsed_time);
 
     velocity = move_dir * speed;
+    position = model.getTranslation();
     position.y = 0.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
 
     checkBossCollisions(this, position, elapsed_time);
@@ -827,13 +764,10 @@ EntityCollider::EntityCollider(Matrix44 model, Mesh* mesh, Shader* shader, Textu
 }
 
 void EntityCollider::render(){
-    // Get the last camera that was activated
-    Camera* camera = Camera::current;
-
     // Enable shader and pass uniforms
     shader->enable();
     shader->setUniform("u_model", model);
-    shader->setUniform("u_viewproj", camera->viewprojection_matrix);
+    shader->setUniform("u_viewproj", Camera::current->viewprojection_matrix);
     shader->setTexture("u_texture", texture, 0);
 
 
@@ -856,15 +790,11 @@ EntityProjectile::EntityProjectile(Matrix44 model, Mesh* mesh, Shader* shader, T
 }
 
 void EntityProjectile::render(){
-    
-    // Get the last camera that was activated
-    Camera* camera = Camera::current;
-
     // Enable shader and pass uniforms
     shader->enable();
     shader->setUniform("u_color", color);
     shader->setUniform("u_model", model);
-    shader->setUniform("u_viewproj", camera->viewprojection_matrix);
+    shader->setUniform("u_viewproj", Camera::current->viewprojection_matrix);
     shader->setTexture("u_texture", texture, 0);
 
 
@@ -878,30 +808,27 @@ void EntityProjectile::render(){
 struct sImpactData {
     Vector3 impPoint;
     Vector3 impNormal;
-};
+}; std::vector<sImpactData> impacts;
 
 bool checkImpacts(const Vector3& target_pos,
     std::vector<sImpactData>& impacts, bool isEnemy) {
-    Vector3 center = target_pos + Vector3(0.f, 1.25f, 0.f);
-    float sphereRadius = 3.f;
-    Vector3 impPoint, impNormal;
+    center = target_pos + Vector3(0.f, 1.25f, 0.f);
+    sphereRadius = 3.f;
 
     // For each collider entity “e” in root:
     //for(auto e:World::world->get_instance()->root->children){
     for (int i = 0; i < World::world->get_instance()->root->children.size(); i++) {
-        if (EntityProjectile* b = dynamic_cast<EntityProjectile*>(World::world->get_instance()->root->children[i]))
+        if (p = dynamic_cast<EntityProjectile*>(World::world->get_instance()->root->children[i]))
         {
-            if (b->isEnemy && isEnemy) continue;
-            if (!b->isEnemy && !isEnemy) continue;
+            if (p->isEnemy && isEnemy) continue;
+            if (!p->isEnemy && !isEnemy) continue;
         }
-        if (EntityPowerUp* p = dynamic_cast<EntityPowerUp*>(World::world->get_instance()->root->children[i]))
+        if (dynamic_cast<EntityPowerUp*>(World::world->get_instance()->root->children[i]))
             continue;
-        if (EntityAI* ai = dynamic_cast<EntityAI*>(World::world->get_instance()->root->children[i]))
+        if (dynamic_cast<EntityAI*>(World::world->get_instance()->root->children[i]))
             if (isEnemy) continue;
-        if (EntityCollider* e = dynamic_cast<EntityCollider*>(World::world->get_instance()->root->children[i])) {
-            Mesh* mesh = e->mesh;
-
-            if (mesh->testSphereCollision(e->model, center, sphereRadius, impPoint, impNormal)) {
+        if (c = dynamic_cast<EntityCollider*>(World::world->get_instance()->root->children[i])) {
+            if (c->mesh->testSphereCollision(c->model, center, sphereRadius, colPoint, colNormal)) {
                 return true;
             }
         }
@@ -911,16 +838,11 @@ bool checkImpacts(const Vector3& target_pos,
 }
 
 void EntityProjectile::update(float elapsed_time){
-    
-    Vector3 position = model.getTranslation();
+    position = model.getTranslation();
     
     dir.normalize();
     velocity =  dir * speed;
-    
-    float height = model.getTranslation().y;
-    position.y = height;
-    
-    std::vector<sImpactData> impacts;
+
     if (checkImpacts(position + velocity * elapsed_time, impacts, this->isEnemy)) {
         this->lifeTime = 0.f;
         World::world->get_instance()->root->removeChild(this);
@@ -946,14 +868,12 @@ EntityPowerUp::EntityPowerUp(Matrix44 model, Mesh* mesh, Shader* shader, Texture
 void EntityPowerUp::render(){
     model.setTranslation(model.getTranslation().x, 10*sin(azimuth), model.getTranslation().z);
     model.rotate(angle*DEG2RAD, Vector3(0, 1, 0));
-    // Get the last camera that was activated
-    Camera* camera = Camera::current;
 
     // Enable shader and pass uniforms
     shader->enable();
     shader->setUniform("u_color", Vector4(1, 1, 1, 1));
     shader->setUniform("u_model", model);
-    shader->setUniform("u_viewproj", camera->viewprojection_matrix);
+    shader->setUniform("u_viewproj", Camera::current->viewprojection_matrix);
     shader->setTexture("u_texture", texture, 0);
 
 
@@ -967,15 +887,12 @@ void EntityPowerUp::render(){
 
 void checkCollisionsPowerUp(const Vector3& target_pos, EntityPowerUp* entity)
 {
-    Vector3 center = target_pos + Vector3(0.f, 51.25f, 0.f);
-    float sphereRadius = 51.5f;
-    Vector3 colPoint, colNormal;
+    center = target_pos + Vector3(0.f, 51.25f, 0.f);
+    sphereRadius = 51.5f;
 
-    EntityPlayer* player = World::world->get_instance()->player;
-
-    if (player->mesh->testSphereCollision(player->model, center, sphereRadius, colPoint, colNormal))
+    if (World::world->get_instance()->player->mesh->testSphereCollision(World::world->get_instance()->player->model, center, sphereRadius, colPoint, colNormal))
     {
-        player->addPowerUp(entity);
+        World::world->get_instance()->player->addPowerUp(entity);
         World::world->get_instance()->root->removeChild(entity);
     }
 }

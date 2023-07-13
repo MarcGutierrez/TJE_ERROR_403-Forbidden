@@ -44,6 +44,7 @@ void Stage::update(float elapsed_time){
 TitleStage::TitleStage(){
     this->width = Game::instance->window_width;
     this->height = Game::instance->window_height;
+    this->tutorial = false;
     
     this->intermitent = true;
     
@@ -86,8 +87,6 @@ void TitleStage::render(){
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
 
-    Matrix44 m;
-
     if(shader)
     {
         //enable shader
@@ -97,7 +96,7 @@ void TitleStage::render(){
         shader->setUniform("u_color", Vector4(1,1,1,1));
         shader->setUniform("u_viewprojection", camera->viewprojection_matrix );
         shader->setUniform("u_texture", texture, 0);
-        shader->setUniform("u_model", m);
+        shader->setUniform("u_model", model);
         shader->setUniform("u_time", time);
         
         //render stage here
@@ -131,7 +130,7 @@ void TitleStage::render(){
     
     if (intermitent)
     {
-        drawText(Game::instance->window_width/2-165, Game::instance->window_height/ 2 + 250, "Instert credit(s)", Vector3(1, 1, 1), 4);
+        drawText(Game::instance->window_width/2-165, Game::instance->window_height/ 2 + 250, "Insert credit(s)", Vector3(1, 1, 1), 4);
         /*if (Input::gamepads->connected)
             drawText(200, height / 2 + 250, "Press START to start", Vector3(1, 1, 1), 4);
 
@@ -187,17 +186,12 @@ void PlayStage::loadNewLvl(float seconds_elapsed)
     //mesh = Mesh::Get("data/enemy.obj");
     //texture = Texture::Get("data/textures/enemy_texture.tga");
     if (spawnCd <= 0.f){
-        int rand = get_random_enemy_num(currentDiff);
-        enemyNum = (rand > 20) ? 20 : rand;
+        rand = get_random_enemy_num(currentDiff);
+        enemyNum = (rand > 10) ? 10 : rand;
         // this code is for if we want to use it to change things via randomness or other factors like difficulty and position and to not destroy enemies on death
         for (int i = 0; i < enemyNum; i++)
         {
-            int hp;
-            float spd, cdShot, dispersion;
-            Matrix44 model;
-            Mesh* entityMesh;
-
-            Entity* root = World::world->get_instance()->root;
+            root = World::world->get_instance()->root;
 
             hp = 1;
             entityMesh = enemyMesh;
@@ -208,7 +202,7 @@ void PlayStage::loadNewLvl(float seconds_elapsed)
             dispersion = get_random_disp();
             if (enemies.size() <= i)
             {
-                EntityAI* newEnemy = new EntityAI(model, entityMesh, shader, enemyTexture, hp, spd, cdShot, dispersion);
+                newEnemy = new EntityAI(model, entityMesh, shader, enemyTexture, hp, spd, cdShot, dispersion);
                 enemies.push_back(newEnemy);
                 root->addChild(newEnemy);
             }
@@ -236,17 +230,11 @@ void PlayStage::loadNewLvl(float seconds_elapsed)
 }
 
 void PlayStage::loadBossLvl(float seconds_elapsed){
-    
+
     if (spawnCd <= 0.f) {
         enemyNum = 1;
         // this code is for if we want to use it to change things via randomness or other factors like difficulty and position and to not destroy enemies on death
-        
-        int hp, bulletsShoot;
-        float spd, cdShot, dispersion;
-        Matrix44 model;
-        Mesh* entityMesh;
-
-        Entity* root = World::world->get_instance()->root;
+        root = World::world->get_instance()->root;
 
         hp = get_random_hpBoss(currentDiff);
         entityMesh = bossMesh;
@@ -286,17 +274,15 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
 }
 
 void PlayStage::loadPowerUp(float seconds_elapsed){
-    Matrix44 model;
-    
     model.setTranslation(get_random_dist() * get_random_sign(), 0.f, get_random_dist() * get_random_sign());
-    float lifeTime = 10.f;
+    lifeTime = 10.f;
 
-    int power = get_random_powerUP();
+    power = get_random_powerUP();
     if (lastPowerup == power)
         power = ((power + 1) % 3) + 1;
     lastPowerup = power;
     
-    EntityPowerUp* powerUp = new EntityPowerUp(model, World::get_instance()->powerUpMesh, shader, World::get_instance()->powerUpTexture, lifeTime, (powerUps)power);
+    powerUp = new EntityPowerUp(model, World::get_instance()->powerUpMesh, shader, World::get_instance()->powerUpTexture, lifeTime, (powerUps)power);
     World::get_instance()->root->addChild(powerUp);
     
 }
@@ -382,6 +368,24 @@ PlayStage::PlayStage(){
 
 }
 
+PlayStage::~PlayStage()
+{
+    delete entityMesh;
+    delete root;
+    delete newEnemy;
+    delete nMesh;
+    delete nShader;
+    delete powerUp;
+    delete enemyTexture;
+    delete boss;
+    delete bossTexture;
+    delete cdSlot;
+    delete msSlot;
+    delete gmSlot;
+    delete HPBar;
+    delete HP;
+}
+
 void PlayStage::render(){
     //set the clear color (the background color)
     glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -396,8 +400,6 @@ void PlayStage::render(){
     glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
-   
-    Matrix44 m;
 
     if(shader)
     {
@@ -408,14 +410,13 @@ void PlayStage::render(){
         shader->setUniform("u_color", color);
         shader->setUniform("u_viewprojection", camera->viewprojection_matrix );
         shader->setUniform("u_texture", texture, 0);
-        shader->setUniform("u_model", m);
+        shader->setUniform("u_model", model);
         shader->setUniform("u_time", time);
         
         //render stage here
         World::get_instance()->render();
 
-        Mesh* nMesh = NULL;
-        Shader* nShader = NULL;
+        nMesh = NULL;
         nShader = World::get_instance()->shader;
         if (nShader)
         {
@@ -582,7 +583,7 @@ void PlayStage::update(float seconds_elapsed){
     
     killCount = World::get_instance()->player->killCount;
     wave = this->currentDiff-1;
-    int bossLvl = this->currentDiff % 5;
+    bossLvl = this->currentDiff % 5;
     if (!enemyNum) {
         //loadBossLvl(seconds_elapsed);
         if (!(bossLvl == 0)){
@@ -625,12 +626,6 @@ void PlayStage::update(float seconds_elapsed){
         powerUpCd = 0.f;
     }
     World::get_instance()->update(seconds_elapsed);
-    if (Input::wasKeyPressed(SDL_SCANCODE_Q)) { //toggle freecam
-        this->free_cam = !this->free_cam;
-    }
-    if(Input::wasKeyPressed(SDL_SCANCODE_R)){
-        camera->lookAt(Vector3(0.f,4500.f, 1),Vector3(0.f,0.f,0.f), Vector3(0.f,1.f,0.f)); //reset camera
-    }
     if(World::get_instance()->player->isDead){
         std::cout << World::get_instance()->player->killCount << std::endl;
         World::get_instance()->cleanRoot();
@@ -688,8 +683,6 @@ void MenuStage::render(){
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
 
-    Matrix44 m;
-    
     drawText(Game::instance->window_width/2-130, Game::instance->window_height/2-125, "hola", Vector3(1,0,0),6);
     drawText(135, Game::instance->window_height / 2 + 250, "Press RETURN to exit to title screen", Vector3(1, 1, 1), 3);
     
@@ -739,9 +732,6 @@ void EndStage::render(){
     glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
-
-    Matrix44 m;
-    
     if(shader)
     {
         //enable shader
@@ -751,7 +741,7 @@ void EndStage::render(){
         shader->setUniform("u_color", Vector4(1,1,1,1));
         shader->setUniform("u_viewprojection", camera->viewprojection_matrix );
         shader->setUniform("u_texture", texture, 0);
-        shader->setUniform("u_model", m);
+        shader->setUniform("u_model", model);
         shader->setUniform("u_time", time);
         
         //render stage here
