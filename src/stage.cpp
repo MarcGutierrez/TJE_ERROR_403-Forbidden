@@ -231,6 +231,7 @@ void PlayStage::loadNewLvl(float seconds_elapsed)
 void PlayStage::loadBossLvl(float seconds_elapsed){
 
     if (spawnCd <= 0.f) {
+        isBossLvl = true;
         enemyNum = 1;
         // this code is for if we want to use it to change things via randomness or other factors like difficulty and position and to not destroy enemies on death
         root = World::world->get_instance()->root;
@@ -382,6 +383,10 @@ PlayStage::~PlayStage()
     delete gmSlot;
     delete HPBar;
     delete HP;
+    enemies.clear();
+    enemies.shrink_to_fit();
+    projectiles.clear();
+    projectiles.shrink_to_fit();
 }
 
 void PlayStage::render(){
@@ -586,12 +591,11 @@ void PlayStage::update(float seconds_elapsed){
         //loadBossLvl(seconds_elapsed);
         if (!(bossLvl == 0)){
             loadNewLvl(seconds_elapsed);
-            isBossLvl = false;
+            if (isBossLvl) isBossLvl = false;
         }
         else
         {
             loadBossLvl(seconds_elapsed);
-            isBossLvl = true;
         }
         if (((bossLvl == 0) || (bossLvl == 1)) && enemyNum)
         {
