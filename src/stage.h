@@ -42,6 +42,7 @@ public:
     int height;
     bool intermitent;
     float th = 1.f;
+    bool tutorial;
     
     TitleStage();
     

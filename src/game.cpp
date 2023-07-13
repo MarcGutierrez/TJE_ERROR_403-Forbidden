@@ -207,6 +207,13 @@ void Game::update(double seconds_elapsed)
             audioChannel = Audio::PlayM("data/audio/forbidden_theme_test.wav");
             musicCd = 0.f;
         }
+        if(s->tutorial){
+            current_stage = new MenuStage();
+        }
+    }
+    if(MenuStage* s = dynamic_cast<MenuStage*>(current_stage)){
+        if(current_stage->fin == true)
+            current_stage = new TitleStage();
     }
     if(PlayStage* s = dynamic_cast<PlayStage*>(current_stage)){
         if (current_stage->fin == true){

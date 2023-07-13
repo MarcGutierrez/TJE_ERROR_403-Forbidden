@@ -124,6 +124,10 @@ void TitleStage::update(float elapsed_time){
             
         }
     }
+    if (Input::wasKeyPressed(SDL_SCANCODE_T)) {
+        World::get_instance()->cleanRoot();
+        tutorial = true;
+    }
 }
 
 stageId TitleStage::getId()
@@ -621,15 +625,50 @@ stageId PlayStage::getId()
 }
 
 MenuStage::MenuStage(){
-    
+    fin = false;
 }
 
 void MenuStage::render(){
+    glClearColor(0.0f, 0.0f, 0.0f, 1);
+
+    // Clear the window and the depth buffer
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     
+    //set flags
+    glDisable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+
+    Matrix44 m;
+    
+    if(shader)
+    {
+        //enable shader
+        shader->enable();
+
+        //upload uniforms
+        shader->setUniform("u_color", Vector4(1,1,1,1));
+        shader->setUniform("u_viewprojection", camera->viewprojection_matrix );
+        shader->setUniform("u_texture", texture, 0);
+        shader->setUniform("u_model", m);
+        shader->setUniform("u_time", time);
+        
+        //render stage here
+        World::get_instance()->render();
+        
+        //disable shader
+        shader->disable();
+    }
+    drawText(Game::instance->window_width/2-130, Game::instance->window_height/2-125, "hola", Vector3(1,0,0),6);
 }
 
 void MenuStage::update(float elapsed_time){
-    
+    if (Input::wasKeyPressed(SDL_SCANCODE_T))
+    {
+        //World::get_instance()->cleanRoot();
+        fin = true;
+    }
 }
 
 stageId MenuStage::getId()

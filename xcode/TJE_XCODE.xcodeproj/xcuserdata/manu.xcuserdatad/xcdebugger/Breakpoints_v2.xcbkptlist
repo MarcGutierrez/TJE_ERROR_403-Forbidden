@@ -7,64 +7,49 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "764CB99F-4625-47DD-938B-D4EB236F847D"
+            uuid = "6C8FE67E-1227-4995-8E38-C7B268BBB64D"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../src/game.cpp"
+            filePath = "../src/entity.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "119"
-            endingLineNumber = "119"
-            landmarkName = "Game::render()"
+            startingLineNumber = "646"
+            endingLineNumber = "646"
+            landmarkName = "takeAction(entity, position, elapsed_time)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "2B1C448D-94B2-4D19-9F76-C686960C7CEC"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../src/stage.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "508"
+            endingLineNumber = "508"
+            landmarkName = "PlayStage::update(seconds_elapsed)"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "764CB99F-4625-47DD-938B-D4EB236F847D - 4c100d7ef8db784d"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Game::render()"
-                  moduleName = "TJE_XCODE"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/manu/Desktop/TJE_Framework-master/src/game.cpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "119"
-                  endingLineNumber = "119"
-                  offsetFromSymbolStart = "104">
-               </Location>
-               <Location
-                  uuid = "764CB99F-4625-47DD-938B-D4EB236F847D - 4c100d7ef8db7725"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Game::render()"
-                  moduleName = "TJE_XCODE"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/manu/Desktop/TJE_Framework-master/src/game.cpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "143"
-                  endingLineNumber = "143"
-                  offsetFromSymbolStart = "24">
-               </Location>
-               <Location
-                  uuid = "764CB99F-4625-47DD-938B-D4EB236F847D - 4c100d7ef8db77ca"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Game::render()"
-                  moduleName = "TJE_XCODE"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/manu/Desktop/TJE_Framework-master/src/game.cpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "146"
-                  endingLineNumber = "146"
-                  offsetFromSymbolStart = "28">
-               </Location>
-            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "226D4E82-3B1D-4EE8-90F3-F158DAE7D63A"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../src/stage.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "506"
+            endingLineNumber = "506"
+            landmarkName = "PlayStage::update(seconds_elapsed)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
