@@ -583,7 +583,7 @@ void PlayStage::update(float seconds_elapsed){
     
     killCount = World::get_instance()->player->killCount;
     wave = this->currentDiff-1;
-    int bossLvl = this->currentDiff % 5;
+    bossLvl = this->currentDiff % 5;
     if (!enemyNum) {
         //loadBossLvl(seconds_elapsed);
         if (!(bossLvl == 0)){
@@ -626,12 +626,6 @@ void PlayStage::update(float seconds_elapsed){
         powerUpCd = 0.f;
     }
     World::get_instance()->update(seconds_elapsed);
-    if (Input::wasKeyPressed(SDL_SCANCODE_Q)) { //toggle freecam
-        this->free_cam = !this->free_cam;
-    }
-    if(Input::wasKeyPressed(SDL_SCANCODE_R)){
-        camera->lookAt(Vector3(0.f,4500.f, 1),Vector3(0.f,0.f,0.f), Vector3(0.f,1.f,0.f)); //reset camera
-    }
     if(World::get_instance()->player->isDead){
         std::cout << World::get_instance()->player->killCount << std::endl;
         World::get_instance()->cleanRoot();

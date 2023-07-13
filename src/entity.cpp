@@ -489,7 +489,7 @@ void EntityPlayer::update(float elapsed_time){
     position.y = 0.0f; //el 51 es hardcodeado por la mesh del cubo (se tiene en cuenta el centro de la mesh)
     if (checkCollisions(position + velocity * elapsed_time, collisions, this, 12.5f)) {
         for (const sCollisionData& collisions : collisions) {
-            Vector3 newDir = Vector3(collisions.colNormal.x, 0.f, collisions.colNormal.z).normalize();
+            newDir = Vector3(collisions.colNormal.x, 0.f, collisions.colNormal.z).normalize();
             velocity.x += newDir.x * speed;
             velocity.z += newDir.z * speed;
         }

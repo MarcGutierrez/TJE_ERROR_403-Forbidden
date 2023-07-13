@@ -224,7 +224,9 @@ void Game::update(double seconds_elapsed)
     if(PlayStage* s = dynamic_cast<PlayStage*>(current_stage)){
         if (current_stage->fin == true){
             ((PlayStage*)current_stage)->enemies.clear();
+            ((PlayStage*)current_stage)->enemies.shrink_to_fit();
             ((PlayStage*)current_stage)->projectiles.clear();
+            ((PlayStage*)current_stage)->projectiles.shrink_to_fit();
             delete current_stage;
             current_stage = new EndStage();
             Audio::Stop(audioChannel);
