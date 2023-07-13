@@ -30,8 +30,8 @@
             filePath = "../src/stage.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "555"
-            endingLineNumber = "555"
+            startingLineNumber = "551"
+            endingLineNumber = "551"
             landmarkName = "PlayStage::update(seconds_elapsed)"
             landmarkType = "7">
          </BreakpointContent>
@@ -46,10 +46,10 @@
             filePath = "../src/stage.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "553"
-            endingLineNumber = "553"
-            landmarkName = "PlayStage::update(seconds_elapsed)"
-            landmarkType = "7">
+            startingLineNumber = "549"
+            endingLineNumber = "549"
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

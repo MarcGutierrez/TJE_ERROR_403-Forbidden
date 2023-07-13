@@ -758,8 +758,8 @@ void EndStage::render(){
     }
     else
     {
-        drawText(175, Game::instance->window_height / 2 + 200, "Press R to play again", Vector3(1, 1, 1), 4);
-        drawText(135, Game::instance->window_height / 2 + 250, "Or press F to exit to title screen", Vector3(1, 1, 1), 3);
+        drawText(Game::instance->window_width/2 - 225, Game::instance->window_height / 2 + 200, "Press R to play again", Vector3(1, 1, 1), 4);
+        drawText(Game::instance->window_width/2 - 265, Game::instance->window_height / 2 + 250, "Or press F to exit to title screen", Vector3(1, 1, 1), 3);
     }
 }
 
