@@ -682,7 +682,14 @@ void MenuStage::render(){
     glDisable(GL_CULL_FACE);
 
     drawText(Game::instance->window_width/2-130, Game::instance->window_height/2-125, "hola", Vector3(1,0,0),6);
-    drawText(135, Game::instance->window_height / 2 + 250, "Press RETURN to exit to title screen", Vector3(1, 1, 1), 3);
+    if (Input::gamepads->connected)
+    {
+        drawText(135, Game::instance->window_height / 2 + 250, "Press B to exit to title screen", Vector3(1, 1, 1), 3);
+    }
+    else
+    {
+        drawText(135, Game::instance->window_height / 2 + 250, "Press RETURN to exit to title screen", Vector3(1, 1, 1), 3);
+    }
     
 }
 
