@@ -684,11 +684,11 @@ void MenuStage::render(){
     drawText(Game::instance->window_width/2-130, Game::instance->window_height/2-125, "hola", Vector3(1,0,0),6);
     if (Input::gamepads->connected)
     {
-        drawText(135, Game::instance->window_height / 2 + 250, "Press B to exit to title screen", Vector3(1, 1, 1), 3);
+        drawText(Game::instance->window_width/2 - 265, Game::instance->window_height / 2 + 250, "Press B to exit to title screen", Vector3(1, 1, 1), 3);
     }
     else
     {
-        drawText(135, Game::instance->window_height / 2 + 250, "Press RETURN to exit to title screen", Vector3(1, 1, 1), 3);
+        drawText(Game::instance->window_width/2 - 265, Game::instance->window_height / 2 + 250, "Press RETURN to exit to title screen", Vector3(1, 1, 1), 3);
     }
     
 }
@@ -760,8 +760,8 @@ void EndStage::render(){
     drawText(Game::instance->window_width/2-250, Game::instance->window_width/2-125, "You survived for: " + std::to_string(wave - 1) + " rounds", Vector3(1,0,0),4);
     if (Input::gamepads->connected)
     {
-        drawText(175, Game::instance->window_height / 2 + 200, "Press START to play again", Vector3(1, 1, 1), 4);
-        drawText(135, Game::instance->window_height / 2 + 250, "Or press BACK to exit to title screen", Vector3(1, 1, 1), 3);
+        drawText(Game::instance->window_width/2 - 225, Game::instance->window_height / 2 + 200, "Press START to play again", Vector3(1, 1, 1), 4);
+        drawText(Game::instance->window_width/2 - 265, Game::instance->window_height / 2 + 250, "Or press BACK to exit to title screen", Vector3(1, 1, 1), 3);
     }
     else
     {
