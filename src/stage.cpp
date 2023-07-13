@@ -501,7 +501,7 @@ void PlayStage::update(float seconds_elapsed){
     if (gradient) {
         if (walkDownX) {
             color.x -= gradientFactor * seconds_elapsed;
-            if (color.x <= 0) {
+            if (color.x <= 0.1) {
                 //walkDownZ = true;
                 walkDownX = false;
                 walkDownZ = true;
@@ -509,7 +509,7 @@ void PlayStage::update(float seconds_elapsed){
         }
         if (!walkDownX) {
             color.x += gradientFactor * seconds_elapsed;
-            if (color.x >= 0.7) {
+            if (color.x >= 0.95) {
                 walkUpZ = true;
             }
         }
@@ -521,7 +521,7 @@ void PlayStage::update(float seconds_elapsed){
         }
         if (walkUpZ) {
             color.z += gradientFactor * seconds_elapsed;
-            if (color.z >= 1) {
+            if (color.z >= 0.67) {
                 walkDownX = true;
                 walkUpZ = false;
             }
