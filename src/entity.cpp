@@ -657,9 +657,15 @@ void takeAction(EntityAI* entity, Vector3 position, float elapsed_time)
         }
         normDist = entity->model.getTranslation().distance(World::get_instance()->player->model.getTranslation())/multiShootSpd;
 
-        entity->yaw += entity->model.getYawRotationToAimTo
-        (
+        if (Game::instance->isHard || isBoss)
+            entity->yaw += entity->model.getYawRotationToAimTo
+            (
             World::get_instance()->player->model.getTranslation() + (World::get_instance()->player->velocity*0.5) * normDist
+            );
+        else
+            entity->yaw += entity->model.getYawRotationToAimTo
+            (
+                World::get_instance()->player->model.getTranslation()
             );
         //
         if (isBoss)

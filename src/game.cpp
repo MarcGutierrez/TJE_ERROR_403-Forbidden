@@ -59,6 +59,7 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
     current_stage = title_stage;
     musicCd = 64.f;
     audioChannel = NULL;
+    isHard = true;
     Audio::Init();
     
 

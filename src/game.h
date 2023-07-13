@@ -27,6 +27,7 @@ public:
 	float cdGamepad;
 	int fps;
 	bool must_exit;
+	bool isHard;
 	float musicCd;
 
     Stage* current_stage;
