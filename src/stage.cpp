@@ -258,7 +258,7 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
         spd = get_random_spd() / 10;
 
         model.setTranslation(get_random_dist() * get_random_sign(), 0, get_random_dist() * get_random_sign());
-        cdShot = get_random_cdShot(); // MIRAR FUNCION BOSS
+        cdShot = get_random_cdShotBoss();
         bulletsShoot = get_random_bulletsBoss(currentDiff);
         bulletsShoot = (bulletsShoot > 5) ? 5 : bulletsShoot;
         dispersion = 1.f / (bulletsShoot);
@@ -283,7 +283,7 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
         spawnCd -= seconds_elapsed;
         if (spawnCd < 1.f && !soundEffPlayed)
         {
-            //Audio::PlayM("data/audio/boss_wave_alarm.wav");
+            Audio::PlayM("data/audio/boss_wave_alarm.wav");
             soundEffPlayed = true;
         }
     }
@@ -620,7 +620,7 @@ void PlayStage::update(float seconds_elapsed){
         }
         if (((bossLvl == 0) || (bossLvl == 1)) && enemyNum)
         {
-            //Audio::Stop(Game::instance->audioChannel);
+            Audio::Stop(Game::instance->audioChannel);
             Game::instance->musicCd = 160.f;
         }
     }
@@ -630,7 +630,7 @@ void PlayStage::update(float seconds_elapsed){
         {
             if (Game::instance->musicCd > 104.f)
             {
-                //Game::instance->audioChannel = Audio::PlayM("data/audio/boss_wave_song.mp3");
+                Game::instance->audioChannel = Audio::PlayM("data/audio/boss_wave_song.mp3");
                 Game::instance->musicCd = 0.f;
             }
         }
@@ -638,7 +638,7 @@ void PlayStage::update(float seconds_elapsed){
         {
             if (Game::instance->musicCd > 155.f)
             {
-                //Game::instance->audioChannel = Audio::PlayM("data/audio/enemy_wave_song.mp3");
+                Game::instance->audioChannel = Audio::PlayM("data/audio/enemy_wave_song.mp3");
                 Game::instance->musicCd = 0.f;
             }
         }

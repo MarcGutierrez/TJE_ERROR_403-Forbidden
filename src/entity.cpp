@@ -257,8 +257,8 @@ void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
         }
     }
 
-    //if (random() > 0.5f) Audio::PlayS("data/audio/363698__jofae__retro-gun-shot.mp3");
-    //else Audio::PlayS("data/audio/mixkit-game-gun-shot-1662.mp3");
+    if (random() > 0.5f) Audio::PlayS("data/audio/363698__jofae__retro-gun-shot.mp3");
+    else Audio::PlayS("data/audio/mixkit-game-gun-shot-1662.mp3");
 
     //std::cout << stage->projectiles.size() << std::endl;
 }
@@ -308,8 +308,8 @@ void multishot(Matrix44 model, float speed, int bulletsShoot, float dispersion, 
             }
         }
     }
-    //if (random() > 0.5f) Audio::PlayS("data/audio/363698__jofae__retro-gun-shot.mp3");
-    //else Audio::PlayS("data/audio/mixkit-game-gun-shot-1662.mp3");
+    if (random() > 0.5f) Audio::PlayS("data/audio/363698__jofae__retro-gun-shot.mp3");
+    else Audio::PlayS("data/audio/mixkit-game-gun-shot-1662.mp3");
 }
 
 void youDie(Entity* entity, EntityProjectile* p){
@@ -317,7 +317,7 @@ void youDie(Entity* entity, EntityProjectile* p){
         if(e = dynamic_cast<EntityPlayer*>(entity)){
             if (!e->godMode){
                 e->isDead = true;
-                //Audio::Play("data/audio/videogame-death-sound-43894.mp3");
+                Audio::Play("data/audio/videogame-death-sound-43894.mp3");
             }
             //std::cout << "u suck" << std::endl;
         }
@@ -341,10 +341,10 @@ void youDie(Entity* entity, EntityProjectile* p){
                 ((PlayStage*)Game::instance->current_stage)->enemyNum--;
                 World::get_instance()->player->killCount++;
                 b->HPbar = 0;
-                //Audio::Play("data/audio/expl6.wav");
+                Audio::Play("data/audio/expl6.wav");
             }
             else{
-                //Audio::Play("data/audio/hitmarker_2.mp3");
+                Audio::Play("data/audio/hitmarker_2.mp3");
                 b->HPbar -= 500/b->maxhp;
             }
         }
@@ -356,7 +356,7 @@ void youDie(Entity* entity, EntityProjectile* p){
             World::get_instance()->root->removeChild(p);
             ((PlayStage*)Game::instance->current_stage)->enemyNum--;
             World::get_instance()->player->killCount++;
-            //Audio::Play("data/audio/expl6.wav");
+            Audio::Play("data/audio/expl6.wav");
         }
     }
 }
