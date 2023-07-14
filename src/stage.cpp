@@ -692,6 +692,9 @@ stageId PlayStage::getId()
 MenuStage::MenuStage(){
     fin = false;
     shader = World::get_instance()->shader;
+    texture = Texture::Get("data/textures/MenuBackground.png");
+    tutorial = new UI(quad, texture, Game::instance->window_width/2, Game::instance->window_height/2, Game::instance->window_width, Game::instance->window_height, true);
+    //cdSlot = new UI(quad, World::get_instance()->cdPowerUpTexture, slot1.x, slot1.y, 114, 75, grayColor);
 }
 
 MenuStage::~MenuStage(){
@@ -713,7 +716,9 @@ void MenuStage::render(){
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
 
-    drawText(Game::instance->window_width/2-130, Game::instance->window_height/2-125, "hola", Vector3(1,0,0),6);
+    
+    tutorial->render();
+    
     if (Input::gamepads->connected)
     {
         drawText(Game::instance->window_width/2 - 265, Game::instance->window_height / 2 + 250, "Press B to exit to title screen", Vector3(1, 1, 1), 3);
@@ -722,6 +727,7 @@ void MenuStage::render(){
     {
         drawText(Game::instance->window_width/2 - 265, Game::instance->window_height / 2 + 250, "Press RETURN to exit to title screen", Vector3(1, 1, 1), 3);
     }
+
     
 }
 

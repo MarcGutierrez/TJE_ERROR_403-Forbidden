@@ -159,6 +159,9 @@ public:
     
     MenuStage();
     ~MenuStage();
+    Mesh quad;
+    UI* tutorial;
+    Texture* texture = nullptr;
     
     stageId getId();
     

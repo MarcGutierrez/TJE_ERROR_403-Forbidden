@@ -10,7 +10,7 @@
 #include "game.h"
 #include "interface.h"
 
-UI::UI(Mesh quad, Texture* texture, float x, float y,float w, float h, Vector4 color){
+UI::UI(Mesh quad, Texture* texture, float x, float y, float w, float h, Vector4 color){
     quad.createQuad(x, y, w, h, true);
     this->quad = quad;
     this->texture = texture;
