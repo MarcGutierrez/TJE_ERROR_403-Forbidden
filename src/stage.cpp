@@ -33,6 +33,14 @@ Stage::Stage(){
     camera->setPerspective(70.f,Game::instance->window_width/(float)Game::instance->window_height,0.1f,10000.f); //set the projection, we want to be perspective
 }
 
+Stage::~Stage(){
+    //delete camera;
+    //delete mesh;
+    //delete texture;
+    //delete shader;
+    //delete audio;*/
+}
+
 void Stage::render(){
     
 }
@@ -57,7 +65,8 @@ TitleStage::TitleStage(){
     mesh = Mesh::Get("data/background.obj");
 
     // example of shader loading using the shaders manager
-    shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+    //shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+    shader = World::get_instance()->shader;
     //model.setTranslation(10000.0, 0, 1000);
     model.rotate(-PI/2, Vector3(0,1,0));
     EntityMesh* background = new EntityMesh(model, mesh, shader, texture);
@@ -72,6 +81,14 @@ TitleStage::TitleStage(){
     //slots.push_back(slot1);
     //slots.push_back(slot2);
     //slots.push_back(slot3);
+}
+
+TitleStage::~TitleStage()
+{
+    delete camera;
+    delete mesh;
+    delete texture;
+    delete shader;
 }
 
 void TitleStage::render(){
@@ -241,7 +258,7 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
         spd = get_random_spd() / 10;
 
         model.setTranslation(get_random_dist() * get_random_sign(), 0, get_random_dist() * get_random_sign());
-        cdShot = get_random_cdShotBoss(); // MIRAR FUNCION BOSS
+        cdShot = get_random_cdShot(); // MIRAR FUNCION BOSS
         bulletsShoot = get_random_bulletsBoss(currentDiff);
         bulletsShoot = (bulletsShoot > 5) ? 5 : bulletsShoot;
         dispersion = 1.f / (bulletsShoot);
@@ -266,7 +283,7 @@ void PlayStage::loadBossLvl(float seconds_elapsed){
         spawnCd -= seconds_elapsed;
         if (spawnCd < 1.f && !soundEffPlayed)
         {
-            Audio::PlayM("data/audio/boss_wave_alarm.wav");
+            //Audio::PlayM("data/audio/boss_wave_alarm.wav");
             soundEffPlayed = true;
         }
     }
@@ -376,8 +393,10 @@ PlayStage::~PlayStage()
     delete nMesh;
     delete nShader;
     delete powerUp;
+    delete enemyMesh;
     delete enemyTexture;
     delete boss;
+    delete bossMesh;
     delete bossTexture;
     delete cdSlot;
     delete msSlot;
@@ -601,7 +620,7 @@ void PlayStage::update(float seconds_elapsed){
         }
         if (((bossLvl == 0) || (bossLvl == 1)) && enemyNum)
         {
-            Audio::Stop(Game::instance->audioChannel);
+            //Audio::Stop(Game::instance->audioChannel);
             Game::instance->musicCd = 160.f;
         }
     }
@@ -611,7 +630,7 @@ void PlayStage::update(float seconds_elapsed){
         {
             if (Game::instance->musicCd > 104.f)
             {
-                Game::instance->audioChannel = Audio::PlayM("data/audio/boss_wave_song.mp3");
+                //Game::instance->audioChannel = Audio::PlayM("data/audio/boss_wave_song.mp3");
                 Game::instance->musicCd = 0.f;
             }
         }
@@ -619,7 +638,7 @@ void PlayStage::update(float seconds_elapsed){
         {
             if (Game::instance->musicCd > 155.f)
             {
-                Game::instance->audioChannel = Audio::PlayM("data/audio/enemy_wave_song.mp3");
+                //Game::instance->audioChannel = Audio::PlayM("data/audio/enemy_wave_song.mp3");
                 Game::instance->musicCd = 0.f;
             }
         }
@@ -674,7 +693,14 @@ stageId PlayStage::getId()
 
 MenuStage::MenuStage(){
     fin = false;
-    shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+    shader = World::get_instance()->shader;
+}
+
+MenuStage::~MenuStage(){
+    delete camera;
+    delete mesh;
+    delete texture;
+    delete shader;
 }
 
 void MenuStage::render(){
@@ -732,6 +758,10 @@ EndStage::EndStage(){
 
     restart = false;
     retry = false;
+}
+
+EndStage::~EndStage(){
+    
 }
 
 void EndStage::render(){
