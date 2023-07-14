@@ -26,6 +26,7 @@ public:
     Audio* audio;
     
     Stage();
+    ~Stage();
     //Stage* current_stage;
     virtual void render();
     virtual void update(float elapsed_time);
@@ -53,6 +54,7 @@ public:
     int currentSlot;
     
     TitleStage();
+    ~TitleStage();
     
     stageId getId();
     
@@ -156,6 +158,7 @@ class MenuStage : public Stage {
 public:
     
     MenuStage();
+    ~MenuStage();
     
     stageId getId();
     
@@ -170,6 +173,7 @@ public:
     bool restart;
     bool retry;
     EndStage();
+    ~EndStage();
     
     stageId getId();
     
