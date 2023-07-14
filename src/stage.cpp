@@ -204,7 +204,7 @@ void PlayStage::loadNewLvl(float seconds_elapsed)
     //texture = Texture::Get("data/textures/enemy_texture.tga");
     if (spawnCd <= 0.f){
         rand = get_random_enemy_num(currentDiff);
-        enemyNum = (rand > 10) ? 10 : rand;
+        enemyNum = (rand > 15) ? 15 : rand;
         // this code is for if we want to use it to change things via randomness or other factors like difficulty and position and to not destroy enemies on death
         for (int i = 0; i < enemyNum; i++)
         {
