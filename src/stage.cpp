@@ -364,7 +364,8 @@ PlayStage::PlayStage(){
     cdSlot = new UI(quad, World::get_instance()->cdPowerUpTexture, slot1.x, slot1.y, 114, 75, grayColor);
     msSlot = new UI(quad, World::get_instance()->msPowerUpTexture, slot2.x, slot2.y, 114, 75, grayColor);
     gmSlot = new UI(quad, World::get_instance()->gmPowerUpTexture, slot3.x, slot3.y, 114, 75, grayColor);
-
+    HPBar = new UI(quad, World::get_instance()->HPBBTexture, Game::instance->window_width / 2 + 25, 35, 500, 20, Vector4(1, 1, 1, 1));
+    HP = new UI(quad, World::get_instance()->HPTexture, Game::instance->window_width / 2 + 25, 35, HPtoUI, 20, Vector4(1, 1, 1, 1));
 }
 
 PlayStage::~PlayStage()
@@ -474,9 +475,10 @@ void PlayStage::render(){
     msSlot->color = Vector4(0.2f, 0.2f, 0.2f, 1);
     gmSlot->color = Vector4(0.2f, 0.2f, 0.2f, 1);
     
-    
-    HPBar = new UI(quad, World::get_instance()->HPBBTexture, Game::instance->window_width/2 + 25, 35, 500, 20, Vector4(1,1,1,1));
-    HP = new UI(quad, World::get_instance()->HPTexture, Game::instance->window_width/2 + 25, 35, HPtoUI, 20, Vector4(1,1,1,1));
+    delete HPBar;
+    delete HP;
+    HPBar = new UI(quad, World::get_instance()->HPBBTexture, Game::instance->window_width / 2 + 25, 35, 500, 20, Vector4(1, 1, 1, 1));
+    HP = new UI(quad, World::get_instance()->HPTexture, Game::instance->window_width / 2 + 25, 35, HPtoUI, 20, Vector4(1, 1, 1, 1));
 
     cdSlot->render();
     msSlot->render();

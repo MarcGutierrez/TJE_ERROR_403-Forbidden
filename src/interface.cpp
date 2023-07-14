@@ -15,9 +15,7 @@ UI::UI(Mesh quad, Texture* texture, float x, float y,float w, float h, Vector4 c
     this->quad = quad;
     this->texture = texture;
     this->color = color;
-    shader = Shader::Get("data/shaders/ortoshader.vs", "data/shaders/texture.fs");
-
-    
+    shader = Shader::Get("data/shaders/ortoshader.vs", "data/shaders/texture.fs");    
 }
 
 void UI::render(){
