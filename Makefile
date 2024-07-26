@@ -11,26 +11,26 @@ DEPENDS = $(patsubst %.cpp, %.d, $(wildcard $(SOURCES)))
 THIS_DIR := $(dir $(abspath $(firstword $(MAKEFILE_LIST))))
 
 SDL_LIB = -lSDL2 
-GLUT_LIB = -GLEW
+GLUT_LIB = -w
 BASS_LIB = -lbass
 
-UNAME := $(shell uname)
 
+ifeq  ($(OS),Windows_NT)
+LIBS = $(SDL_LIB) $(GLUT_LIB) $(BASS_LIB) -Wl,-subsystem,windows
+else
+UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)
 LIBS = $(SDL_LIB) $(GLUT_LIB) $(BASS_LIB)
 endif
 ifeq ($(UNAME), Darwin)
 LIBS = $(SDL_LIB) $(GLUT_LIB) $(BASS_LIB) -framework OpenGL -framework Cocoa -framework IOKit
 endif
+endif
 
 all:	main
 
-main:	$(DEPENDS) $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $(OBJECTS) $(LIBS) -o $@
-
-%.d: %.cpp
-	@$(CXX) -M -MT "$*.o $@" $(CPPFLAGS) $<  > $@
-	@echo Generating new dependencies for $<
+main:	$(DEPENDS) 
+	$(CXX) $(CXXFLAGS) -o $@  $(LIBS)
 
 run:
 	./main
@@ -38,5 +38,4 @@ run:
 clean:
 	rm -f $(OBJECTS) $(DEPENDS) main *.pyc
 
--include $(SOURCES:.cpp=.d)
 

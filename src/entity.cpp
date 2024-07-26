@@ -22,6 +22,9 @@ EntityBoss* b;
 EntityCollider* c;
 EntityProjectile* p;
 
+template <typename T> int sgn(T val) {
+    return (T(0) < val) - (val < T(0));
+}
 // Container to store EACH collision
 struct sCollisionData {
     Vector3 colPoint;
@@ -266,7 +269,7 @@ void shoot(Matrix44 model, float speed, float dispersion, bool isEnemy){
 void multishot(Matrix44 model, float speed, int bulletsShoot, float dispersion, bool isEnemy){
     
     dirShoot = model.frontVector();
-
+    int sign = (sgn(dirShoot.x) * sgn(dirShoot.z));
     /*if (dispersion) //multishot sin dispersion
     {
         dir.x += random(dispersion, -dispersion / 2);
@@ -276,7 +279,7 @@ void multishot(Matrix44 model, float speed, int bulletsShoot, float dispersion, 
     int range = bulletsShoot / 2;
     for (int i = -range; i <= range; i++) // para generar el numero de balas adecuado
     {
-        newDir = dirShoot - Vector3(i * dispersion, 0, i * dispersion); // nueva direccion con dispersion de bala aplicado
+        newDir = dirShoot - Vector3(i * dispersion, 0, sign*i * dispersion); // nueva direccion con dispersion de bala aplicado
         newDir.normalize(); // normaliza la direccion para que las balas vayan a la misma velocidad
 
         if (((PlayStage*)Game::instance->current_stage)->projectiles.size() < 50) // to check that we have a maximum of bullets

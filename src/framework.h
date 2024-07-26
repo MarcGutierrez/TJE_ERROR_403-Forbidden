@@ -378,7 +378,7 @@ bool RaySphereCollision(const Vector3& center, const float& radius, const Vector
 Vector3 reflect(const Vector3& I, const Vector3& N);
 
 //value between 0 and 1
-inline float random(float range = 1.0f, float offset = 0) { return ((rand() % 10000) / (10000.0)) * range + offset; }
+inline float random(float range = 1.0f, float offset = 0) { return ((float)(rand() % 10000) / (10000.0)) * range + offset; }
 
 
 typedef Vector3 vec2;
